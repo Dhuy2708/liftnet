@@ -10,7 +10,7 @@ Welcome to **Lift Net**, the ultimate platform designed for fitness enthusiasts 
 ---
 
 <p align="center">  
-  <img src="https://your-image-link.com/banner-visualization.gif" alt="Lift Net Overview" width="800"/>  
+  <img src="https://i.pinimg.com/originals/61/7d/97/617d971ade1eb3c6ea587834d8491c3d.gif" alt="Lift Net Overview" width="800"/>  
 </p>  
 
 ## 🎯 Key Features  
@@ -23,6 +23,22 @@ Welcome to **Lift Net**, the ultimate platform designed for fitness enthusiasts 
 - **Progress Tracking**: Set your goals and track every workout session.  
 - **Social Feed**: Share achievements, fitness tips, and connect with others.  
 - **Trainer Discovery**: Explore trainers tailored to your needs based on location and expertise.  
+
+---
+
+### 📽️ Physique Tracking  
+
+### 🚶 Gym Enthusiast's Journey  
+<p align="center">  
+  <img src="https://your-image-link.com/enthusiast-demo.gif" alt="Gym Enthusiast Demo" width="700"/>  
+</p>  
+
+### 🏋️ Personal Trainer's Experience  
+<p align="center">  
+  <img src="https://your-image-link.com/trainer-demo.gif" alt="Trainer Demo" width="700"/>  
+</p>  
+
+### 📦 Nutrition Managing
 
 ---
 
@@ -54,17 +70,3 @@ Welcome to **Lift Net**, the ultimate platform designed for fitness enthusiasts 
 
 ---
 
-## 📽️ Physique Tracking  
-
-### 🚶 Gym Enthusiast's Journey  
-<p align="center">  
-  <img src="https://your-image-link.com/enthusiast-demo.gif" alt="Gym Enthusiast Demo" width="700"/>  
-</p>  
-
-### 🏋️ Personal Trainer's Experience  
-<p align="center">  
-  <img src="https://your-image-link.com/trainer-demo.gif" alt="Trainer Demo" width="700"/>  
-</p>  
-
-### 📦 Nutrition Managing
----
