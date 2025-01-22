@@ -1,5 +1,5 @@
 <p align="center">  
-  <img src="https://your-image-link.com/lift-net-logo.png" alt="Lift Net Logo" width="200"/>  
+  <img src="https://i.pinimg.com/originals/61/7d/97/617d971ade1eb3c6ea587834d8491c3d.gif" alt="Lift Net Logo" width="200"/>  
 </p>  
 
 # 🏋️‍♂️ Lift Net  
@@ -10,7 +10,7 @@ Welcome to **Lift Net**, the ultimate platform designed for fitness enthusiasts 
 ---
 
 <p align="center">  
-  <img src="https://i.pinimg.com/originals/61/7d/97/617d971ade1eb3c6ea587834d8491c3d.gif" alt="Lift Net Overview" width="800"/>  
+  <img src="https://your-image-link.com/banner-visualization.gif" alt="Lift Net Overview" width="800"/>  
 </p>  
 
 ## 🎯 Key Features  
