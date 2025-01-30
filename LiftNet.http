@@ -1,0 +1,6 @@
+@LiftNet_HostAddress = http://localhost:5088
+
+GET {{LiftNet_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

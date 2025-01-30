@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "MoeCIfChwgI=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\TechCare\\Desktop\\dai hac\\ki 8\\lift-net\\lift-net\\LiftNet.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\TechCare\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.0\\microsoft.aspnetcore.openapi.9.0.0.nupkg.sha512",
+    "C:\\Users\\TechCare\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512",
+    "C:\\Users\\TechCare\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.21.0\\microsoft.visualstudio.azure.containers.tools.targets.1.21.0.nupkg.sha512"
+  ],
+  "logs": []
+}
