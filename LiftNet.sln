@@ -1,0 +1,59 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Contract", "LiftNet.Contract\LiftNet.Contract.csproj", "{BAD0EAD1-5A7E-4BA6-AE0E-0A940725EC22}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Domain", "LiftNet.Domain\LiftNet.Domain.csproj", "{ADD023A9-6A30-49BC-9494-748348DF95BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Service", "LiftNet.Service\LiftNet.Service.csproj", "{556D0E11-DA3C-4EAF-9552-E069C90401FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.SQL", "LiftNet.SQL\LiftNet.SQL.csproj", "{E900A76D-228F-4762-A5EF-7B98E9A1F88A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{F1874BBF-4C3E-4C56-90C0-EF6C5C1EC36D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{93289553-81C9-4402-8865-3D6191656260}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Persistence", "Persistence", "{7916AB05-0519-4CC2-B893-EE6FE0820335}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Api", "LiftNet.Api\LiftNet.Api.csproj", "{A1546264-2695-440D-92EE-A98470204396}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BAD0EAD1-5A7E-4BA6-AE0E-0A940725EC22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAD0EAD1-5A7E-4BA6-AE0E-0A940725EC22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAD0EAD1-5A7E-4BA6-AE0E-0A940725EC22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAD0EAD1-5A7E-4BA6-AE0E-0A940725EC22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADD023A9-6A30-49BC-9494-748348DF95BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADD023A9-6A30-49BC-9494-748348DF95BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADD023A9-6A30-49BC-9494-748348DF95BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADD023A9-6A30-49BC-9494-748348DF95BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{556D0E11-DA3C-4EAF-9552-E069C90401FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{556D0E11-DA3C-4EAF-9552-E069C90401FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{556D0E11-DA3C-4EAF-9552-E069C90401FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{556D0E11-DA3C-4EAF-9552-E069C90401FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E900A76D-228F-4762-A5EF-7B98E9A1F88A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E900A76D-228F-4762-A5EF-7B98E9A1F88A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E900A76D-228F-4762-A5EF-7B98E9A1F88A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E900A76D-228F-4762-A5EF-7B98E9A1F88A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1546264-2695-440D-92EE-A98470204396}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1546264-2695-440D-92EE-A98470204396}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1546264-2695-440D-92EE-A98470204396}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1546264-2695-440D-92EE-A98470204396}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BAD0EAD1-5A7E-4BA6-AE0E-0A940725EC22} = {93289553-81C9-4402-8865-3D6191656260}
+		{ADD023A9-6A30-49BC-9494-748348DF95BE} = {93289553-81C9-4402-8865-3D6191656260}
+		{556D0E11-DA3C-4EAF-9552-E069C90401FF} = {F1874BBF-4C3E-4C56-90C0-EF6C5C1EC36D}
+		{E900A76D-228F-4762-A5EF-7B98E9A1F88A} = {7916AB05-0519-4CC2-B893-EE6FE0820335}
+		{A1546264-2695-440D-92EE-A98470204396} = {F1874BBF-4C3E-4C56-90C0-EF6C5C1EC36D}
+	EndGlobalSection
+EndGlobal
