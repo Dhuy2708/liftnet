@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.SQL.Context
 {
-    public class LiftNetDbContext : IdentityDbContext<U>
+    public class LiftNetDbContext : IdentityDbContext<User>
     {
     }
 }
