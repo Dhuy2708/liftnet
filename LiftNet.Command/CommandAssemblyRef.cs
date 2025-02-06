@@ -1,6 +1,6 @@
 ﻿namespace LiftNet.Command
 {
-    public class Class1
+    public static class CommandAssemblyRef
     {
 
     }
