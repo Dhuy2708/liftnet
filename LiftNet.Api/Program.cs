@@ -1,5 +1,6 @@
 
 using dotenv.net;
+using LiftNet.Api.Extensions;
 
 namespace LiftNet.Api;
 
@@ -9,10 +10,8 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        DotEnv.Load();
-        var config = builder.Configuration;
-        var connectionSrting = Environment.GetEnvironmentVariable("CONNECTION_STRING")!;
-        // Add services to the container.
+        builder.Services.RegisterDbConfig();
+        builder.Services.RegisterCqrs();
 
         builder.Services.AddControllers();
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -27,7 +26,6 @@ public class Program
         }
 
         app.UseHttpsRedirection();
-
         app.UseAuthorization();
 
 

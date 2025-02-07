@@ -2,7 +2,7 @@
 {
     public static class CoreAppExtension
     {
-        public static IServiceCollection Register(this IServiceCollection services)
+        public static IServiceCollection RegisterCqrs(this IServiceCollection services)
         {
             // cqrs
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(
@@ -10,7 +10,6 @@
                                     typeof(Query.QueryAssemblyRef).Assembly,
                                     typeof(SharedKenel.CoreCQRSAssemblyRef).Assembly
                                 ));
-
 
             return services;
         }
