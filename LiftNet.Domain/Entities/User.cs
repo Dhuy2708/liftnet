@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using LiftNet.Domain.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,7 +13,7 @@ namespace LiftNet.Domain.Entities
 {
 
     [Table("Users")]
-    public sealed class User : IdentityUser
+    public sealed class User : IdentityUser, IEntity
     {
         [Required]
         public required string Name
