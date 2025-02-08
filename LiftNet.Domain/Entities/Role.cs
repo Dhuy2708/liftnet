@@ -7,11 +7,12 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LiftNet.Domain.Interfaces;
 
 namespace LiftNet.Domain.Entities
 {
     [Table("Roles")]
-    public sealed class Role : IdentityRole
+    public sealed class Role : IdentityRole, IEntity
     {
 
     }

@@ -10,6 +10,7 @@ namespace LiftNet.Contract.Interfaces.Repositories
 {
     public interface IAuthRepo
     {
-    
+        Task<string> LogInAsync(LoginRequest logInViewModel);
+        Task<IdentityResult> RegisterAsync(RegisterRequest registerViewModel);
     }
 }
