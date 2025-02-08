@@ -1,5 +1,5 @@
 ﻿using LiftNet.Domain.Exceptions;
-using LiftNet.Domain.Response;
+using LiftNet.Domain.Response.ApiResponse;
 using Newtonsoft.Json;
 using System.Net;
 
