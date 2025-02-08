@@ -1,45 +1,31 @@
 ﻿using LiftNet.Domain.Constants;
-using LiftNet.Domain.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Domain.Entities
+namespace LiftNet.Contract.Dtos
 {
-
-    [Table("Users")]
-    public sealed class User : IdentityUser, IEntity
+    public class UserDto
     {
-        [Required]
-        public required string Name
+        public string Name
         {
             get; set;
         }
 
-        [DefaultValue(DomainConstants.DEFAULT_USER_AVATAR)]
-        public string? Avatar
+        public string Avatar
         {
             get; set;
         }
 
-        public string? Address
+        public AddressDto Address
         {
             get; set;
         }
 
-        public string? Extension
-        {
-            get; set;
-        }
-
-        [Required]
-        [DefaultValue("GETUTCDATE()")]
         public DateTime CreatedAt
         {
             get; set;

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Domain.Response
+namespace LiftNet.Domain.Response.ApiResponse
 {
     public class PaginatedResponse<T> : BaseResponse<T>
     {

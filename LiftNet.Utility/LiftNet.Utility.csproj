@@ -4,11 +4,19 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<NoWarn>8618</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
     <Folder Include="Extensions\" />
-    <Folder Include="Utils\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LiftNet.Contract\LiftNet.Contract.csproj" />
   </ItemGroup>
 
 </Project>
