@@ -11,5 +11,8 @@ namespace LiftNet.Contract.Constants
     {
         public const string DEFAULT_USER_AVATAR = DomainConstants.DEFAULT_USER_AVATAR;
 
+        // log
+        public const string USER_LOG_PREFIX_KEY = "log_";
+        public const string SYSTEM_LOG_KEY = "log_system";
     }
 }
