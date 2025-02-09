@@ -29,17 +29,7 @@ namespace LiftNet.AzureBlob.Services
             }
 
             var containerClient = new BlobContainerClient(connectionString, containerName);
-
-            if (!containerClient.Exists() && createIfNotExist)
-            {
-                _logger.LogInformation($"container doesnt exist before, attemp creating, name {containerName}");
-                await CreateContainerAsync(connectionString, containerName);
-            }
-            else
-            {
-                _logger.LogError($"Container '{containerName}' does not exist.");
-                throw new InvalidOperationException($"Container '{containerName}' does not exist.");
-            }
+            containerClient.CreateIfNotExists();
 
             return containerClient;
         }
