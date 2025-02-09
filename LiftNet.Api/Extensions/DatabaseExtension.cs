@@ -12,7 +12,7 @@ namespace LiftNet.Api.Extensions
         public static IServiceCollection RegisterDbConfig(this IServiceCollection services)
         {
             DotEnv.Load();
-            var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING")!;
+            var connectionString = Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")!;
 
             services.AddDbContext<LiftNetDbContext>(opt =>
             {
