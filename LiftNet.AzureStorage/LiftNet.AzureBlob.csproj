@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="NewFolder\" />
+    <ProjectReference Include="..\LiftNet.Contract\LiftNet.Contract.csproj" />
   </ItemGroup>
 
 </Project>
