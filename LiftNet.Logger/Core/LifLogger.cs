@@ -2,6 +2,7 @@
 using LiftNet.Logger.Enum;
 using LiftNet.Logger.Model;
 using LiftNet.Utility.Utils;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
@@ -35,23 +36,35 @@ namespace LiftNet.Logger.Core
         private void Log(LogType type, string message)
         {
             UserId ??= ContextUtil.UId();
-            string key = "";
-            if (UserId != null)
+            var now = DateTime.UtcNow;
+            var logKey = CoreConstant.LOG_KEY;
+            var logStr = GetFormatMessage(now, type, message);
+
+            var logModel = _memoryCache.Get<LifLogModel>(logKey);
+
+            if (logModel == null)
             {
-                key = CoreConstant.USER_LOG_PREFIX_KEY + UserId;
+                logModel = new LifLogModel();
             }
-            else
+
+            if (UserId != null) // user log
             {
-                key = CoreConstant.SYSTEM_LOG_KEY;
+                if (logModel.UserLogs.TryGetValue(UserId, out var userLogs))
+                {
+                    userLogs.TryAdd(now, logStr);
+                }
+                else
+                {
+                    logModel.UserLogs.TryAdd(UserId, new SortedDictionary<DateTime, string>() { { now, logStr } });
+                }
+            }
+            else // system log
+            {
+                logModel.SystemLogs ??= new SortedDictionary<DateTime, string>();
+                logModel.SystemLogs.TryAdd(now, logStr);
             }
 
-            var logModel = _memoryCache.Get<LifLogModel>(key);
-            logModel ??= new LifLogModel { UserId = UserId! };
-
-            var time = DateTime.UtcNow;
-            logModel.Logs.Add(time, GetFormatMessage(time, type, message));
-
-            _memoryCache.Set(key, logModel);
+            _memoryCache.Set(logKey, logModel);
         }
 
         public void LogInfo(string message)

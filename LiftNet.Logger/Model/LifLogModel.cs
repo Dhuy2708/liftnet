@@ -8,7 +8,20 @@ namespace LiftNet.Logger.Model
 {
     public class LifLogModel
     {
-        public string UserId { get; set; }
-        public SortedDictionary<DateTime, string> Logs { get; set; } = new SortedDictionary<DateTime, string>();
+        public Dictionary<string, SortedDictionary<DateTime, string>> UserLogs
+        {
+            get; set;
+        }
+
+        public SortedDictionary<DateTime, string> SystemLogs
+        {
+            get; set;
+        }
+
+        public LifLogModel()
+        {
+            UserLogs = [];
+            SystemLogs = [];
+        }
     }
 }
