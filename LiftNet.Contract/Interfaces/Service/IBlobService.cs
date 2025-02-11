@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Azure.Storage.Blobs;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,15 +10,16 @@ namespace LiftNet.Contract.Interfaces.Service
 {
     public interface IBlobService
     {
+        Task<BlobContainerClient> GetContainerClient(string containerName, bool createIfNotExist = true);
         // file
-        Task<string> UploadFileAsync(IFormFile file, string connectionString, string containerName);
-        Task<byte[]> DownloadFileAsync(string fileName, string connectionString, string containerName);
-        Task<bool> DeleteFileAsync(string fileName, string connectionString, string containerName);
-        Task<List<string>> ListFilesAsync(string connectionString, string containerName);
+        Task<string> UploadFileAsync(IFormFile file, string containerName);
+        Task<byte[]> DownloadFileAsync(string fileName, string containerName);
+        Task<bool> DeleteFileAsync(string fileName, string containerName);
+        Task<List<string>> ListFilesAsync(string containerName);
 
         // container
-        Task<bool> CreateContainerAsync(string connectionString, string containerName);
-        Task<bool> DeleteContainerAsync(string connectionString, string containerName);
-        Task<List<string>> ListContainersAsync(string connectionString);
+        Task<bool> CreateContainerAsync(string containerName);
+        Task<bool> DeleteContainerAsync(string containerName);
+        Task<List<string>> ListContainersAsync();
     }
 }

@@ -23,5 +23,11 @@ namespace LiftNet.Logger.Model
             UserLogs = [];
             SystemLogs = [];
         }
+        
+        public void Clear()
+        {
+            UserLogs.Clear();
+            SystemLogs.Clear();
+        }
     }
 }
