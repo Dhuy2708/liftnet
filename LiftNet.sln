@@ -51,7 +51,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Worker", "Worker", "{BA0CB1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Timer", "LiftNet.Timer\LiftNet.Timer.csproj", "{DF98EA3E-E17D-4F81-BEE4-F9154CB03F38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkerService", "WorkerService\WorkerService.csproj", "{F386A170-8D50-4037-8EEC-B7FE2A6AED60}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.WorkerService", "WorkerService\LiftNet.WorkerService.csproj", "{F386A170-8D50-4037-8EEC-B7FE2A6AED60}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
