@@ -1,5 +1,6 @@
 ﻿using LiftNet.Contract.Interfaces.Repositories;
 using LiftNet.Domain.Entities;
+using LiftNet.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.Extensions.Logging;
@@ -14,11 +15,11 @@ namespace LiftNet.Repositories
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly ILogger<AuthRepo> _logger;
+        private readonly ILiftLogger<AuthRepo> _logger;
 
         public AuthRepo(UserManager<User> userManager,
                         SignInManager<User> signInManager,
-                        ILogger<AuthRepo> logger,
+                        ILiftLogger<AuthRepo> logger,
                         RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
