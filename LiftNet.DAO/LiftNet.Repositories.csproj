@@ -13,6 +13,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LiftNet.Contract\LiftNet.Contract.csproj" />
+    <ProjectReference Include="..\LiftNet.SQL\LiftNet.Persistence.csproj" />
+    <ProjectReference Include="..\LiftNet.Utility\LiftNet.Utility.csproj" />
   </ItemGroup>
 
 </Project>

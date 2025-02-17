@@ -1,6 +1,6 @@
 ﻿using dotenv.net;
 using LiftNet.Domain.Entities;
-using LiftNet.SQL.Context;
+using LiftNet.Persistence.Context;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
