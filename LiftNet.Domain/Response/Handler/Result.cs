@@ -23,10 +23,10 @@ namespace LiftNet.Domain.Response.Handler
             Message = message;
         }
 
-        public static BaseResponse<T> SuccessResponse(List<T> datas, string? message = null)
+        public static LiftNetResponse<T> SuccessResponse(List<T> datas, string? message = null)
             => new(datas, true, message);
 
-        public static BaseResponse<T> ErrorResponse(List<string>? errors, string? message = null)
+        public static LiftNetResponse<T> ErrorResponse(List<string>? errors, string? message = null)
             => new() { Success = false, Message = message, Errors = errors };
     }
 }

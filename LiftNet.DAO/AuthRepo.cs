@@ -1,5 +1,8 @@
-﻿using LiftNet.Contract.Interfaces.Repositories;
+﻿using LiftNet.Contract.Dtos.Auth;
+using LiftNet.Contract.Interfaces.Repositories;
 using LiftNet.Domain.Entities;
+using LiftNet.Domain.Enums;
+using LiftNet.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.Extensions.Logging;
@@ -14,11 +17,11 @@ namespace LiftNet.Repositories
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly ILogger<AuthRepo> _logger;
+        private readonly ILiftLogger<AuthRepo> _logger;
 
         public AuthRepo(UserManager<User> userManager,
                         SignInManager<User> signInManager,
-                        ILogger<AuthRepo> logger,
+                        ILiftLogger<AuthRepo> logger,
                         RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
@@ -27,7 +30,7 @@ namespace LiftNet.Repositories
             _roleManager = roleManager;
         }
 
-        public async Task<IdentityResult> RegisterAsync(RegisterRequest model)
+        public async Task<IdentityResult> RegisterAsync(RegisterModel model)
         {
             var user = new User
             {
@@ -42,7 +45,7 @@ namespace LiftNet.Repositories
 
             if (result.Succeeded)
             {
-                if (!await _roleManager.RoleExistsAsync(RoleEnum.Student.ToString()))
+                if (!await _roleManager.RoleExistsAsync(LiftNetRole.Student.ToString()))
                 {
                     await _roleManager.CreateAsync(new IdentityRole(RoleEnum.Student.ToString()));
                 }
@@ -56,7 +59,7 @@ namespace LiftNet.Repositories
             return result;
         }
 
-        public async Task<string> LogInAsync(LoginRequest model)
+        public async Task<string> LogInAsync(LoginModel model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
 

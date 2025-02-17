@@ -11,4 +11,13 @@
     <PackageReference Include="MediatR" Version="12.4.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Handlers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LiftNet.Contract\LiftNet.Contract.csproj" />
+    <ProjectReference Include="..\LiftNet.SharedKenel\LiftNet.SharedKenel.csproj" />
+  </ItemGroup>
+
 </Project>

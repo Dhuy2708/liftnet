@@ -1,4 +1,5 @@
 ﻿using LiftNet.Contract.Constants;
+using LiftNet.Domain.Interfaces;
 using LiftNet.Logger.Enum;
 using LiftNet.Logger.Model;
 using LiftNet.Utility.Utils;
@@ -12,7 +13,8 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Logger.Core
 {
-    public class LifLogger<T> where T : class
+    public class LifLogger<T> : ILiftLogger<T> 
+           where T : class
     {
         private static Dictionary<LogType, string> LogTypeMapping = new Dictionary<LogType, string>
         {
@@ -67,7 +69,7 @@ namespace LiftNet.Logger.Core
             _memoryCache.Set(logKey, logModel);
         }
 
-        public void LogInfo(string message)
+        public void LogInformation(string message)
         {
             Log(LogType.INFO, message);
         }
@@ -80,6 +82,11 @@ namespace LiftNet.Logger.Core
         public void LogError(string message)
         {
             Log(LogType.ERROR, message);
+        }
+
+        public void LogError(Exception e, string message)
+        {
+            var newMsg = $"{message}, ex: {e.Message}";
         }
 
         private string GetFormatMessage(DateTime time, LogType logType, string message)

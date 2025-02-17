@@ -50,7 +50,7 @@ namespace LiftNet.Api.Middlewares
                     break;
             }
 
-            var result = BaseResponse<object>.ErrorResponse(errors, exception.Message);
+            var result = LiftNetResponse<object>.ErrorResponse(errors, exception.Message);
             context.Response.StatusCode = (int)statusCode;
             return context.Response.WriteAsJsonAsync(result);
         }

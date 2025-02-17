@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Domain.Response.ApiResponse
 {
-    public class PaginatedResponse<T> : BaseResponse<T>
+    public class PaginatedResponse<T> : LiftNetResponse<T>
     {
         public int PageNumber
         {
