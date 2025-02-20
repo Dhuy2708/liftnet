@@ -26,7 +26,6 @@ namespace LiftNet.Api.Controllers
         public async Task<IActionResult> Register(RegisterRequest model)
         {
 
-
             return Ok();
         }
 
