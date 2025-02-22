@@ -17,7 +17,13 @@ namespace LiftNet.Domain.Entities
     public sealed class User : IdentityUser, IEntity
     {
         [Required]
-        public required string Name
+        public required string FirstName
+        {
+            get; set;
+        }
+
+        [Required]
+        public required string LastName
         {
             get; set;
         }
@@ -33,6 +39,7 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        // extension based on role
         public string? Extension
         {
             get; set;

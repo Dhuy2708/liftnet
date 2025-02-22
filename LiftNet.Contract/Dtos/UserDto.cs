@@ -11,7 +11,12 @@ namespace LiftNet.Contract.Dtos
 {
     public class UserDto
     {
-        public string Name
+        public string FirstName
+        {
+            get; set;
+        }
+
+        public string LastName
         {
             get; set;
         }
