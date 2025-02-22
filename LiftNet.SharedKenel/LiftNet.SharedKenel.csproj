@@ -8,11 +8,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="MediatR" Version="12.4.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Behaviours\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LiftNet.Contract\LiftNet.Contract.csproj" />
+    <ProjectReference Include="..\LiftNet.Domain\LiftNet.Domain.csproj" />
   </ItemGroup>
 
 </Project>

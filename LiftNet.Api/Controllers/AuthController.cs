@@ -2,7 +2,7 @@
 using LiftNet.Contract.Interfaces.Repositories;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
-using LiftNet.Domain.Response.ApiResponse;
+using LiftNet.Domain.Response;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +22,7 @@ namespace LiftNet.Api.Controllers
         }
 
         [HttpPost("register")]
-        [ProducesResponseType(typeof(LiftNetResponse<string>), (int)HttpStatusCode.OK))]
+        [ProducesResponseType(typeof(LiftNetRes<string>), (int)HttpStatusCode.OK))]
         public async Task<IActionResult> Register(RegisterRequest model)
         {
 

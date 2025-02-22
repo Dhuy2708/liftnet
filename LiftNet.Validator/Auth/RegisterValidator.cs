@@ -1,9 +1,14 @@
 ﻿using FluentValidation;
-using LiftNet.Api.Contracts.Requests;
+using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace LiftNet.Api.Validators
+namespace LiftNet.Validator.Auth
 {
-    public class RegisterRequestValidator : AbstractValidator<RegisterRequest>
+    public class RegisterRequestValidator : AbstractValidator<Register>
     {
         public RegisterRequestValidator()
         {

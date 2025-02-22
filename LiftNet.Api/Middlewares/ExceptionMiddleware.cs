@@ -1,5 +1,5 @@
 ﻿using LiftNet.Domain.Exceptions;
-using LiftNet.Domain.Response.ApiResponse;
+using LiftNet.Domain.Response;
 using Newtonsoft.Json;
 using System.Net;
 
@@ -50,7 +50,7 @@ namespace LiftNet.Api.Middlewares
                     break;
             }
 
-            var result = LiftNetResponse<object>.ErrorResponse(errors, exception.Message);
+            var result = LiftNetRes<object>.ErrorResponse(errors, exception.Message);
             context.Response.StatusCode = (int)statusCode;
             return context.Response.WriteAsJsonAsync(result);
         }
