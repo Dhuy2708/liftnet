@@ -6,8 +6,7 @@
         {
             #region cqrs
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(
-                                    typeof(Command.CommandAssemblyRef).Assembly,
-                                    typeof(Query.QueryAssemblyRef).Assembly,
+                                    typeof(Handler.HandlerAssemblyRef).Assembly,
                                     typeof(SharedKenel.CoreCQRSAssemblyRef).Assembly
                                 ));
             #endregion

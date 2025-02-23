@@ -1,12 +1,16 @@
-﻿using LiftNet.Contract.Dtos.Auth;
+﻿using LiftNet.Contract.Constants;
+using LiftNet.Contract.Dtos.Auth;
 using LiftNet.Contract.Interfaces.Repositories;
+using LiftNet.Domain.Constants;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Enums;
 using LiftNet.Domain.Interfaces;
+using LiftNet.Utility.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -34,10 +38,12 @@ namespace LiftNet.Repositories
         {
             var user = new User
             {
-                Name = model.Name,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
                 Email = model.Email,
                 UserName = model.Username,
                 CreatedAt = DateTime.Now,
+                Address = JsonConvert.SerializeObject(model.Address),
                 IsDeleted = false,
                 IsSuspended = false,
             };
@@ -45,16 +51,11 @@ namespace LiftNet.Repositories
 
             if (result.Succeeded)
             {
-                if (!await _roleManager.RoleExistsAsync(LiftNetRole.Student.ToString()))
+                if (!await _roleManager.RoleExistsAsync(LiftNetRole.Seeker.ToString()))
                 {
-                    await _roleManager.CreateAsync(new IdentityRole(RoleEnum.Student.ToString()));
+                    await _roleManager.CreateAsync(new IdentityRole(LiftNetRole.Seeker.ToString()));
                 }
-                StudentDto student = new StudentDto
-                {
-                    User = user,
-                };
-                await _studentService.CreateAsync(student);
-                await _userManager.AddToRoleAsync(user, RoleEnum.Student.ToString());
+                await _userManager.AddToRoleAsync(user, LiftNetRole.Seeker.ToString());
             }
             return result;
         }
@@ -78,13 +79,13 @@ namespace LiftNet.Repositories
             var userRoles = await _userManager.GetRolesAsync(user);
             var authClaims = new List<Claim>
             {
-                new Claim(ClaimTypes.Sid, user.Id),
-                new Claim(ClaimTypes.Email, user.Email ?? ""),
-                new Claim(ClaimTypes.NameIdentifier, user.UserName ?? ""),
-                new Claim(ClaimTypes.Name, user.Name),
-                new Claim(ClaimTypes.Role, string.Join(", ", userRoles.ToList())),
-                new Claim("avatar", user.Avatar),
-
+                new Claim(LiftNetClaimType.UId, user.Id),
+                new Claim(LiftNetClaimType.UEmail, user.Email ?? ""),
+                new Claim(LiftNetClaimType.Username, user.UserName ?? ""),
+                new Claim(LiftNetClaimType.FirstName, user.FirstName),
+                new Claim(LiftNetClaimType.LastName, user.LastName),
+                new Claim(LiftNetClaimType.UAvatar, user.Avatar),
+                new Claim(LiftNetClaimType.Roles, string.Join(", ", userRoles.ToList())),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
             foreach (var role in userRoles)
@@ -101,7 +102,7 @@ namespace LiftNet.Repositories
             (
                 issuer: issuer,
                 audience: audience,
-                expires: DateTime.Now.AddSeconds(CoreConstants.TokenExpirationTimeInSeconds),
+                expires: DateTime.Now.AddSeconds(CoreConstant.TokenExpirationTimeInSeconds),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha512Signature)
             );

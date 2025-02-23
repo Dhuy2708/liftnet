@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentValidation.Results;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,9 @@ namespace LiftNet.Domain.Response
 {
     public class BaseResult
     {
-        protected bool Success { get; set; }
-        protected string? Message { get; set; }
-        protected List<string>? Errors { get; set; } = new();
-
+        public bool Success { get; set; }
+        public string? Message { get; set; }
+        public List<string>? Errors { get; set; } = new();
+        public List<ValidationFailure>? ValidationFailure { get; set; }
     }
 }

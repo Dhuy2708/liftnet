@@ -12,6 +12,8 @@ namespace LiftNet.Domain.Constants
         public static string UId => ClaimTypes.Sid;
         public static string UEmail => ClaimTypes.Email;
         public static string Username => ClaimTypes.NameIdentifier;
+        public static string FirstName => "firstname";
+        public static string LastName => "lastname";
         public static string Roles => ClaimTypes.Role;
         public static string UAvatar => "uavatar";
     }

@@ -28,10 +28,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LiftNet.AzureStorage\LiftNet.AzureBlob.csproj" />
-    <ProjectReference Include="..\LiftNet.Command\LiftNet.Command.csproj" />
     <ProjectReference Include="..\LiftNet.Contract\LiftNet.Contract.csproj" />
     <ProjectReference Include="..\LiftNet.Domain\LiftNet.Domain.csproj" />
-    <ProjectReference Include="..\LiftNet.Query\LiftNet.Query.csproj" />
+    <ProjectReference Include="..\LiftNet.Handler\LiftNet.Handler.csproj" />
     <ProjectReference Include="..\LiftNet.Service\LiftNet.Service.csproj" />
     <ProjectReference Include="..\LiftNet.SharedKenel\LiftNet.SharedKenel.csproj" />
     <ProjectReference Include="..\LiftNet.SQL\LiftNet.Persistence.csproj" />

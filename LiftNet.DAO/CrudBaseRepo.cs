@@ -2,7 +2,6 @@
 using LiftNet.Contract.Enums;
 using LiftNet.Contract.Interfaces.Repositories;
 using LiftNet.Domain.Interfaces;
-using LiftNet.Domain.Response.ApiResponse;
 using LiftNet.Persistence.Context;
 using LiftNet.Utility.Utils;
 using Microsoft.Data.SqlClient;

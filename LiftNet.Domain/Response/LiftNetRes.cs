@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentValidation.Results;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,11 @@ namespace LiftNet.Domain.Response
 {
     public class LiftNetRes : BaseResult
     {
+        public static LiftNetRes SuccessResponse(string? message = null)
+          => new() { Success = true, Message = message};
 
+        public static LiftNetRes ErrorResponse(string? message = null, List<string>? errors = null, List<ValidationFailure>? validationFailure = null)
+            => new() { Success = false, Message = message, Errors = errors, ValidationFailure = validationFailure };
     }
 
     public class LiftNetRes<T> : LiftNetRes
@@ -25,9 +30,6 @@ namespace LiftNet.Domain.Response
         }
         public static LiftNetRes<T> SuccessResponse(List<T> datas, string? message = null)
             => new(datas, true, message);
-
-        public static LiftNetRes<T> ErrorResponse(List<string>? errors, string? message = null)
-            => new() { Success = false, Message = message, Errors = errors };
     }
 
     public class PaginatedLiftNetRes<T> : LiftNetRes<T>
@@ -62,6 +64,4 @@ namespace LiftNet.Domain.Response
             NextPageToken = nextPageToken;
         }
     }
-
-   
 }

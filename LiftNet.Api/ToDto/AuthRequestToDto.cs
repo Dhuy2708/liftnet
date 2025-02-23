@@ -1,0 +1,21 @@
+﻿using LiftNet.Api.Contracts.Requests;
+using LiftNet.Handler.Auth.Commands.Requests;
+
+namespace LiftNet.Api.ToDto
+{
+    public static class AuthRequestToDto
+    {
+        public static RegisterCommand ToCommand(this RegisterRequest request)
+        {
+            return new RegisterCommand
+            {
+                Email = request.Email,
+                Username = request.Username,
+                Password = request.Password,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Address = request.Address
+            };
+        }
+    }
+}
