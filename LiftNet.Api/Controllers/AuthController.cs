@@ -1,8 +1,10 @@
 ﻿using LiftNet.Api.Contracts.Requests;
+using LiftNet.Api.ToDto;
 using LiftNet.Contract.Interfaces.Repositories;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,19 +16,23 @@ namespace LiftNet.Api.Controllers
     [ApiController]
     public class AuthController : LiftNetControllerBase
     {
-        private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
+        private readonly IMediator _mediator;
         
-        public AuthController(IServiceProvider serviceProvider) : base(serviceProvider)
+        public AuthController(IMediator mediator, IServiceProvider serviceProvider) : base(serviceProvider)
         {
+            _mediator = mediator;
         }
 
         [HttpPost("register")]
-        [ProducesResponseType(typeof(LiftNetRes<string>), (int)HttpStatusCode.OK))]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Register(RegisterRequest model)
         {
-
-            return Ok();
+            var result = await _mediator.Send(model.ToCommand());
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
 
     }

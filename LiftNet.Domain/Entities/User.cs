@@ -29,7 +29,7 @@ namespace LiftNet.Domain.Entities
         }
 
         [DefaultValue(DomainConstants.DEFAULT_USER_AVATAR)]
-        public string? Avatar
+        public string Avatar
         {
             get; set;
         }

@@ -1,30 +1,33 @@
-﻿using System;
+﻿using LiftNet.Contract.Dtos;
+using LiftNet.Domain.Response;
+using MediatR;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Contract.Dtos.Auth
+namespace LiftNet.Handler.Auth.Commands.Requests
 {
-    public class RegisterModel
+    public class RegisterCommand : IRequest<LiftNetRes>
     {
-        public required string FirstName
+        public string Email
         {
             get; set;
         }
-        public required string LastName
+        public string Username
         {
             get; set;
         }
-        public required string Email
+        public string Password
         {
             get; set;
         }
-        public required string Username
+        public string FirstName
         {
             get; set;
         }
-        public required string Password
+        public string LastName
         {
             get; set;
         }

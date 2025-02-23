@@ -16,7 +16,7 @@ namespace LiftNet.SharedKenel.Extensions
             var result = await validator.ValidateAsync(instance);
             if (!result.IsValid)
             { 
-                throw new BadRequestException(result.Errors.Select(x => x.), "Validate fail");
+                throw new BadRequestException(["Validation failed"], "Validation failed", result.Errors);
             }
         }
     }

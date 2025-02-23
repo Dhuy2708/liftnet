@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FluentValidation.Results;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,11 @@ namespace LiftNet.Domain.Exceptions
 {
     public class BadRequestException : BaseException
     {
-        public BadRequestException(List<string> errors, string message) : base(errors, message)
+        protected List<ValidationFailure>? ValidationFailure { get; set; }
+        public BadRequestException(List<string> errors, string message, List<ValidationFailure>? validationFailure = null) 
+            : base(errors, message)
         {
+            ValidationFailure = validationFailure;
         }
     }
 }

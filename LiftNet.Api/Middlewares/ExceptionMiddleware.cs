@@ -1,4 +1,5 @@
-﻿using LiftNet.Domain.Exceptions;
+﻿using FluentValidation.Results;
+using LiftNet.Domain.Exceptions;
 using LiftNet.Domain.Response;
 using Newtonsoft.Json;
 using System.Net;
@@ -29,6 +30,7 @@ namespace LiftNet.Api.Middlewares
             HttpStatusCode statusCode = HttpStatusCode.InternalServerError;
 
             List<string> errors = [];
+            List<ValidationFailure>? failures = null;
 
             if (exception is BaseException baseException)
             {
@@ -50,7 +52,7 @@ namespace LiftNet.Api.Middlewares
                     break;
             }
 
-            var result = LiftNetRes<object>.ErrorResponse(errors, exception.Message);
+            var result = LiftNetRes<object>.ErrorResponse(exception.Message, errors, failures);
             context.Response.StatusCode = (int)statusCode;
             return context.Response.WriteAsJsonAsync(result);
         }
