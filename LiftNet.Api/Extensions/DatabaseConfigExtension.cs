@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace LiftNet.Api.Extensions
 {
-    public static class DatabaseExtension
+    public static class DatabaseConfigExtension
     {
         public static IServiceCollection RegisterDbConfig(this IServiceCollection services)
         {
@@ -28,7 +28,8 @@ namespace LiftNet.Api.Extensions
                 opt.Password.RequireNonAlphanumeric = false;
                 opt.Password.RequireUppercase = false;
                 opt.Password.RequiredLength = 6;
-            }).AddEntityFrameworkStores<LiftNetDbContext>()
+            }).AddRoles<Role>()
+              .AddEntityFrameworkStores<LiftNetDbContext>()
               .AddDefaultTokenProviders();
             services.RegisterPolicy();
 

@@ -39,7 +39,12 @@ namespace LiftNet.Handler.Auth.Commands.Validators
                 .Matches(@"^(?=.*\d)(?=.*[a-z]).{6,}$")
                 .WithMessage("Password must contain at least one digit and one lowercase letter.");
 
-            RuleFor(x => x.Username)
+            RuleFor(x => x.Email)
+                .MustAsync(async (email, cancellation) =>
+                {
+                    var user = await _userManager.FindByEmailAsync(email);
+                    return user == null;
+                }).WithMessage("Email is already registered with account.")
                 .MustAsync(async (username, cancellation) =>
                 {
                     var user = await _userManager.FindByNameAsync(username);

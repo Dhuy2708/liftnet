@@ -16,17 +16,17 @@ using System.Security.Claims;
 
 namespace LiftNet.Repositories
 {
-    internal class AuthRepo : IAuthRepo
+    public class AuthRepo : IAuthRepo
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<Role> _roleManager;
         private readonly ILiftLogger<AuthRepo> _logger;
 
         public AuthRepo(UserManager<User> userManager,
                         SignInManager<User> signInManager,
                         ILiftLogger<AuthRepo> logger,
-                        RoleManager<IdentityRole> roleManager)
+                        RoleManager<Role> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -53,7 +53,7 @@ namespace LiftNet.Repositories
             {
                 if (!await _roleManager.RoleExistsAsync(LiftNetRole.Seeker.ToString()))
                 {
-                    await _roleManager.CreateAsync(new IdentityRole(LiftNetRole.Seeker.ToString()));
+                    await _roleManager.CreateAsync(new Role(LiftNetRole.Seeker.ToString()));
                 }
                 await _userManager.AddToRoleAsync(user, LiftNetRole.Seeker.ToString());
             }

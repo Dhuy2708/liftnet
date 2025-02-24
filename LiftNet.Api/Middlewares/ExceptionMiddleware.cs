@@ -41,6 +41,7 @@ namespace LiftNet.Api.Middlewares
             {
                 case BadRequestException badRequestException:
                     statusCode = HttpStatusCode.BadRequest;
+                    failures = badRequestException.ValidationFailure;
                     break;
                 case ValidationException validationException:
                     statusCode = HttpStatusCode.BadRequest;

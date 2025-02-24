@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Logger.Core
 {
-    public class LifLogger<T> : ILiftLogger<T> 
+    public class LiftLogger<T> : ILiftLogger<T> 
            where T : class
     {
         private static Dictionary<LogType, string> LogTypeMapping = new Dictionary<LogType, string>
@@ -25,7 +25,7 @@ namespace LiftNet.Logger.Core
         private string? UserId { get; set; }
 
         private readonly IMemoryCache _memoryCache;
-        public LifLogger(IMemoryCache memoryCache)
+        public LiftLogger(IMemoryCache memoryCache)
         {
             _memoryCache = memoryCache;
         }
