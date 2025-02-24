@@ -4,9 +4,9 @@ using LiftNet.Contract.Interfaces.Service;
 
 namespace LiftNet.Api.Extensions
 {
-    public static class ExtenalServiceExtension
+    public static class InfrasServiceExtension
     {
-        public static IServiceCollection Register(this IServiceCollection services)
+        public static IServiceCollection RegisterInfras(this IServiceCollection services)
         {
             DotEnv.Load();
             var connectionString = Environment.GetEnvironmentVariable("BLOB_CONNECTION_STRING")!;

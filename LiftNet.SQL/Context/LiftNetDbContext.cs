@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Persistence.Context
 {
-    public class LiftNetDbContext : IdentityDbContext<User>
+    public class LiftNetDbContext : IdentityDbContext<User, Role, string>
     {
         public LiftNetDbContext(DbContextOptions<LiftNetDbContext> options) : base(options)
         {
