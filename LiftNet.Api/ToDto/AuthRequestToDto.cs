@@ -17,5 +17,14 @@ namespace LiftNet.Api.ToDto
                 Address = request.Address
             };
         }
+
+        public static LoginCommand ToCommand(this LoginRequest request)
+        {
+            return new LoginCommand
+            {
+                Username = request.Username,
+                Password = request.Password
+            };
+        }
     }
 }

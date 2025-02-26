@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\LiftNet.Contract\LiftNet.Contract.csproj" />
     <ProjectReference Include="..\LiftNet.Domain\LiftNet.Domain.csproj" />
+    <ProjectReference Include="..\LiftNet.Ioc\LiftNet.Ioc.csproj" />
     <ProjectReference Include="..\LiftNet.SharedKenel\LiftNet.SharedKenel.csproj" />
     <ProjectReference Include="..\LiftNet.Utility\LiftNet.Utility.csproj" />
   </ItemGroup>

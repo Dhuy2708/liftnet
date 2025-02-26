@@ -5,6 +5,7 @@ using LiftNet.Domain.Constants;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Enums;
 using LiftNet.Domain.Interfaces;
+using LiftNet.Ioc;
 using LiftNet.Utility.Utils;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
@@ -14,9 +15,9 @@ using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
-namespace LiftNet.Repositories
+namespace LiftNet.Repositories.Core
 {
-    public class AuthRepo : IAuthRepo
+    public class AuthRepo : IAuthRepo, IDependency
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
