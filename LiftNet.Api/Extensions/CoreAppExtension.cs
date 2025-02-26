@@ -19,7 +19,7 @@ namespace LiftNet.Api.Extensions
                                 ));
 
             // handler
-            services.AddScoped<IRequestHandler<RegisterCommand, LiftNetRes>, RegisterCommandHandler>();
+            services.AddScoped<IRequestHandler<RegisterCommand, LiftNetRes>, RegisterHandler>();
             #endregion
 
             #region logger

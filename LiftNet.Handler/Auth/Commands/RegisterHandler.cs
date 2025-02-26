@@ -15,11 +15,11 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Auth.Commands
 {
-    public class RegisterCommandHandler : IRequestHandler<RegisterCommand, LiftNetRes>
+    public class RegisterHandler : IRequestHandler<RegisterCommand, LiftNetRes>
     {
         private readonly UserManager<User> _userManager;
         private readonly IAuthRepo _authRepo;
-        public RegisterCommandHandler(UserManager<User> userManager, IAuthRepo authRepo)
+        public RegisterHandler(UserManager<User> userManager, IAuthRepo authRepo)
         {
             _userManager = userManager;
             _authRepo = authRepo;
