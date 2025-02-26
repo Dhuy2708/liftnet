@@ -4,6 +4,7 @@ using LiftNet.Domain.Entities;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Auth.Commands.Requests;
 using LiftNet.Handler.Auth.Commands.Validators;
+using LiftNet.Ioc;
 using LiftNet.SharedKenel.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -15,11 +16,11 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Auth.Commands
 {
-    public class RegisterCommandHandler : IRequestHandler<RegisterCommand, LiftNetRes>
+    public class RegisterHandler : IRequestHandler<RegisterCommand, LiftNetRes>, IDependency
     {
         private readonly UserManager<User> _userManager;
         private readonly IAuthRepo _authRepo;
-        public RegisterCommandHandler(UserManager<User> userManager, IAuthRepo authRepo)
+        public RegisterHandler(UserManager<User> userManager, IAuthRepo authRepo)
         {
             _userManager = userManager;
             _authRepo = authRepo;

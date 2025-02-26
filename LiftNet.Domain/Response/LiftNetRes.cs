@@ -30,6 +30,8 @@ namespace LiftNet.Domain.Response
         }
         public static LiftNetRes<T> SuccessResponse(List<T> datas, string? message = null)
             => new(datas, true, message);
+        public static LiftNetRes<T> SuccessResponse(T datas, string? message = null)
+           => new([datas], true, message);
     }
 
     public class PaginatedLiftNetRes<T> : LiftNetRes<T>

@@ -37,6 +37,7 @@
     <ProjectReference Include="..\LiftNet.DAO\LiftNet.Repositories.csproj" />
     <ProjectReference Include="..\LiftNet.Domain\LiftNet.Domain.csproj" />
     <ProjectReference Include="..\LiftNet.Handler\LiftNet.Handler.csproj" />
+    <ProjectReference Include="..\LiftNet.Ioc\LiftNet.Ioc.csproj" />
     <ProjectReference Include="..\LiftNet.Logger\LiftNet.Logger.csproj" />
     <ProjectReference Include="..\LiftNet.Service\LiftNet.Service.csproj" />
     <ProjectReference Include="..\LiftNet.SharedKenel\LiftNet.SharedKenel.csproj" />

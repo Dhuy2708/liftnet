@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace LiftNet.Repositories
+namespace LiftNet.Repositories.Core
 {
     public class CrudBaseRepo<TEntity> : ICrudBaseRepo<TEntity> where TEntity : class
     {

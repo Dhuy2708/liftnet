@@ -2,7 +2,6 @@
 using dotenv.net;
 using LiftNet.Api.Extensions;
 using LiftNet.Api.Middlewares;
-using LiftNet.Extensions;
 
 namespace LiftNet.Api;
 
@@ -15,7 +14,6 @@ public class Program
         builder.Services.RegisterDbConfig();
         builder.Services.RegisterAppContext();
         builder.Services.RegisterCqrs();
-        builder.Services.RegisterService();
         builder.Services.RegisterInfras();
 
         builder.Services.AddControllers();

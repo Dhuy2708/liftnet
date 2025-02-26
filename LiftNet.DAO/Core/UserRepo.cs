@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Repositories
+namespace LiftNet.Repositories.Core
 {
     internal class UserRepo : CrudBaseRepo<User>, IUserRepo
     {

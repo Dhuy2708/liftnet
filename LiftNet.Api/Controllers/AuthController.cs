@@ -25,15 +25,26 @@ namespace LiftNet.Api.Controllers
 
         [HttpPost("register")]
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> Register(RegisterRequest model)
+        public async Task<IActionResult> Register(RegisterRequest req)
         {
-            var result = await _mediator.Send(model.ToCommand());
+            var result = await _mediator.Send(req.ToCommand());
             if (result.Success)
             {
                 return Ok(result);
             }
-            return BadRequest(result);
+            return StatusCode(500, result);
         }
 
+        [HttpPost("login")]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Login(LoginRequest req)
+        {
+            var result = await _mediator.Send(req.ToCommand());
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
     }
 }

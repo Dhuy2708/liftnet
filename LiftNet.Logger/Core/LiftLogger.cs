@@ -1,5 +1,6 @@
 ﻿using LiftNet.Contract.Constants;
 using LiftNet.Domain.Interfaces;
+using LiftNet.Ioc;
 using LiftNet.Logger.Enum;
 using LiftNet.Logger.Model;
 using LiftNet.Utility.Utils;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Logger.Core
 {
-    public class LiftLogger<T> : ILiftLogger<T> 
+    public class LiftLogger<T> : ILiftLogger<T>, IDependency
            where T : class
     {
         private static Dictionary<LogType, string> LogTypeMapping = new Dictionary<LogType, string>
