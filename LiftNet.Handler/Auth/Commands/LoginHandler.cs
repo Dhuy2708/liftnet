@@ -37,7 +37,7 @@ namespace LiftNet.Handler.Auth.Commands
             };
 
             var token = await _authRepo.LogInAsync(loginModel);
-            return LiftNetRes<string>.SuccessResponse(token);
+            return LiftNetRes<string>.SuccessResponse(token);  
         }
     }
 }
