@@ -35,7 +35,7 @@ namespace LiftNet.Handler.Auth.Commands
                 Username = request.Username,
                 Password = request.Password
             };
-
+             
             var token = await _authRepo.LogInAsync(loginModel);
             return LiftNetRes<string>.SuccessResponse(token);  
         }
