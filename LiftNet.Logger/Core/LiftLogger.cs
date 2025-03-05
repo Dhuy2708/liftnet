@@ -6,6 +6,7 @@ using LiftNet.Logger.Model;
 using LiftNet.Utility.Utils;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,15 @@ namespace LiftNet.Logger.Core
     public class LiftLogger<T> : ILiftLogger<T>, IDependency
            where T : class
     {
+        private readonly ILogger<T> _logger;
+        private readonly IMemoryCache _memoryCache;
+
+        public LiftLogger(ILogger<T> logger, IMemoryCache memoryCache)
+        {
+            _logger = logger;
+            _memoryCache = memoryCache;
+        }
+
         private static Dictionary<LogType, string> LogTypeMapping = new Dictionary<LogType, string>
         {
             { LogType.INFO, "INFO" },
@@ -25,12 +35,6 @@ namespace LiftNet.Logger.Core
         };
         private string? UserId { get; set; }
 
-        private readonly IMemoryCache _memoryCache;
-        public LiftLogger(IMemoryCache memoryCache)
-        {
-            _memoryCache = memoryCache;
-        }
-
         public void SetUserId(string userId)
         {
             UserId = userId;
@@ -38,6 +42,7 @@ namespace LiftNet.Logger.Core
 
         private void Log(LogType type, string message)
         {
+            LogConsole(type, message);
             UserId ??= ContextUtil.UId();
             var now = DateTime.UtcNow;
             var logKey = CoreConstant.LOG_KEY;
@@ -88,6 +93,24 @@ namespace LiftNet.Logger.Core
         public void LogError(Exception e, string message)
         {
             var newMsg = $"{message}, ex: {e.Message}";
+        }
+
+        private void LogConsole(LogType type, string message)
+        {
+            switch (type)
+            {
+                case LogType.INFO:
+                    _logger.LogInformation(message);
+                    break;
+                case LogType.WARNING:
+                    _logger.LogWarning(message);
+                    break;
+                case LogType.ERROR:
+                    _logger.LogError(message);
+                    break;
+                default:
+                    throw new NotSupportedException("unsupported log type");
+            }
         }
 
         private string GetFormatMessage(DateTime time, LogType logType, string message)
