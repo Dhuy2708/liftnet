@@ -110,5 +110,10 @@ namespace LiftNet.Repositories.Core
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        public async Task LogOutAsync()
+        {
+            await _signInManager.SignOutAsync();
+        }
     }
 }

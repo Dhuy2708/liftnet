@@ -13,5 +13,6 @@ namespace LiftNet.Contract.Interfaces.Repositories
     {
         Task<string> LogInAsync(LoginModel logInViewModel);
         Task<IdentityResult> RegisterAsync(RegisterModel registerViewModel);
+        Task LogOutAsync();
     }
 }

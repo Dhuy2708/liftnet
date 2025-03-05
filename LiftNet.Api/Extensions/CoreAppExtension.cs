@@ -27,7 +27,7 @@ namespace LiftNet.Api.Extensions
             #endregion
 
             #region logger
-            services.AddScoped(typeof(ILiftLogger<>), typeof(LiftLogger<>));
+            services.AddSingleton(typeof(ILiftLogger<>), typeof(LiftLogger<>));
             #endregion
 
             #region inmemory

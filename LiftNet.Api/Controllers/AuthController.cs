@@ -4,6 +4,7 @@ using LiftNet.Contract.Interfaces.Repositories;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
+using LiftNet.Handler.Auth.Commands.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -40,6 +41,18 @@ namespace LiftNet.Api.Controllers
         public async Task<IActionResult> Login(LoginRequest req)
         {
             var result = await _mediator.Send(req.ToCommand());
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpPost("logout")]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Logout()
+        {
+            var result = await _mediator.Send(new LogoutCommand());
             if (result.Success)
             {
                 return Ok(result);

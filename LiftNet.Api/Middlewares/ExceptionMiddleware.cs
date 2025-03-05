@@ -1,5 +1,6 @@
 ﻿using FluentValidation.Results;
 using LiftNet.Domain.Exceptions;
+using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using Newtonsoft.Json;
 using System.Net;
@@ -9,9 +10,12 @@ namespace LiftNet.Api.Middlewares
     public class ExceptionMiddleware
     {
         private readonly RequestDelegate _next;
-        public ExceptionMiddleware(RequestDelegate next)
+        private readonly ILiftLogger<ExceptionMiddleware> _logger;
+
+        public ExceptionMiddleware(RequestDelegate next, ILiftLogger<ExceptionMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
         public async Task InvokeAsync(HttpContext httpContext)
         {
@@ -26,6 +30,8 @@ namespace LiftNet.Api.Middlewares
         }
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
+            _logger.LogError(exception.Message);
+
             context.Response.ContentType = "application/json";
             HttpStatusCode statusCode = HttpStatusCode.InternalServerError;
 

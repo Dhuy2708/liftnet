@@ -1,6 +1,7 @@
 ﻿using LiftNet.Contract.Dtos.Auth;
 using LiftNet.Contract.Interfaces.Repositories;
 using LiftNet.Domain.Entities;
+using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Auth.Commands.Requests;
 using LiftNet.Handler.Auth.Commands.Validators;
@@ -20,10 +21,13 @@ namespace LiftNet.Handler.Auth.Commands
     {
         private readonly UserManager<User> _userManager;
         private readonly IAuthRepo _authRepo;
-        public RegisterHandler(UserManager<User> userManager, IAuthRepo authRepo)
+        private readonly ILiftLogger<RegisterHandler> _logger;
+
+        public RegisterHandler(UserManager<User> userManager, IAuthRepo authRepo, ILiftLogger<RegisterHandler> logger)
         {
             _userManager = userManager;
             _authRepo = authRepo;
+            _logger = logger;
         }
 
         public async Task<LiftNetRes> Handle(RegisterCommand request, CancellationToken cancellationToken)
@@ -38,6 +42,7 @@ namespace LiftNet.Handler.Auth.Commands
                 LastName = request.LastName,
                 Address = request.Address
             };
+            _logger.LogInformation($"attempt to register, username: {request.Username}");
             var result = await _authRepo.RegisterAsync(registerModel);
             if (result.Succeeded)
             {
