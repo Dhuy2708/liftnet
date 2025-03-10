@@ -8,8 +8,6 @@ using LiftNet.Domain.Interfaces;
 using LiftNet.Ioc;
 using LiftNet.Utility.Utils;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
