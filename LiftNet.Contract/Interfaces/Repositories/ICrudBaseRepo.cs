@@ -1,4 +1,5 @@
 ﻿using LiftNet.Contract.Dtos.Query;
+using LiftNet.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
