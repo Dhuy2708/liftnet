@@ -21,5 +21,6 @@ namespace LiftNet.Persistence.Context
             ContextConfig.Configure(modelBuilder);
         }
 
+        public DbSet<Appointment> Appointments { get; set; }
     }
 }

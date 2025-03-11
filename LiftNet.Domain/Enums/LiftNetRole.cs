@@ -10,7 +10,7 @@ namespace LiftNet.Domain.Enums
     {
         None = 0,
         Seeker = 1,
-        Trainer = 2,
+        Coach = 2,
         Admin = 3,
     }
 }

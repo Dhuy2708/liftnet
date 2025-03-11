@@ -1,4 +1,4 @@
-﻿using LiftNet.Domain.Constants;
+﻿ using LiftNet.Domain.Constants;
 using LiftNet.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +15,7 @@ namespace LiftNet.Persistence.Context
         public static void Configure(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<User>().ToTable("Users");
-            modelBuilder.Entity<IdentityRole>().ToTable("Roles");
+            modelBuilder.Entity<Role>().ToTable("Roles");
             modelBuilder.Entity<IdentityUserRole<string>>(b => { b.ToTable("UserRoles"); });
             modelBuilder.Entity<IdentityUserClaim<string>>(b => { b.ToTable("UserClaims"); });
             modelBuilder.Entity<IdentityUserLogin<string>>(b => { b.ToTable("UserLogins"); });
@@ -25,6 +25,18 @@ namespace LiftNet.Persistence.Context
             modelBuilder.Entity<User>()
                         .Property(u => u.Avatar)
                         .HasDefaultValue(DomainConstants.DEFAULT_USER_AVATAR);
+
+            modelBuilder.Entity<Appointment>()
+                        .HasOne(a => a.Client)
+                        .WithMany()
+                        .HasForeignKey(a => a.ClientId)
+                        .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Appointment>()
+                        .HasOne(a => a.Coach)
+                        .WithMany()
+                        .HasForeignKey(a => a.CoachId)
+                        .OnDelete(DeleteBehavior.NoAction); 
         }
     }
 }

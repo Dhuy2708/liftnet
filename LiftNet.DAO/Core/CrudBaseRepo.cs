@@ -15,7 +15,6 @@ namespace LiftNet.Repositories.Core
     public class CrudBaseRepo<TEntity> : ICrudBaseRepo<TEntity> where TEntity : class
     {
         protected readonly LiftNetDbContext _dbContext;
-        protected DbSet<TEntity> DbSet => _dbContext.Set<TEntity>();
         protected readonly ILiftLogger<CrudBaseRepo<TEntity>> _logger;
         public bool AutoSave
         {
