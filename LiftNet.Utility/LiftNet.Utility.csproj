@@ -5,6 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	<NoWarn>8618</NoWarn>
+	<NoWarn>8601</NoWarn>
+	<NoWarn>8603</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

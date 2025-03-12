@@ -1,59 +1,51 @@
-﻿using LiftNet.Domain.Constants;
+﻿using LiftNet.Contract.Enums;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LiftNet.Contract.Dtos
 {
-    public class UserDto
+    public class AppointmentDto
     {
         public string Id
         {
             get; set;
         }
-        public string Email
+        public UserDto Client
         {
             get; set;
         }
-        public string Username
+        public UserDto Coach
         {
             get; set;
         }
-        public string FirstName
+        public string Name
         {
             get; set;
         }
-
-        public string LastName
+        public string Description
         {
             get; set;
         }
-
-        public string Avatar
+        public AddressDto Address
         {
             get; set;
         }
-
-        public AddressDto? Address
+        public DateTime StartTime
         {
             get; set;
         }
-
-        public DateTime CreatedAt
-        {
-            get; set;
-        } = DateTime.UtcNow;
-
-        public bool IsDeleted
+        public DateTime EndTime
         {
             get; set;
         }
-
-        public bool IsSuspended
+        public AppointmentStatus Status
+        {
+            get; set;
+        }
+        public RepeatingType RepeatingType
         {
             get; set;
         }
