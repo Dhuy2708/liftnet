@@ -58,12 +58,33 @@ namespace LiftNet.Domain.Response
             get; set;
         }
 
-        public PaginatedLiftNetRes(int pageNumber, int pageSize, int totalCount, string? nextPageToken)
+        public PaginatedLiftNetRes()
         {
-            PageNumber = pageNumber;
-            PageSize = pageSize;
-            TotalCount = totalCount;
+        }
+
+        public PaginatedLiftNetRes(int? pageNumber = null, int? pageSize = null, int? totalCount = null, string? nextPageToken = null)
+        {
+            PageNumber = pageNumber ?? 0;
+            PageSize = pageSize ?? 0;
+            TotalCount = totalCount ?? 0;
             NextPageToken = nextPageToken;
         }
+
+        public static PaginatedLiftNetRes<T> SuccessResponse(List<T> datas, int? pageNumber = null, int? pageSize = null, int? totalCount = null, string? nextPageToken = null, string? message = null)
+            => new(pageNumber, pageSize, totalCount, nextPageToken)
+            {
+                Datas = datas,
+                Success = true,
+                Message = message
+            };
+
+        public static new PaginatedLiftNetRes<T> ErrorResponse(string? message = null, List<string>? errors = null, List<ValidationFailure>? validationFailure = null)
+            => new()
+            {
+                Success = false,
+                Message = message,
+                Errors = errors,
+                ValidationFailure = validationFailure
+            };
     }
 }

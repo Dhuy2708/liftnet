@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
     <PackageReference Include="dotenv.net" Version="3.2.1" />
     <PackageReference Include="FluentValidation" Version="11.11.0" />
@@ -45,10 +46,6 @@
     <ProjectReference Include="..\LiftNet.Timer\LiftNet.Timer.csproj" />
     <ProjectReference Include="..\LiftNet.Utility\LiftNet.Utility.csproj" />
     <ProjectReference Include="..\WorkerService\LiftNet.WorkerService.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Contracts\ViewModels\" />
   </ItemGroup>
 
 </Project>

@@ -14,6 +14,9 @@ namespace LiftNet.Api.Extensions
             services.AddSingleton<IBlobService>(provider =>
                                     new BlobService(provider.GetRequiredService<ILogger<BlobService>>(), connectionString));
 
+            #region mapper
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            #endregion
             return services;
         }
     }

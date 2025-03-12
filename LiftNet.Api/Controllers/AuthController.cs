@@ -1,4 +1,4 @@
-﻿using LiftNet.Api.Contracts.Requests;
+﻿using LiftNet.Api.Requests;
 using LiftNet.Api.ToDto;
 using LiftNet.Contract.Interfaces.Repositories;
 using LiftNet.Domain.Entities;
