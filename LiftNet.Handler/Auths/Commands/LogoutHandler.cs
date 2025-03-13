@@ -1,7 +1,7 @@
 ﻿using LiftNet.Contract.Interfaces.Repositories;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
-using LiftNet.Handler.Auth.Commands.Requests;
+using LiftNet.Handler.Auths.Commands.Requests;
 using LiftNet.Utility.Utils;
 using MediatR;
 using System;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Handler.Auth.Commands
+namespace LiftNet.Handler.Auths.Commands
 {
     public class LogoutHandler : IRequestHandler<LogoutCommand, LiftNetRes>
     {

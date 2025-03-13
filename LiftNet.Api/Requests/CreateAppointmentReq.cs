@@ -1,19 +1,11 @@
-﻿using LiftNet.Contract.Dtos;
-using LiftNet.Contract.Enums;
+﻿using LiftNet.Contract.Enums;
+using LiftNet.Contract.Views;
 
-namespace LiftNet.Contract.Views
+namespace LiftNet.Api.Requests
 {
-    public class AppointmentView
+    public class CreateAppointmentReq
     {
-        public string Id
-        {
-            get; set;
-        }
-        public UserView Client
-        {
-            get; set;
-        }
-        public UserView Coach
+        public string TargetUserId
         {
             get; set;
         }
@@ -34,10 +26,6 @@ namespace LiftNet.Contract.Views
             get; set;
         }
         public DateTime EndTime
-        {
-            get; set;
-        }
-        public AppointmentStatus Status
         {
             get; set;
         }

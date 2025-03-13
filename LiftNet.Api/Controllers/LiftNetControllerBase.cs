@@ -1,7 +1,10 @@
-﻿using LiftNet.Domain.Interfaces;
+﻿using LiftNet.Domain.Constants;
+using LiftNet.Domain.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using System.Security.Claims;
 
 namespace LiftNet.Api.Controllers
 {
@@ -9,12 +12,20 @@ namespace LiftNet.Api.Controllers
     [ApiController]
     public class LiftNetControllerBase : ControllerBase
     {
+        /// <summary>
+        /// credential
+        /// </summary>
+        protected string UserId => User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
+
         private readonly IServiceProvider _serviceProvider;
+        protected readonly IMediator _mediator;
+
         private ILiftLogger<LiftNetControllerBase> Logger => _serviceProvider.GetService<ILiftLogger<LiftNetControllerBase>>()!;
 
-        public LiftNetControllerBase(IServiceProvider serviceProvider)
+        public LiftNetControllerBase(IMediator mediator, IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
+            _mediator = mediator;
         }
 
         protected void LogInfo(string message)

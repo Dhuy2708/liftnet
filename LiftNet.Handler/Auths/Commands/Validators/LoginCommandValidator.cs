@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using LiftNet.Domain.Entities;
-using LiftNet.Handler.Auth.Commands.Requests;
+using LiftNet.Handler.Auths.Commands.Requests;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Handler.Auth.Commands.Validators
+namespace LiftNet.Handler.Auths.Commands.Validators
 {
     public class LoginCommandValidator : AbstractValidator<LoginCommand>
     {

@@ -3,19 +3,14 @@ using LiftNet.Contract.Interfaces.Repositories;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
-using LiftNet.Handler.Auth.Commands.Requests;
-using LiftNet.Handler.Auth.Commands.Validators;
+using LiftNet.Handler.Auths.Commands.Requests;
+using LiftNet.Handler.Auths.Commands.Validators;
 using LiftNet.Ioc;
 using LiftNet.SharedKenel.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LiftNet.Handler.Auth.Commands
+namespace LiftNet.Handler.Auths.Commands
 {
     public class LoginHandler : IRequestHandler<LoginCommand, LiftNetRes<string>>, IDependency
     {
@@ -41,7 +36,7 @@ namespace LiftNet.Handler.Auth.Commands
 
             _logger.LogInformation($"attempt to login, username: {request.Username}");
             var token = await _authRepo.LogInAsync(loginModel);
-            return LiftNetRes<string>.SuccessResponse(token);  
+            return LiftNetRes<string>.SuccessResponse(token);
         }
-    } 
+    }
 }

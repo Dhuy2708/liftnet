@@ -1,6 +1,6 @@
 ﻿using LiftNet.Contract.Dtos;
 using LiftNet.Contract.Enums;
-using LiftNet.Contract.Views;
+using LiftNet.Contract.Views.Appointments;
 using LiftNet.Domain.Entities;
 using Newtonsoft.Json;
 using System;
@@ -13,6 +13,22 @@ namespace LiftNet.Utility.Mappers
 {
     public static class AppointmentMapper
     {
+        public static AppointmentDetailView ToDetailView(this Appointment entity)
+        {
+            return new AppointmentDetailView
+            {
+                Id = entity.Id,
+                Client = entity.Client?.ToDto().ToView(),
+                Coach = entity.Coach?.ToDto().ToView(),
+                Name = entity.Name,
+                Description = entity.Description,
+                Address = JsonConvert.DeserializeObject<AddressDto>(entity.Address).ToView(),
+                StartTime = entity.StartTime,
+                EndTime = entity.EndTime,
+                Status = (AppointmentStatus)entity.Status
+            };
+        }
+
         public static AppointmentDto ToDto(this Appointment entity)
         {
             return new AppointmentDto
@@ -75,6 +91,11 @@ namespace LiftNet.Utility.Mappers
                 EndTime = view.EndTime,
                 Status = (AppointmentStatus)view.Status
             };
+        }
+
+        public static AppointmentView ToView(this Appointment entity)
+        {
+            return entity.ToDto().ToView();
         }
     }
 }

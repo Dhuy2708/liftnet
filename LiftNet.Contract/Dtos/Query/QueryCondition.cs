@@ -78,7 +78,7 @@ namespace LiftNet.Contract.Dtos.Query
         {
             public string Property { get; set; }
             public QueryOperator Operator { get; set; }
-            public List<string> Values { get; set; }
+            public List<string> Values { get; set; } = [];
             public FilterType Type { get; set; }
             public QueryLogic Logic { get; set; } // And, Or, None
 

@@ -1,5 +1,5 @@
 ﻿using LiftNet.Api.Requests;
-using LiftNet.Handler.Auth.Commands.Requests;
+using LiftNet.Handler.Auths.Commands.Requests;
 
 namespace LiftNet.Api.ToDto
 {
