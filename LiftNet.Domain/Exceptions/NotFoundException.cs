@@ -11,5 +11,14 @@ namespace LiftNet.Domain.Exceptions
         public NotFoundException(List<string> errors, string message) : base(errors, message)
         {
         }
+        public NotFoundException(List<string> errors) : base(errors, string.Empty)
+        {
+        }
+        public NotFoundException(string message) : base([], message)
+        {
+        }
+        public NotFoundException() : base([], string.Empty)
+        {
+        }
     }
 }

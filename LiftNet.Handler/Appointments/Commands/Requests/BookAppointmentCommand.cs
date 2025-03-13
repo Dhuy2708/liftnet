@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Handler.Appointment.Commands.Requests
+namespace LiftNet.Handler.Appointments.Commands.Requests
 {
     public class BookAppointmentCommand : IRequest<LiftNetRes>
     {

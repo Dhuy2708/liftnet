@@ -1,0 +1,73 @@
+﻿
+using LiftNet.Api.Requests;
+using LiftNet.Api.ToDto;
+using LiftNet.Contract.Dtos.Query;
+using LiftNet.Contract.Views.Appointments;
+using LiftNet.Domain.Response;
+using LiftNet.Handler.Appointments.Commands.Requests;
+using LiftNet.Handler.Appointments.Queries.Requests;
+using LiftNet.Utility.Mappers;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
+
+namespace LiftNet.Api.Controllers
+{
+    public class AppointmentController : LiftNetControllerBase
+    {
+        public AppointmentController(IMediator mediator, IServiceProvider serviceProvider) : base(mediator, serviceProvider)
+        {
+        }
+
+        [HttpPost("create")]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> CreateAppointment(CreateAppointmentReq req)
+        {
+            var request = new BookAppointmentCommand()
+            {
+                Appointment = req.ToDto(),
+            };
+            var result = await _mediator.Send(request);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpGet("list")]
+        [ProducesResponseType(typeof(PaginatedLiftNetRes<AppointmentView>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ListAppointments([FromQuery] QueryCondition cond)
+        {
+            var req = new ListAppointmentsRequest()
+            {
+                UserId = UserId,
+                Conditions = cond,
+            };
+            var result = await _mediator.Send(req);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(PaginatedLiftNetRes<AppointmentDetailView>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetAppointment([FromRoute] string id)
+        {
+            var req = new GetAppointmentRequest()
+            {
+                Id = id,
+                UserId = UserId,
+            };
+            var result = await _mediator.Send(req);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+    }
+}

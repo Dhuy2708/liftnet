@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using LiftNet.Contract.Interfaces.Repositories;
 using LiftNet.Domain.Entities;
-using LiftNet.Handler.Auth.Commands.Requests;
+using LiftNet.Handler.Auths.Commands.Requests;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.Win32;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Handler.Auth.Commands.Validators
+namespace LiftNet.Handler.Auths.Commands.Validators
 {
     public class RegisterCommandValidator : AbstractValidator<RegisterCommand>
     {

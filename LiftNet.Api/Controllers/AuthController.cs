@@ -1,13 +1,8 @@
 ﻿using LiftNet.Api.Requests;
 using LiftNet.Api.ToDto;
-using LiftNet.Contract.Interfaces.Repositories;
-using LiftNet.Domain.Entities;
-using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
-using LiftNet.Handler.Auth.Commands.Requests;
+using LiftNet.Handler.Auths.Commands.Requests;
 using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -17,11 +12,9 @@ namespace LiftNet.Api.Controllers
     [ApiController]
     public class AuthController : LiftNetControllerBase
     {
-        private readonly IMediator _mediator;
-        
-        public AuthController(IMediator mediator, IServiceProvider serviceProvider) : base(serviceProvider)
+
+        public AuthController(IMediator mediator, IServiceProvider serviceProvider) : base(mediator, serviceProvider)
         {
-            _mediator = mediator;
         }
 
         [HttpPost("register")]

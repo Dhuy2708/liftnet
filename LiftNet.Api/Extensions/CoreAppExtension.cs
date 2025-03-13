@@ -1,12 +1,7 @@
-﻿using LiftNet.Domain.Response;
-using LiftNet.Handler.Auth.Commands.Requests;
-using LiftNet.Handler.Auth.Commands;
-using MediatR;
-using LiftNet.Domain.Interfaces;
-using LiftNet.Logger.Core;
-using Microsoft.Extensions.Logging;
-using System.Reflection;
+﻿using LiftNet.Domain.Interfaces;
 using LiftNet.Ioc;
+using LiftNet.Logger.Core;
+using System.Reflection;
 
 namespace LiftNet.Api.Extensions
 {

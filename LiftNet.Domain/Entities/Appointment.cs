@@ -13,7 +13,6 @@ namespace LiftNet.Domain.Entities
     public sealed class Appointment : IEntity
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id
         {
             get; set;

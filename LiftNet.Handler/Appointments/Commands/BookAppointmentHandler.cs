@@ -1,6 +1,6 @@
 ﻿using LiftNet.Contract.Interfaces.Repositories;
 using LiftNet.Domain.Response;
-using LiftNet.Handler.Appointment.Commands.Requests;
+using LiftNet.Handler.Appointments.Commands.Requests;
 using LiftNet.Utility.Mappers;
 using MediatR;
 using System;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Handler.Appointment.Commands
+namespace LiftNet.Handler.Appointments.Commands
 {
     public class BookAppointmentHandler : IRequestHandler<BookAppointmentCommand, LiftNetRes>
     {

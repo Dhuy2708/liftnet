@@ -36,7 +36,7 @@ namespace LiftNet.Persistence.Context
                         .HasOne(a => a.Coach)
                         .WithMany()
                         .HasForeignKey(a => a.CoachId)
-                        .OnDelete(DeleteBehavior.NoAction); 
+                        .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

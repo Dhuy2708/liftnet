@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Handler.Auth.Commands.Requests
+namespace LiftNet.Handler.Auths.Commands.Requests
 {
     public class RegisterCommand : IRequest<LiftNetRes>
     {
