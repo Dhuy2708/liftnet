@@ -1,6 +1,6 @@
 ﻿using dotenv.net;
 using LiftNet.AzureBlob.Services;
-using LiftNet.Contract.Interfaces.Service;
+using LiftNet.Contract.Interfaces.IServices;
 
 namespace LiftNet.Api.Extensions
 {

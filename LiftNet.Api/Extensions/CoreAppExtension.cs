@@ -3,22 +3,65 @@ using LiftNet.Domain.Enums;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Ioc;
 using LiftNet.Logger.Core;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
+using System.Text;
 
 namespace LiftNet.Api.Extensions
 {
     public static class CoreAppExtension
     {
-        public static IServiceCollection RegisterCqrs(this IServiceCollection services)
+        public static IServiceCollection RegisterAuth(this IServiceCollection services)
         {
-            #region policy
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        if (!string.IsNullOrEmpty(accessToken))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+
+                x.SaveToken = true;
+#if DEBUG
+                x.RequireHttpsMetadata = false;
+#endif
+                x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
+                    ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY")!)),
+
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    RoleClaimType = LiftNetClaimType.Roles,
+                };
+            });
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(LiftNetPolicies.SeekerOrCoach, policy =>
                     policy.RequireRole(LiftNetRoles.Seeker, LiftNetRoles.Coach));
             });
-            #endregion
 
+            return services;
+        }
+        public static IServiceCollection RegisterCqrs(this IServiceCollection services)
+        {
             #region ioc
             services.AddDependencies(typeof(Handler.HandlerAssemblyRef).Assembly);
             services.AddDependencies(typeof(Repositories.RepoAssemblyRef).Assembly);

@@ -13,6 +13,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Services.RegisterAuth();
         builder.Services.RegisterDbConfig();
         builder.Services.RegisterAppContext();
         builder.Services.RegisterCqrs();
@@ -50,6 +51,7 @@ public class Program
         #endif
 
         app.UseHttpsRedirection();
+        app.UseAuthentication();
         app.UseAuthorization();
         app.UseMiddleware<ExceptionMiddleware>();
 

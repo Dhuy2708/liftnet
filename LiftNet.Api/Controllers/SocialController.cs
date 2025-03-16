@@ -1,9 +1,11 @@
 ﻿using LiftNet.Contract.Dtos.Query;
 using LiftNet.Contract.Views.Users;
 using LiftNet.Domain.Constants;
+using LiftNet.Domain.Exceptions;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Searches.Queries.Requests;
 using LiftNet.Handler.Socials.Commands.Requets;
+using LiftNet.Utility.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,6 +41,11 @@ namespace LiftNet.Api.Controllers
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> FollowUser(string targetId)
         {
+            if (UserId.Eq(targetId))
+            {
+                throw new BadRequestException(["userId and targetId is equal"], "You cant follow yourself");
+            }
+
             var request = new FollowUserCommand()
             {
                 UserId = UserId,
