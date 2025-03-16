@@ -75,22 +75,22 @@ namespace LiftNet.Logger.Core
             _memoryCache.Set(logKey, logModel);
         }
 
-        public void LogInformation(string message)
+        public void Info(string message)
         {
             Log(LogType.INFO, message);
         }
 
-        public void LogWarning(string message)
+        public void Warn(string message)
         {
             Log(LogType.WARNING, message);
         }
 
-        public void LogError(string message)
+        public void Error(string message)
         {
             Log(LogType.ERROR, message);
         }
 
-        public void LogError(Exception e, string message)
+        public void Error(Exception e, string message)
         {
             var newMsg = $"{message}, ex: {e.Message}";
         }

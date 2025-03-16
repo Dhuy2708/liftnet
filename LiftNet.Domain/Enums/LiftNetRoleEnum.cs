@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Domain.Enums
 {
-    public enum LiftNetRole
+    public enum LiftNetRoleEnum
     {
         None = 0,
         Seeker = 1,

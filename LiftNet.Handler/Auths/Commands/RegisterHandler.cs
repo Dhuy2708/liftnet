@@ -37,12 +37,14 @@ namespace LiftNet.Handler.Auths.Commands
                 LastName = request.LastName,
                 Address = request.Address
             };
-            _logger.LogInformation($"attempt to register, username: {request.Username}");
+            _logger.Info($"attempt to register, username: {request.Username}");
             var result = await _authRepo.RegisterAsync(registerModel);
             if (result.Succeeded)
             {
+                _logger.Info("register user successfully");
                 return LiftNetRes.SuccessResponse(message: "User registered successfully.");
             }
+            _logger.Error("failed to register user");
             return LiftNetRes.ErrorResponse(message: "Failed to register.", errors: result.Errors.Select(x => x.Description).ToList());
         }
     }

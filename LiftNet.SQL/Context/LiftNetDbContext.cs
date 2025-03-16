@@ -1,4 +1,5 @@
 ﻿using LiftNet.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Persistence.Context
 {
-    public class LiftNetDbContext : IdentityDbContext<User, Role, string>
+    public class LiftNetDbContext : IdentityDbContext<User, Role, string, IdentityUserClaim<string>, UserRole, IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
     {
         public LiftNetDbContext(DbContextOptions<LiftNetDbContext> options) : base(options)
         {

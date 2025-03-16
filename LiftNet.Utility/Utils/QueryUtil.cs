@@ -10,6 +10,13 @@ namespace LiftNet.Utility.Utils;
 
 public static class QueryUtil
 {
+    public static IQueryable<T> BuildPaginated<T>(this IQueryable<T> query, QueryCondition conditions)
+    {
+        var pageSize = conditions.PageSize;
+        var pageNumber = conditions.PageNumber;
+        return query.AssignPageNumberAndSizeCond(pageNumber, pageSize);
+    }
+
     public static RawQueryParam BuildSqlQuery(string tableName, QueryCondition conditions, List<string>? columnNames = null)
     {
         try

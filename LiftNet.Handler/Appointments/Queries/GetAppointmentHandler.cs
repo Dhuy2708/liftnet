@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Appointments.Queries
 {
-    public class GetAppointmentHandler : IRequestHandler<GetAppointmentRequest, LiftNetRes<AppointmentDetailView>>, IDependency
+    public class GetAppointmentHandler : IRequestHandler<GetAppointmentRequest, LiftNetRes<AppointmentDetailView>>
     {
         private readonly IAppointmentRepo _appointmentRepo;
 

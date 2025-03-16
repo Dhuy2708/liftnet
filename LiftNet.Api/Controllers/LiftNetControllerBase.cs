@@ -30,17 +30,17 @@ namespace LiftNet.Api.Controllers
 
         protected void LogInfo(string message)
         {
-            Logger.LogInformation(message);
+            Logger.Info(message);
         }
 
         protected void LogWarning(string message)
         {
-            Logger.LogWarning(message);
+            Logger.Warn(message);
         }
 
         protected void LogError(string message, Exception exception)
         {
-            Logger.LogError(exception, message);
+            Logger.Error(exception, message);
         }
     }
 }

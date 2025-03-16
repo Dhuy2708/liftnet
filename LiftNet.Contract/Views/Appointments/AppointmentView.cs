@@ -1,5 +1,6 @@
 ﻿using LiftNet.Contract.Dtos;
 using LiftNet.Contract.Enums;
+using LiftNet.Contract.Views.Users;
 
 namespace LiftNet.Contract.Views.Appointments
 {

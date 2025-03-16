@@ -25,7 +25,7 @@ namespace LiftNet.Handler.Auths.Commands
 
         public async Task<LiftNetRes> Handle(LogoutCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation($"attempt to logout user, {ContextUtil.Username}");
+            _logger.Info($"attempt to logout user, {ContextUtil.Username}");
             await _authRepo.LogOutAsync();
             return LiftNetRes.SuccessResponse(message: "User logged out successfully.");
         }

@@ -80,7 +80,7 @@ namespace LiftNet.Repositories.Core
         #region get
         public async Task<IEnumerable<TEntity>> GetAll(string[]? includeProps = null)
         {
-            _logger.LogInformation($"[BaseRepo<{typeof(TEntity).Name}>.GetAll]: Assembling datas...");
+            _logger.Info($"[BaseRepo<{typeof(TEntity).Name}>.GetAll]: Assembling datas...");
             IQueryable<TEntity> query = _dbContext.Set<TEntity>().AsNoTracking();
 
             if (includeProps != null)
@@ -95,7 +95,7 @@ namespace LiftNet.Repositories.Core
 
         public async Task<TEntity?> GetById<Tid>(Tid id, string[]? includeProps = null, bool includeTrashed = false)
         {
-            _logger.LogInformation($"[BaseRepo<{typeof(TEntity).Name}>.GetById]: Finding record with id: {id}");
+            _logger.Info($"[BaseRepo<{typeof(TEntity).Name}>.GetById]: Finding record with id: {id}");
 
             IQueryable<TEntity> query = _dbContext.Set<TEntity>();
 
@@ -119,14 +119,14 @@ namespace LiftNet.Repositories.Core
         }
         public async Task<IEnumerable<TEntity>> GetByIds<Tid>(IEnumerable<Tid> ids)
         {
-            _logger.LogInformation($"[BaseRepo<{typeof(TEntity).Name}>.GetByIds]: Assembling data...");
+            _logger.Info($"[BaseRepo<{typeof(TEntity).Name}>.GetByIds]: Assembling data...");
 
             var keyProperty = typeof(TEntity).GetProperties()
                 .FirstOrDefault(p => p.Name.Equals("Id", StringComparison.OrdinalIgnoreCase));
 
             if (keyProperty == null)
             {
-                _logger.LogError($"[BaseRepo<{typeof(TEntity).Name}>.GetByIds]: Key property not found.");
+                _logger.Error($"[BaseRepo<{typeof(TEntity).Name}>.GetByIds]: Key property not found.");
                 throw new InvalidOperationException($"Key property 'Id' not found for entity {typeof(TEntity).Name}");
             }
 
@@ -147,7 +147,7 @@ namespace LiftNet.Repositories.Core
             var equality = Expression.Equal(property, constant);
             var lambda = Expression.Lambda<Func<TEntity, bool>>(equality, parameter);
 
-            _logger.LogInformation($"[BaseRepo<{typeof(TEntity).Name}>.IsExists]: Checking data existed with key: {key}, value: {value}");
+            _logger.Info($"[BaseRepo<{typeof(TEntity).Name}>.IsExists]: Checking data existed with key: {key}, value: {value}");
             return await _dbContext.Set<TEntity>().AnyAsync(lambda);
         }
 
@@ -197,7 +197,7 @@ namespace LiftNet.Repositories.Core
 
             var lambda = Expression.Lambda<Func<TEntity, bool>>(combinedExpression!, parameter);
 
-            _logger.LogInformation($"[BaseRepo<{typeof(TEntity).Name}>.IsExisted]: Checking data existence with conditions: {string.Join(", ", conditions)}");
+            _logger.Info($"[BaseRepo<{typeof(TEntity).Name}>.IsExisted]: Checking data existence with conditions: {string.Join(", ", conditions)}");
             return await _dbContext.Set<TEntity>().AnyAsync(lambda);
         }
 
@@ -215,7 +215,7 @@ namespace LiftNet.Repositories.Core
             var combinedExpression = Expression.AndAlso(equality, idEquality);
             var lambda = Expression.Lambda<Func<TEntity, bool>>(combinedExpression, parameter);
 
-            _logger.LogInformation($"[BaseRepo<{typeof(TEntity).Name}>.IsExistedForUpdating]: Checking data existed with key: {key}, value: {value} and not with id: {id}");
+            _logger.Info($"[BaseRepo<{typeof(TEntity).Name}>.IsExistedForUpdating]: Checking data existed with key: {key}, value: {value} and not with id: {id}");
             return await _dbContext.Set<TEntity>().AnyAsync(lambda);
         }
         #endregion
@@ -223,14 +223,14 @@ namespace LiftNet.Repositories.Core
         #region create
         public async Task<int> Create(TEntity model)
         {
-            _logger.LogInformation($"[BaseRepo<{typeof(TEntity).Name}>.Create]: Attempt creating data...");
+            _logger.Info($"[BaseRepo<{typeof(TEntity).Name}>.Create]: Attempt creating data...");
             await _dbContext.Set<TEntity>().AddAsync(model);
             return await SaveChangesAsync();
         }
 
         public async Task<int> CreateRange(IEnumerable<TEntity> model)
         {
-            _logger.LogInformation($"[BaseRepo<{typeof(TEntity).Name}>.CreateRange]: Attempt creating list datas...");
+            _logger.Info($"[BaseRepo<{typeof(TEntity).Name}>.CreateRange]: Attempt creating list datas...");
             await _dbContext.Set<TEntity>().AddRangeAsync(model);
             return await SaveChangesAsync();
         }
@@ -239,13 +239,13 @@ namespace LiftNet.Repositories.Core
         #region update
         public async Task<int> Update(TEntity model)
         {
-            _logger.LogInformation($"[BaseRepo<{typeof(TEntity).Name}>.Update]: Attempt updating data...");
+            _logger.Info($"[BaseRepo<{typeof(TEntity).Name}>.Update]: Attempt updating data...");
             _dbContext.Set<TEntity>().Update(model);
             return await SaveChangesAsync();
         }
         public async Task<int> UpdateRange(IEnumerable<TEntity> model)
         {
-            _logger.LogInformation($"[BaseRepo<{typeof(TEntity).Name}>.UpdateRange]: Attempt updating list datas...");
+            _logger.Info($"[BaseRepo<{typeof(TEntity).Name}>.UpdateRange]: Attempt updating list datas...");
             _dbContext.Set<TEntity>().UpdateRange(model);
             return await SaveChangesAsync();
         }
@@ -254,7 +254,7 @@ namespace LiftNet.Repositories.Core
         #region delete
         public async Task<int> DeleteByRawSql(object id)
         {
-            _logger.LogInformation($"[BaseRepo<{typeof(TEntity).Name}>.Delete]: Attempt to soft-delete data...");
+            _logger.Info($"[BaseRepo<{typeof(TEntity).Name}>.Delete]: Attempt to soft-delete data...");
             string? tableName = GetTableName();
             if (string.IsNullOrEmpty(tableName))
             {
@@ -269,7 +269,7 @@ namespace LiftNet.Repositories.Core
 
         public async Task<int> DeleteRangeRawSql(IEnumerable<object> ids)
         {
-            _logger.LogInformation($"[BaseRepo<{typeof(TEntity).Name}>.DeleteRange]: Attempt to soft-delete a list of data...");
+            _logger.Info($"[BaseRepo<{typeof(TEntity).Name}>.DeleteRange]: Attempt to soft-delete a list of data...");
 
             if (!ids.Any())
             {
@@ -328,7 +328,7 @@ namespace LiftNet.Repositories.Core
 
         public async Task<int> HardDelete(TEntity model)
         {
-            _logger.LogInformation($"[BaseRepo<{typeof(TEntity).Name}>.HardDelete]: Attempt to hard-delete data...");
+            _logger.Info($"[BaseRepo<{typeof(TEntity).Name}>.HardDelete]: Attempt to hard-delete data...");
 
             _dbContext.Set<TEntity>().Remove(model);
             return await SaveChangesAsync();
@@ -336,7 +336,7 @@ namespace LiftNet.Repositories.Core
 
         public async Task<int> HardDeleteRange(IEnumerable<TEntity> models)
         {
-            _logger.LogInformation($"[BaseRepo<{typeof(TEntity).Name}>.HardDeleteRange]: Attempt to hard-delete a list of data...");
+            _logger.Info($"[BaseRepo<{typeof(TEntity).Name}>.HardDeleteRange]: Attempt to hard-delete a list of data...");
 
             _dbContext.Set<TEntity>().RemoveRange(models);
             return await SaveChangesAsync();
@@ -356,7 +356,7 @@ namespace LiftNet.Repositories.Core
         {
             if (AutoSave)
             {
-                _logger.LogInformation($"[BaseRepo<{typeof(TEntity).Name}>.SaveChangeAsync]: Saving changes...");
+                _logger.Info($"[BaseRepo<{typeof(TEntity).Name}>.SaveChangeAsync]: Saving changes...");
                 return await _dbContext.SaveChangesAsync();
             }
             return 0;

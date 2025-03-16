@@ -1,5 +1,6 @@
 ﻿using LiftNet.Contract.Dtos;
-using LiftNet.Contract.Views;
+using LiftNet.Contract.Enums;
+using LiftNet.Contract.Views.Users;
 using LiftNet.Domain.Entities;
 using Newtonsoft.Json;
 using System;
@@ -77,6 +78,18 @@ namespace LiftNet.Utility.Mappers
                 CreatedAt = userView.CreatedAt,
                 IsDeleted = userView.IsDeleted,
                 IsSuspended = userView.IsSuspended
+            };
+        }
+
+        public static UserOverview ToOverview(this User user)
+        {
+            return new UserOverview
+            {
+                Email = user.Email!,
+                Username = user.UserName!,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Avatar = user.Avatar
             };
         }
     }

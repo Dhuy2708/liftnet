@@ -1,4 +1,5 @@
 ﻿using LiftNet.Contract.Enums;
+using LiftNet.Contract.Views.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -7,7 +7,7 @@ namespace LiftNet.Api.ToDto
 {
     public static class AppointmentReqToDto
     {
-        public static AppointmentDto ToDto(this CreateAppointmentReq req)
+        public static AppointmentDto ToDto(this BookAppointmentReq req)
         {
             return new AppointmentDto
             {
