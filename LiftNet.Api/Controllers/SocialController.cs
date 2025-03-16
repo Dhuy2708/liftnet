@@ -5,6 +5,7 @@ using LiftNet.Domain.Exceptions;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Searches.Queries.Requests;
 using LiftNet.Handler.Socials.Commands.Requets;
+using LiftNet.Handler.Socials.Queries.Requests;
 using LiftNet.Utility.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -24,6 +25,23 @@ namespace LiftNet.Api.Controllers
         public async Task<IActionResult> SearchUser(QueryCondition cond)
         {
             var req = new SearchUserQuery()
+            {
+                UserId = UserId,
+                Conditions = cond,
+            };
+            var result = await _mediator.Send(req);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpPost("search/followed")]
+        [ProducesResponseType(typeof(PaginatedLiftNetRes<UserOverview>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> SearchFollowUser(QueryCondition cond)
+        {
+            var req = new SearchFollowedUserRequest()
             {
                 UserId = UserId,
                 Conditions = cond,
