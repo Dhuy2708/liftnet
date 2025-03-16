@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Appointments.Queries
 {
-    public class ListAppointmentHandler : IRequestHandler<ListAppointmentsRequest, PaginatedLiftNetRes<AppointmentView>>, IDependency
+    public class ListAppointmentHandler : IRequestHandler<ListAppointmentsRequest, PaginatedLiftNetRes<AppointmentView>>
     {
         private readonly IAppointmentRepo _appointmentRepo;
 
@@ -83,6 +83,16 @@ namespace LiftNet.Handler.Appointments.Queries
                     }
                     break;
                 case SortType.Desc:
+                    if (sortCond.Name.Eq("starttime"))
+                    {
+                        return queryable.OrderByDescending(x => x.StartTime);
+                    }
+                    if (sortCond.Name.Eq("endtime"))
+                    {
+                        return queryable.OrderByDescending(x => x.EndTime);
+                    }
+                    break;
+                default:
                     if (sortCond.Name.Eq("starttime"))
                     {
                         return queryable.OrderByDescending(x => x.StartTime);

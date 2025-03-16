@@ -1,4 +1,6 @@
-﻿using LiftNet.Domain.Interfaces;
+﻿using LiftNet.Domain.Constants;
+using LiftNet.Domain.Enums;
+using LiftNet.Domain.Interfaces;
 using LiftNet.Ioc;
 using LiftNet.Logger.Core;
 using System.Reflection;
@@ -9,6 +11,14 @@ namespace LiftNet.Api.Extensions
     {
         public static IServiceCollection RegisterCqrs(this IServiceCollection services)
         {
+            #region policy
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(LiftNetPolicies.SeekerOrCoach, policy =>
+                    policy.RequireRole(LiftNetRoles.Seeker, LiftNetRoles.Coach));
+            });
+            #endregion
+
             #region ioc
             services.AddDependencies(typeof(Handler.HandlerAssemblyRef).Assembly);
             services.AddDependencies(typeof(Repositories.RepoAssemblyRef).Assembly);

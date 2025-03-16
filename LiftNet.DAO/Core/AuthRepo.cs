@@ -50,11 +50,11 @@ namespace LiftNet.Repositories.Core
 
             if (result.Succeeded)
             {
-                if (!await _roleManager.RoleExistsAsync(LiftNetRole.Seeker.ToString()))
+                if (!await _roleManager.RoleExistsAsync(LiftNetRoleEnum.Seeker.ToString()))
                 {
-                    await _roleManager.CreateAsync(new Role(LiftNetRole.Seeker.ToString()));
+                    await _roleManager.CreateAsync(new Role(LiftNetRoleEnum.Seeker.ToString()));
                 }
-                await _userManager.AddToRoleAsync(user, LiftNetRole.Seeker.ToString());
+                await _userManager.AddToRoleAsync(user, LiftNetRoleEnum.Seeker.ToString());
             }
             return result;
         }
@@ -71,7 +71,7 @@ namespace LiftNet.Repositories.Core
             var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
             if (!result.Succeeded)
             {
-                _logger.LogError(result.ToString());
+                _logger.Error(result.ToString());
                 return string.Empty;
             }
 

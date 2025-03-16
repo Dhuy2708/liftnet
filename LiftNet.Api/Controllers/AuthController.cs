@@ -3,6 +3,7 @@ using LiftNet.Api.ToDto;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Auths.Commands.Requests;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -42,6 +43,7 @@ namespace LiftNet.Api.Controllers
         }
 
         [HttpPost("logout")]
+        [Authorize]
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Logout()
         {

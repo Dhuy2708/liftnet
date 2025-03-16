@@ -3,7 +3,7 @@ using LiftNet.Contract.Views;
 
 namespace LiftNet.Api.Requests
 {
-    public class CreateAppointmentReq
+    public class BookAppointmentReq
     {
         public string TargetUserId
         {

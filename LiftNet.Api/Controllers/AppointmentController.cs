@@ -3,11 +3,13 @@ using LiftNet.Api.Requests;
 using LiftNet.Api.ToDto;
 using LiftNet.Contract.Dtos.Query;
 using LiftNet.Contract.Views.Appointments;
+using LiftNet.Domain.Constants;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Appointments.Commands.Requests;
 using LiftNet.Handler.Appointments.Queries.Requests;
 using LiftNet.Utility.Mappers;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -19,9 +21,10 @@ namespace LiftNet.Api.Controllers
         {
         }
 
-        [HttpPost("create")]
+        [HttpPost("book")]
+        [Authorize]
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> CreateAppointment(CreateAppointmentReq req)
+        public async Task<IActionResult> BookAppointment(BookAppointmentReq req)
         {
             var request = new BookAppointmentCommand()
             {
@@ -36,6 +39,7 @@ namespace LiftNet.Api.Controllers
         }
 
         [HttpGet("list")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
         [ProducesResponseType(typeof(PaginatedLiftNetRes<AppointmentView>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> ListAppointments([FromQuery] QueryCondition cond)
         {
@@ -54,6 +58,7 @@ namespace LiftNet.Api.Controllers
 
 
         [HttpGet("{id}")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
         [ProducesResponseType(typeof(PaginatedLiftNetRes<AppointmentDetailView>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAppointment([FromRoute] string id)
         {

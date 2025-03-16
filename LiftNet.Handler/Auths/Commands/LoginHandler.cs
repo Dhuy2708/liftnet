@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace LiftNet.Handler.Auths.Commands
 {
-    public class LoginHandler : IRequestHandler<LoginCommand, LiftNetRes<string>>, IDependency
+    public class LoginHandler : IRequestHandler<LoginCommand, LiftNetRes<string>>
     {
         private readonly ILiftLogger<LoginHandler> _logger;
         private readonly UserManager<User> _userManager;
@@ -34,7 +34,7 @@ namespace LiftNet.Handler.Auths.Commands
                 Password = request.Password
             };
 
-            _logger.LogInformation($"attempt to login, username: {request.Username}");
+            _logger.Info($"attempt to login, username: {request.Username}");
             var token = await _authRepo.LogInAsync(loginModel);
             return LiftNetRes<string>.SuccessResponse(token);
         }

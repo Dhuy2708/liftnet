@@ -30,7 +30,7 @@ namespace LiftNet.Api.Middlewares
         }
         private Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
-            _logger.LogError(exception.Message);
+            _logger.Error(exception.Message);
 
             context.Response.ContentType = "application/json";
             HttpStatusCode statusCode = HttpStatusCode.InternalServerError;

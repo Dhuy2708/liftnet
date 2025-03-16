@@ -74,7 +74,7 @@ namespace WorkerService.Service
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "LogError while storing logModel to Azure Blob Storage");
+                    _logger.LogError(ex, "Error while storing logModel to Azure Blob Storage");
                 }
                 await Task.Delay(TimeSpan.FromSeconds(5), stoppingToken);
             }

@@ -16,11 +16,23 @@ namespace LiftNet.Persistence.Context
         {
             modelBuilder.Entity<User>().ToTable("Users");
             modelBuilder.Entity<Role>().ToTable("Roles");
-            modelBuilder.Entity<IdentityUserRole<string>>(b => { b.ToTable("UserRoles"); });
+            modelBuilder.Entity<UserRole>().ToTable("UserRoles");
             modelBuilder.Entity<IdentityUserClaim<string>>(b => { b.ToTable("UserClaims"); });
             modelBuilder.Entity<IdentityUserLogin<string>>(b => { b.ToTable("UserLogins"); });
             modelBuilder.Entity<IdentityUserToken<string>>(b => { b.ToTable("UserTokens"); });
             modelBuilder.Entity<IdentityRoleClaim<string>>(b => { b.ToTable("RoleClaims"); });
+
+            modelBuilder.Entity<UserRole>()
+                        .HasOne<User>()
+                        .WithMany(u => u.UserRoles)
+                        .HasForeignKey(ur => ur.UserId)
+                        .IsRequired();
+
+            modelBuilder.Entity<UserRole>()
+                        .HasOne<Role>()
+                        .WithMany(r => r.UserRoles)
+                        .HasForeignKey(ur => ur.RoleId)
+                        .IsRequired();
 
             modelBuilder.Entity<User>()
                         .Property(u => u.Avatar)
