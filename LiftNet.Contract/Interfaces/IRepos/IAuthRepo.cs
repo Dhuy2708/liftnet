@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LiftNet.Contract.Dtos.Auth;
 
-namespace LiftNet.Contract.Interfaces.Repositories
+namespace LiftNet.Contract.Interfaces.IRepos
 {
     public interface IAuthRepo
     {

@@ -1,4 +1,4 @@
-﻿using LiftNet.Contract.Interfaces.Repositories;
+﻿using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Views.Users;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Enums;
@@ -59,9 +59,10 @@ namespace LiftNet.Handler.Searches.Queries
                 queryable = queryable.Where(x => x.UserRoles.Any(r => r.RoleId == roleId));
             }
 
-            var query = queryable.BuildPaginated(cond);
+            queryable = queryable.OrderBy(x => x.UserName);
+            queryable = queryable.BuildPaginated(cond);
 
-            var users = await query.ToListAsync();
+            var users = await queryable.ToListAsync();
             var userOverviews = users.Select(x => x.ToOverview()).ToList();
             return PaginatedLiftNetRes<UserOverview>.SuccessResponse(userOverviews);
         }

@@ -8,6 +8,10 @@ namespace LiftNet.Contract.Views.Users
 {
     public class UserOverview
     {
+        public string Id
+        {
+            get; set;
+        }
         public string Email
         {
             get; set;

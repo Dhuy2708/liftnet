@@ -1,5 +1,5 @@
 ﻿using LiftNet.Contract.Dtos.Auth;
-using LiftNet.Contract.Interfaces.Repositories;
+using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;

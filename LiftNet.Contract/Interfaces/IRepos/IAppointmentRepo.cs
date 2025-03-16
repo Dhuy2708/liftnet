@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Contract.Interfaces.Repositories
+namespace LiftNet.Contract.Interfaces.IRepos
 {
     public interface IAppointmentRepo : ICrudBaseRepo<Appointment>
     {

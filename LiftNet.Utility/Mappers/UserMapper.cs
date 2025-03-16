@@ -85,6 +85,7 @@ namespace LiftNet.Utility.Mappers
         {
             return new UserOverview
             {
+                Id = user.Id,
                 Email = user.Email!,
                 Username = user.UserName!,
                 FirstName = user.FirstName,

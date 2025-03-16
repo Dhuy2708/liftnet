@@ -17,13 +17,13 @@ namespace LiftNet.Domain.Entities
     public sealed class User : IdentityUser, IEntity
     {
         [Required]
-        public required string FirstName
+        public string FirstName
         {
             get; set;
         }
 
         [Required]
-        public required string LastName
+        public string LastName
         {
             get; set;
         }

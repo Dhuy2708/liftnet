@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Repositories.Core
 {
-    internal class AppointmentRepo : CrudBaseRepo<Appointment>, IAppointmentRepo, IDependency
+    internal class SocialConnectionRepo : CrudBaseRepo<SocialConnection>, ISocialConnectionRepo, IDependency
     {
-        public AppointmentRepo(LiftNetDbContext dbContext, ILiftLogger<CrudBaseRepo<Appointment>> logger) : base(dbContext, logger)
+        public SocialConnectionRepo(LiftNetDbContext dbContext, ILiftLogger<CrudBaseRepo<SocialConnection>> logger) : base(dbContext, logger)
         {
         }
     }
