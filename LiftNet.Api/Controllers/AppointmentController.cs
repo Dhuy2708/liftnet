@@ -43,7 +43,7 @@ namespace LiftNet.Api.Controllers
         [ProducesResponseType(typeof(PaginatedLiftNetRes<AppointmentView>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> ListAppointments([FromQuery] QueryCondition cond)
         {
-            var req = new ListAppointmentsRequest()
+            var req = new ListAppointmentsQuery()
             {
                 UserId = UserId,
                 Conditions = cond,
@@ -62,7 +62,7 @@ namespace LiftNet.Api.Controllers
         [ProducesResponseType(typeof(PaginatedLiftNetRes<AppointmentDetailView>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetAppointment([FromRoute] string id)
         {
-            var req = new GetAppointmentRequest()
+            var req = new GetAppointmentQuery()
             {
                 Id = id,
                 UserId = UserId,

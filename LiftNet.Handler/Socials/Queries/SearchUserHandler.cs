@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Searches.Queries
 {
-    public class SearchUserHandler : IRequestHandler<SearchUserRequest, PaginatedLiftNetRes<UserOverview>>
+    public class SearchUserHandler : IRequestHandler<SearchUserQuery, PaginatedLiftNetRes<UserOverview>>
     {
         private readonly ILiftLogger<SearchUserHandler> _logger;
         private readonly IUserRepo _userRepo;
@@ -32,7 +32,7 @@ namespace LiftNet.Handler.Searches.Queries
             _roleManager = roleManager;
         }
 
-        public async Task<PaginatedLiftNetRes<UserOverview>> Handle(SearchUserRequest request, CancellationToken cancellationToken)
+        public async Task<PaginatedLiftNetRes<UserOverview>> Handle(SearchUserQuery request, CancellationToken cancellationToken)
         {
             _logger.Info("begin to search user");
             var userId = request.UserId;

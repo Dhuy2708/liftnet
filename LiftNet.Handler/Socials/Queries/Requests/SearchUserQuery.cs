@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Searches.Queries.Requests
 {
-    public class SearchUserRequest : IRequest<PaginatedLiftNetRes<UserOverview>>
+    public class SearchUserQuery : IRequest<PaginatedLiftNetRes<UserOverview>>
     {
         public string UserId
         {

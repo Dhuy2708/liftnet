@@ -36,6 +36,7 @@ namespace LiftNet.Handler.Auths.Commands
 
             _logger.Info($"attempt to login, username: {request.Username}");
             var token = await _authRepo.LogInAsync(loginModel);
+            _logger.Info("login successfully");
             return LiftNetRes<string>.SuccessResponse(token);
         }
     }

@@ -1,4 +1,6 @@
-﻿using LiftNet.Contract.Views.Appointments;
+﻿using LiftNet.Contract.Dtos;
+using LiftNet.Contract.Dtos.Query;
+using LiftNet.Contract.Views.Appointments;
 using LiftNet.Domain.Response;
 using MediatR;
 using System;
@@ -9,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Appointments.Queries.Requests
 {
-    public class GetAppointmentRequest : IRequest<LiftNetRes<AppointmentDetailView>>
+    public class ListAppointmentsQuery : IRequest<PaginatedLiftNetRes<AppointmentView>>
     {
-        public string Id
+        public string UserId
         {
             get; set;
         }
-        public string UserId
+        public QueryCondition Conditions
         {
             get; set;
         }
