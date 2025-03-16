@@ -29,8 +29,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Repositories", "Lif
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{2CAE0459-C29B-46AC-B789-F8C94D4DA15D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{10E45E39-1B40-40B5-B869-6FB46764EECF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.SharedKenel", "LiftNet.SharedKenel\LiftNet.SharedKenel.csproj", "{ECAE0B54-7A17-4DF8-AC53-62C8B41D81CF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{54129E85-CF27-4CA3-A940-14FB5F245269}"

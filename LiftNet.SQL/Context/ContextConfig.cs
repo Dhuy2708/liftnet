@@ -49,6 +49,18 @@ namespace LiftNet.Persistence.Context
                         .WithMany()
                         .HasForeignKey(a => a.CoachId)
                         .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<SocialConnection>()
+                        .HasOne(sc => sc.User)
+                        .WithMany()
+                        .HasForeignKey(sc => sc.UserId)
+                        .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<SocialConnection>()
+                        .HasOne(sc => sc.Target)
+                        .WithMany()
+                        .HasForeignKey(sc => sc.TargetId)
+                        .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

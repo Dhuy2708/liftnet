@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using LiftNet.Domain.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Domain.Entities
 {
-    public sealed class UserRole : IdentityUserRole<string>
+    public sealed class UserRole : IdentityUserRole<string>, IEntity
     {
     }
 }

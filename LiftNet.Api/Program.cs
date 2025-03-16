@@ -2,6 +2,8 @@
 using dotenv.net;
 using LiftNet.Api.Extensions;
 using LiftNet.Api.Middlewares;
+using NSwag;
+using NSwag.Generation.Processors.Security;
 
 namespace LiftNet.Api;
 
@@ -11,6 +13,7 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Services.RegisterAuth();
         builder.Services.RegisterDbConfig();
         builder.Services.RegisterAppContext();
         builder.Services.RegisterCqrs();
@@ -18,7 +21,19 @@ public class Program
 
         builder.Services.AddControllers();
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        builder.Services.AddOpenApi();
+        builder.Services.AddOpenApiDocument(options =>
+        {
+            options.AddSecurity("Bearer", Enumerable.Empty<string>(), new OpenApiSecurityScheme
+            {
+                Description = "JWT Authorization header using the Bearer scheme",
+                Type = OpenApiSecuritySchemeType.ApiKey,
+                In = OpenApiSecurityApiKeyLocation.Header,
+                Name = "Authorization",
+                Scheme = "Bearer"
+            });
+
+            options.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("Bearer"));
+        });
 
         #region app
         var app = builder.Build();
@@ -27,16 +42,16 @@ public class Program
         #if DEBUG
         if (app.Environment.IsDevelopment())
         {
-            app.MapOpenApi();
-
-            app.UseSwaggerUI(opt =>
+            app.UseOpenApi();
+            app.UseSwaggerUi(options =>
             {
-                opt.SwaggerEndpoint("/openapi/v1.json", "LiftNet API V1");
+                options.DocumentTitle = "LiftNet API Documentation";
             });
         }
         #endif
 
         app.UseHttpsRedirection();
+        app.UseAuthentication();
         app.UseAuthorization();
         app.UseMiddleware<ExceptionMiddleware>();
 

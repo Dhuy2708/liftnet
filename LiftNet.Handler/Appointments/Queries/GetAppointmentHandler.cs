@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Appointments.Queries
 {
-    public class GetAppointmentHandler : IRequestHandler<GetAppointmentRequest, LiftNetRes<AppointmentDetailView>>
+    public class GetAppointmentHandler : IRequestHandler<GetAppointmentQuery, LiftNetRes<AppointmentDetailView>>
     {
         private readonly IAppointmentRepo _appointmentRepo;
 
@@ -25,7 +25,7 @@ namespace LiftNet.Handler.Appointments.Queries
             _appointmentRepo = appointmentRepo;
         }
 
-        public async Task<LiftNetRes<AppointmentDetailView>> Handle(GetAppointmentRequest request, CancellationToken cancellationToken)
+        public async Task<LiftNetRes<AppointmentDetailView>> Handle(GetAppointmentQuery request, CancellationToken cancellationToken)
         {
             var queryable = _appointmentRepo.GetQueryable();
             var appointment = await queryable.FirstOrDefaultAsync(x => x.Id == request.Id && 
