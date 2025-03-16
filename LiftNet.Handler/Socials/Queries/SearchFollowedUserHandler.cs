@@ -1,0 +1,71 @@
+﻿using LiftNet.Contract.Interfaces.IRepos;
+using LiftNet.Contract.Views.Users;
+using LiftNet.Domain.Entities;
+using LiftNet.Domain.Enums;
+using LiftNet.Domain.Interfaces;
+using LiftNet.Domain.Response;
+using LiftNet.Handler.Searches.Queries;
+using LiftNet.Handler.Socials.Queries.Requests;
+using LiftNet.Utility.Extensions;
+using LiftNet.Utility.Mappers;
+using LiftNet.Utility.Utils;
+using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LiftNet.Handler.Socials.Queries
+{
+    public class SearchFollowedUserHandler : IRequestHandler<SearchFollowedUserRequest, PaginatedLiftNetRes<UserOverview>>
+    {
+        private readonly ILiftLogger<SearchFollowedUserHandler> _logger;
+        private readonly IUnitOfWork _uow;
+        private readonly RoleManager<Role> _roleManager;
+
+        public SearchFollowedUserHandler(ILiftLogger<SearchFollowedUserHandler> logger, IUnitOfWork uow, RoleManager<Role> roleManager)
+        {
+            _logger = logger;
+            _uow = uow;
+            _roleManager = roleManager;
+        }
+
+        public async Task<PaginatedLiftNetRes<UserOverview>> Handle(SearchFollowedUserRequest request, CancellationToken cancellationToken)
+        {
+            _logger.Info("begin to search followed user");
+            var userId = request.UserId;
+            var cond = request.Conditions;
+
+            var queryable = _uow.UserRepo.GetQueryable();
+
+            // search text
+            var searchTxt = cond.FindCondition("search")?.Values.FirstOrDefault();
+            if (searchTxt.IsNotNullOrEmpty())
+            {
+                queryable = queryable.Where(x => x.UserName!.Contains(searchTxt!) ||
+                                                 x.Email!.Contains(searchTxt!) ||
+                                                 x.FirstName.Contains(searchTxt!) ||
+                                                 x.LastName.Contains(searchTxt!));
+            }
+
+            // role filter
+            var role = cond.FindCondition("role")?.Values.FirstOrDefault();
+            if (role.IsNotNullOrEmpty() && Int32.TryParse(role, out var roleInt))
+            {
+                var roleStr = ((LiftNetRoleEnum)roleInt).ToString();
+                var roleId = _roleManager.GetRoleIdAsync(new Role { Name = roleStr }).Result;
+                queryable = queryable.Where(x => x.UserRoles.Any(r => r.RoleId == roleId));
+            }
+
+            queryable = queryable.OrderBy(x => x.UserName);
+            queryable = queryable.BuildPaginated(cond);
+
+            var users = await queryable.ToListAsync();
+            var userOverviews = users.Select(x => x.ToOverview()).ToList();
+            return PaginatedLiftNetRes<UserOverview>.SuccessResponse(userOverviews);
+        }
+    }
+}

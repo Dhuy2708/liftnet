@@ -19,11 +19,13 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        [ForeignKey(nameof(User))]
         public string UserId
         {
             get; set;
         }
 
+        [ForeignKey(nameof(Target))]
         public string TargetId
         {
             get; set;
@@ -34,13 +36,11 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
-        [ForeignKey(nameof(UserId))]
         public User User
         {
             get; set;
         }
 
-        [ForeignKey(nameof(TargetId))]
         public User Target
         {
             get; set;
