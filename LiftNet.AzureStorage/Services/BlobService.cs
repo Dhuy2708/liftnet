@@ -1,6 +1,5 @@
 ﻿using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs;
-using LiftNet.Contract.Interfaces.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -9,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using LiftNet.Contract.Interfaces.IServices;
 
 namespace LiftNet.AzureBlob.Services
 {

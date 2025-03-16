@@ -1,7 +1,7 @@
 ﻿using LiftNet.Contract.Dtos;
 using LiftNet.Contract.Dtos.Query;
 using LiftNet.Contract.Enums;
-using LiftNet.Contract.Interfaces.Repositories;
+using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Views.Appointments;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Response;

@@ -1,6 +1,6 @@
 ﻿using Azure.Storage.Blobs.Specialized;
 using LiftNet.Contract.Constants;
-using LiftNet.Contract.Interfaces.Service;
+using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Logger.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;

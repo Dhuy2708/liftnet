@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using LiftNet.Contract.Interfaces.Repositories;
 using LiftNet.Domain.Entities;
 using LiftNet.Handler.Auths.Commands.Requests;
 using Microsoft.AspNetCore.Identity;

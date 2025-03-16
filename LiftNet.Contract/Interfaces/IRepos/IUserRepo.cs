@@ -1,0 +1,13 @@
+﻿using LiftNet.Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace LiftNet.Contract.Interfaces.IRepos
+{
+    public interface IUserRepo : ICrudBaseRepo<User>
+    {
+    }
+}

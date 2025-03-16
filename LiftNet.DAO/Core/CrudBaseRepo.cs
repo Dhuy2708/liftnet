@@ -1,7 +1,8 @@
 ﻿using LiftNet.Contract.Dtos.Query;
 using LiftNet.Contract.Enums;
-using LiftNet.Contract.Interfaces.Repositories;
+using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Domain.Interfaces;
+using LiftNet.Ioc;
 using LiftNet.Persistence.Context;
 using LiftNet.Utility.Utils;
 using Microsoft.Data.SqlClient;
@@ -12,7 +13,8 @@ using System.Text;
 
 namespace LiftNet.Repositories.Core
 {
-    public class CrudBaseRepo<TEntity> : ICrudBaseRepo<TEntity> where TEntity : class
+    public class CrudBaseRepo<TEntity> : ICrudBaseRepo<TEntity>
+           where TEntity : class
     {
         protected readonly LiftNetDbContext _dbContext;
         protected readonly ILiftLogger<CrudBaseRepo<TEntity>> _logger;

@@ -1,4 +1,4 @@
-﻿using LiftNet.Contract.Interfaces.Repositories;
+﻿using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Views.Appointments;
 using LiftNet.Domain.Exceptions;
 using LiftNet.Domain.Response;

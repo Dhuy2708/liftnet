@@ -1,6 +1,6 @@
 ﻿using LiftNet.Contract.Constants;
 using LiftNet.Contract.Dtos.Auth;
-using LiftNet.Contract.Interfaces.Repositories;
+using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Domain.Constants;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Enums;
