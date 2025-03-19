@@ -39,6 +39,11 @@ namespace LiftNet.Handler.Socials.Queries
             var userId = request.UserId;
             var cond = request.Conditions;
 
+            var followedUserIds = await _uow.SocialConnectionRepo.GetQueryable()
+                                           .Where(x => x.UserId == userId)
+                                           .Select(x => x.TargetId)
+                                           .ToListAsync();
+
             var queryable = _uow.UserRepo.GetQueryable();
 
             // search text
@@ -60,6 +65,7 @@ namespace LiftNet.Handler.Socials.Queries
                 queryable = queryable.Where(x => x.UserRoles.Any(r => r.RoleId == roleId));
             }
 
+            queryable = queryable.Where(x => followedUserIds.Contains(x.Id));
             queryable = queryable.OrderBy(x => x.UserName);
             queryable = queryable.BuildPaginated(cond);
 
