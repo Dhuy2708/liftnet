@@ -89,7 +89,8 @@ namespace LiftNet.Utility.Mappers
 
         public static AppointmentView ToView(this Appointment entity)
         {
-            return entity.ToDto().ToView();
+            var view = entity.ToDto().ToView();
+            return view;
         }
     }
 }

@@ -14,11 +14,11 @@ namespace LiftNet.Contract.Views.Appointments
         {
             get; set;
         }
-        public UserOverView Booker
+        public UserOverview Booker
         {
             get; set;
         }
-        public List<UserOverView> Participants
+        public List<UserOverview> Participants
         {
             get; set;
         }
