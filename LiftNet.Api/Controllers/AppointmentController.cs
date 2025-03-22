@@ -74,5 +74,24 @@ namespace LiftNet.Api.Controllers
             }
             return StatusCode(500, result);
         }
+
+        [HttpPost("actionRequest")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> AppointmentActionRequest(AppointmentActionReq req)
+        {
+            var request = new AppointmentActionCommand()
+            {
+                UserId = UserId,
+                AppointmentId = req.AppointmentId,
+                Action = req.Action,
+            };
+            var result = await _mediator.Send(request);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
     }
 }
