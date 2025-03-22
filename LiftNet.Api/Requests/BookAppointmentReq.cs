@@ -1,18 +1,22 @@
 ﻿using LiftNet.Contract.Enums;
 using LiftNet.Contract.Views;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LiftNet.Api.Requests
 {
     public class BookAppointmentReq
     {
-        public string TargetUserId
+        public List<string> ParticipantIds
         {
             get; set;
         }
+
         public string Name
         {
             get; set;
         }
+
+        [AllowNull]
         public string Description
         {
             get; set;

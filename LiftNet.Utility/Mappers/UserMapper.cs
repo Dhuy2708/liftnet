@@ -47,9 +47,9 @@ namespace LiftNet.Utility.Mappers
             };
         }
 
-        public static UserView ToView(this UserDto userDto)
+        public static UserOverView ToView(this UserDto userDto)
         {
-            return new UserView
+            return new UserOverView
             {
                 Id = userDto.Id,
                 Email = userDto.Email,
@@ -57,14 +57,12 @@ namespace LiftNet.Utility.Mappers
                 FirstName = userDto.FirstName,
                 LastName = userDto.LastName,
                 Avatar = userDto.Avatar,
-                Address = userDto.Address?.ToView(),
-                CreatedAt = userDto.CreatedAt,
                 IsDeleted = userDto.IsDeleted,
                 IsSuspended = userDto.IsSuspended
             };
         }
 
-        public static UserDto ToDto(this UserView userView)
+        public static UserDto ToDto(this UserOverView userView)
         {
             return new UserDto
             {
@@ -74,8 +72,6 @@ namespace LiftNet.Utility.Mappers
                 FirstName = userView.FirstName,
                 LastName = userView.LastName,
                 Avatar = userView.Avatar,
-                Address = userView.Address?.ToDto(),
-                CreatedAt = userView.CreatedAt,
                 IsDeleted = userView.IsDeleted,
                 IsSuspended = userView.IsSuspended
             };

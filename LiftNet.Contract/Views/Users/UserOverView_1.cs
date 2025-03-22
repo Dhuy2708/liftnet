@@ -2,7 +2,7 @@
 
 namespace LiftNet.Contract.Views.Users
 {
-    public class UserView
+    public class UserOverView
     {
         public string Id
         {
@@ -28,14 +28,6 @@ namespace LiftNet.Contract.Views.Users
         {
             get; set;
         }
-        public AddressView Address
-        {
-            get; set;
-        }
-        public DateTime CreatedAt
-        {
-            get; set;
-        } = DateTime.UtcNow;
         public bool IsDeleted
         {
             get; set;

@@ -38,18 +38,6 @@ namespace LiftNet.Persistence.Context
                         .Property(u => u.Avatar)
                         .HasDefaultValue(DomainConstants.DEFAULT_USER_AVATAR);
 
-            modelBuilder.Entity<Appointment>()
-                        .HasOne(a => a.Client)
-                        .WithMany()
-                        .HasForeignKey(a => a.ClientId)
-                        .OnDelete(DeleteBehavior.NoAction);
-
-            modelBuilder.Entity<Appointment>()
-                        .HasOne(a => a.Coach)
-                        .WithMany()
-                        .HasForeignKey(a => a.CoachId)
-                        .OnDelete(DeleteBehavior.NoAction);
-
             modelBuilder.Entity<SocialConnection>()
                         .HasOne(sc => sc.User)
                         .WithMany()

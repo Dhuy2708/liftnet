@@ -23,6 +23,7 @@ namespace LiftNet.Persistence.Context
         }
 
         public DbSet<Appointment> Appointments { get; set; }
+        public DbSet<AppointmentParticipant> AppointmentParticipants { get; set; }
         public DbSet<SocialConnection> SocialConnections { get; set; }
     }
 }

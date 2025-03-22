@@ -2,6 +2,7 @@
 using dotenv.net;
 using LiftNet.Api.Extensions;
 using LiftNet.Api.Middlewares;
+using Microsoft.AspNetCore.Mvc;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 
@@ -20,6 +21,13 @@ public class Program
         builder.Services.RegisterInfras();
 
         builder.Services.AddControllers();
+
+        // allow nullable fields in request model
+        builder.Services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.SuppressModelStateInvalidFilter = true;
+        });
+
         // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
         builder.Services.AddOpenApiDocument(options =>
         {

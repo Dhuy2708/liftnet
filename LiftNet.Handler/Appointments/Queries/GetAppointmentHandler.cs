@@ -28,8 +28,11 @@ namespace LiftNet.Handler.Appointments.Queries
         public async Task<LiftNetRes<AppointmentDetailView>> Handle(GetAppointmentQuery request, CancellationToken cancellationToken)
         {
             var queryable = _appointmentRepo.GetQueryable();
+            queryable = queryable.Include(x => x.Booker)
+                                 .Include(x => x.Participants)
+                                 .ThenInclude(x => x.User);
             var appointment = await queryable.FirstOrDefaultAsync(x => x.Id == request.Id && 
-                                                       (x.ClientId == request.UserId || x.CoachId == request.UserId));
+                                                       (x.Participants.Select(p => p.UserId).Contains(request.UserId)));
             if (appointment == null)
             {
                 throw new NotFoundException("Appointment not found");

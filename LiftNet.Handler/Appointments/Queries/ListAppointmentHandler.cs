@@ -37,7 +37,10 @@ namespace LiftNet.Handler.Appointments.Queries
             {
                 conditions = new QueryCondition();
             }
-            var query = queryable.Where(x => x.ClientId == request.UserId || x.CoachId == request.UserId);
+            queryable = queryable.Include(x => x.Booker)
+                                 .Include(x => x.Participants)
+                                 .ThenInclude(x => x.User);
+            var query = queryable.Where(x => x.BookerId == request.UserId || (x.Participants.Select(p => p.UserId).Contains(request.UserId)));
             query = BuildQuery(query, conditions);
             query.Take(conditions.PageSize);
             query.Skip((conditions.PageNumber - 1) * conditions.PageSize);

@@ -2,6 +2,7 @@
 using LiftNet.Contract.Enums;
 using LiftNet.Contract.Views.Appointments;
 using LiftNet.Domain.Entities;
+using LiftNet.Utility.Extensions;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -18,14 +19,15 @@ namespace LiftNet.Utility.Mappers
             return new AppointmentDetailView
             {
                 Id = entity.Id,
-                Client = entity.Client?.ToDto().ToView(),
-                Coach = entity.Coach?.ToDto().ToView(),
+                Booker = entity.Booker.ToDto().ToView(),
+                Participants = entity.Participants?.Select(x => x.User!.ToDto().ToView())?.ToList() ?? [],
                 Name = entity.Name,
                 Description = entity.Description,
                 Address = JsonConvert.DeserializeObject<AddressDto>(entity.Address).ToView(),
                 StartTime = entity.StartTime,
                 EndTime = entity.EndTime,
-                Status = (AppointmentStatus)entity.Status
+                Status = (AppointmentStatus)entity.Status,
+                RepeatingType = (RepeatingType)entity.RepeatingType,
             };
         }
 
@@ -34,30 +36,37 @@ namespace LiftNet.Utility.Mappers
             return new AppointmentDto
             {
                 Id = entity.Id,
-                Client = entity.Client?.ToDto(),
-                Coach = entity.Coach?.ToDto(),
+                Booker = entity.Booker?.ToDto(),
+                Participants = entity.Participants?.Select(x => x.User.ToDto()).ToList() ?? [],
                 Name = entity.Name,
                 Description = entity.Description,
                 Address = JsonConvert.DeserializeObject<AddressDto>(entity.Address),
                 StartTime = entity.StartTime,
                 EndTime = entity.EndTime,
-                Status = (AppointmentStatus)entity.Status
+                Status = (AppointmentStatus)entity.Status,
+                RepeatingType = (RepeatingType)entity.RepeatingType,
             };
         }
 
-        public static Appointment ToEntity(this AppointmentDto entity)
+        public static Appointment ToEntity(this AppointmentDto dto)
         {
             return new Appointment
             {
-                Id = entity.Id,
-                Client = entity.Client?.ToEntity(),
-                Coach = entity.Coach?.ToEntity(),
-                Name = entity.Name,
-                Description = entity.Description,
-                Address = JsonConvert.SerializeObject(entity.Address),
-                StartTime = entity.StartTime,
-                EndTime = entity.EndTime,
-                Status = (int)entity.Status
+                Id = dto.Id,
+                BookerId = dto.Booker?.Id,
+                Participants = dto.Participants?.Select(x => new AppointmentParticipant()
+                {
+                    UserId = x.Id,
+                    AppointmentId = dto.Id,
+                    IsBooker = x.Id.Eq(dto.Booker.Id) ? true : false,
+                }).ToList(),
+                Name = dto.Name,
+                Description = dto.Description,
+                Address = JsonConvert.SerializeObject(dto.Address),
+                StartTime = dto.StartTime,
+                EndTime = dto.EndTime,
+                Status = (int)dto.Status,
+                RepeatingType = (int)dto.RepeatingType,
             };
         }
 
@@ -66,30 +75,15 @@ namespace LiftNet.Utility.Mappers
             return new AppointmentView
             {
                 Id = dto.Id,
-                Client = dto.Client?.ToView(),
-                Coach = dto.Coach?.ToView(),
+                Booker = dto.Booker?.ToView(),
+                ParticipantCount = dto.Participants.Count,
                 Name = dto.Name,
                 Description = dto.Description,
                 Address = dto.Address?.ToView(),
                 StartTime = dto.StartTime,
                 EndTime = dto.EndTime,
-                Status = dto.Status
-            };
-        }
-
-        public static AppointmentDto ToDto(this AppointmentView view)
-        {
-            return new AppointmentDto
-            {
-                Id = view.Id,
-                Client = view.Client?.ToDto(),
-                Coach = view.Coach?.ToDto(),
-                Name = view.Name,
-                Description = view.Description,
-                Address = view.Address?.ToDto(),
-                StartTime = view.StartTime,
-                EndTime = view.EndTime,
-                Status = (AppointmentStatus)view.Status
+                Status = dto.Status,
+                RepeatingType = dto.RepeatingType,
             };
         }
 
