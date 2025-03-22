@@ -6,12 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiftNet.Contract.Dtos.Auth;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace LiftNet.Contract.Interfaces.IRepos
 {
     public interface IAuthRepo
     {
-        Task<string> LogInAsync(LoginModel logInViewModel);
+        Task<JwtSecurityToken?> LogInAsync(LoginModel logInViewModel);
         Task<IdentityResult> RegisterAsync(RegisterModel registerViewModel);
         Task LogOutAsync();
     }

@@ -16,5 +16,6 @@ namespace LiftNet.Domain.Constants
         public static string LastName => "lastname";
         public static string Roles => ClaimTypes.Role;
         public static string UAvatar => "uavatar";
+        public static string ExpirationTime => ClaimTypes.Expiration;
     }
 }

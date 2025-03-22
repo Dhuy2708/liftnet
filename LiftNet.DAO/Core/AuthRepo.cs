@@ -59,20 +59,20 @@ namespace LiftNet.Repositories.Core
             return result;
         }
 
-        public async Task<string> LogInAsync(LoginModel model)
+        public async Task<JwtSecurityToken?> LogInAsync(LoginModel model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
 
             if (user == null || user.IsDeleted == true || user.IsSuspended == true)
             {
-                return string.Empty;
+                return null;
             }
 
             var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
             if (!result.Succeeded)
             {
                 _logger.Error(result.ToString());
-                return string.Empty;
+                return null;
             }
 
             var userRoles = await _userManager.GetRolesAsync(user);
@@ -101,12 +101,11 @@ namespace LiftNet.Repositories.Core
             (
                 issuer: issuer,
                 audience: audience,
-                expires: DateTime.Now.AddSeconds(CoreConstant.TokenExpirationTimeInSeconds),
+                expires: DateTime.UtcNow.AddSeconds(CoreConstant.TokenExpirationTimeInSeconds),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha512Signature)
             );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return token;
         }
 
         public async Task LogOutAsync()

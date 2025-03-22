@@ -1,4 +1,5 @@
-﻿using LiftNet.Domain.Response;
+﻿using LiftNet.Contract.Views;
+using LiftNet.Domain.Response;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Auths.Commands.Requests
 {
-    public class LoginCommand : IRequest<LiftNetRes<string>>
+    public class LoginCommand : IRequest<LiftNetRes<TokenInfo>>
     {
         public string Username
         {
