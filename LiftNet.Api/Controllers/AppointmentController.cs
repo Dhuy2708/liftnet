@@ -7,6 +7,7 @@ using LiftNet.Domain.Constants;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Appointments.Commands.Requests;
 using LiftNet.Handler.Appointments.Queries.Requests;
+using LiftNet.Utility.Extensions;
 using LiftNet.Utility.Mappers;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -26,9 +27,13 @@ namespace LiftNet.Api.Controllers
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> BookAppointment(BookAppointmentReq req)
         {
+            if (UserId.IsNullOrEmpty())
+            {
+                return Unauthorized();
+            }
             var request = new BookAppointmentCommand()
             {
-                Appointment = req.ToDto(),
+                Appointment = req.ToDto(UserId),
             };
             var result = await _mediator.Send(request);
             if (result.Success)

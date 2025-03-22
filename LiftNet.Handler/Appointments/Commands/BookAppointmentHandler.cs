@@ -22,7 +22,9 @@ namespace LiftNet.Handler.Appointments.Commands
 
         public async Task<LiftNetRes> Handle(BookAppointmentCommand request, CancellationToken cancellationToken)
         {
-            var result = await _appointmentRepo.Create(request.Appointment.ToEntity());
+            request.Appointment.Status = Contract.Enums.AppointmentStatus.Pending;
+            var entity = request.Appointment.ToEntity();
+            var result = await _appointmentRepo.Create(entity);
             if (result > 0)
             {
                 return LiftNetRes.SuccessResponse($"Create appointment {request.Appointment.Name} successfully");

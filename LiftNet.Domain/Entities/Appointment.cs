@@ -18,14 +18,8 @@ namespace LiftNet.Domain.Entities
             get; set;
         } = Guid.NewGuid().ToString();
 
-        [ForeignKey(nameof(User))]
-        public string? ClientId
-        {
-            get; set;
-        }
-
-        [ForeignKey(nameof(User))]        
-        public string? CoachId           
+        [ForeignKey(nameof(Booker))]
+        public string? BookerId
         {
             get; set;
         }
@@ -66,12 +60,12 @@ namespace LiftNet.Domain.Entities
         }
 
         // mapping
-        public User? Client
+        public User? Booker
         {
             get; set;
         }
 
-        public User? Coach
+        public ICollection<AppointmentParticipant> Participants
         {
             get; set;
         }

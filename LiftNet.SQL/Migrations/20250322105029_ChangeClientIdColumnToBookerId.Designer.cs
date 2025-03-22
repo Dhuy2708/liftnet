@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LiftNet.Persistence.Migrations
 {
     [DbContext(typeof(LiftNetDbContext))]
-    [Migration("20250316110411_SocialConnectionTable")]
-    partial class SocialConnectionTable
+    [Migration("20250322105029_ChangeClientIdColumnToBookerId")]
+    partial class ChangeClientIdColumnToBookerId
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,11 +34,9 @@ namespace LiftNet.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ClientId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CoachId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("BookerId")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("BookerId1");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -62,11 +60,37 @@ namespace LiftNet.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
-
-                    b.HasIndex("CoachId");
+                    b.HasIndex("BookerId");
 
                     b.ToTable("Appointments");
+                });
+
+            modelBuilder.Entity("LiftNet.Domain.Entities.AppointmentParticipant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AppointmentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsBooker")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppointmentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AppointmentParticipants");
                 });
 
             modelBuilder.Entity("LiftNet.Domain.Entities.Role", b =>
@@ -326,19 +350,30 @@ namespace LiftNet.Persistence.Migrations
 
             modelBuilder.Entity("LiftNet.Domain.Entities.Appointment", b =>
                 {
-                    b.HasOne("LiftNet.Domain.Entities.User", "Client")
+                    b.HasOne("LiftNet.Domain.Entities.User", "Booker")
                         .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("BookerId");
 
-                    b.HasOne("LiftNet.Domain.Entities.User", "Coach")
+                    b.Navigation("Booker");
+                });
+
+            modelBuilder.Entity("LiftNet.Domain.Entities.AppointmentParticipant", b =>
+                {
+                    b.HasOne("LiftNet.Domain.Entities.Appointment", "Appointment")
+                        .WithMany("Participants")
+                        .HasForeignKey("AppointmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LiftNet.Domain.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("CoachId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Client");
+                    b.Navigation("Appointment");
 
-                    b.Navigation("Coach");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("LiftNet.Domain.Entities.SocialConnection", b =>
@@ -409,6 +444,11 @@ namespace LiftNet.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("LiftNet.Domain.Entities.Appointment", b =>
+                {
+                    b.Navigation("Participants");
                 });
 
             modelBuilder.Entity("LiftNet.Domain.Entities.Role", b =>

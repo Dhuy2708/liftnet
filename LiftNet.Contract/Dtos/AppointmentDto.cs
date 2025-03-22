@@ -13,11 +13,11 @@ namespace LiftNet.Contract.Dtos
         {
             get; set;
         }
-        public UserDto Client
+        public UserDto Booker
         {
             get; set;
         }
-        public UserDto Coach
+        public List<UserDto> Participants
         {
             get; set;
         }
