@@ -6,6 +6,7 @@ using LiftNet.Handler.Appointments.Commands.Requests;
 using LiftNet.Handler.Appointments.Commands.Validators;
 using LiftNet.SharedKenel.Extensions;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +33,9 @@ namespace LiftNet.Handler.Appointments.Commands
             _logger.Info("begin to handle appointment action command");
             var appointmentRepo = _uow.AppointmentRepo;
             appointmentRepo.AutoSave = true;
-            var appointment = await appointmentRepo.GetById(request.AppointmentId);
+            var appointment = await appointmentRepo.GetQueryable()
+                                                   .FirstOrDefaultAsync(x => x.Id == request.AppointmentId &&
+                                                                            x.Participants.Select(x => x.UserId).Contains(request.UserId));
             if (appointment == null)
             {
                 _logger.Error("appointment not found");
@@ -41,6 +44,11 @@ namespace LiftNet.Handler.Appointments.Commands
 
             if (request.Action is AppointmentActionRequestType.Accept)
             {
+                if (appointment.BookerId == request.UserId)
+                {
+                    _logger.Error("booker cannot accept appointment");
+                    return LiftNetRes.ErrorResponse("Booker cannot accept appointment");
+                }
                 if (appointment.Status != (int)AppointmentStatus.Pending)
                 {
                     _logger.Error("appointment status is not pending");
