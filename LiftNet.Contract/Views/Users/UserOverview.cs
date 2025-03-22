@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LiftNet.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,7 +29,19 @@ namespace LiftNet.Contract.Views.Users
         {
             get; set;
         }
+        public LiftNetRoleEnum Role
+        {
+            get; set;
+        }
         public string Avatar
+        {
+            get; set;
+        }
+        public bool IsDeleted
+        {
+            get; set;
+        }
+        public bool IsSuspended
         {
             get; set;
         }

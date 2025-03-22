@@ -40,6 +40,8 @@ namespace LiftNet.Handler.Searches.Queries
 
             var queryable = _userRepo.GetQueryable();
 
+            queryable = queryable.Include(x => x.UserRoles);
+
             // search text
             var searchTxt = cond.FindCondition("search")?.Values.FirstOrDefault();
             if (searchTxt.IsNotNullOrEmpty())
@@ -62,8 +64,21 @@ namespace LiftNet.Handler.Searches.Queries
             queryable = queryable.OrderBy(x => x.UserName);
             queryable = queryable.BuildPaginated(cond);
 
+
             var users = await queryable.ToListAsync();
-            var userOverviews = users.Select(x => x.ToOverview()).ToList();
+
+            var roles = _roleManager.Roles.ToList();
+            var roleDict = roles.ToDictionary(x => x.Id, x => x.Name);
+            Dictionary<string, LiftNetRoleEnum> roleEnumDict = new();
+
+            foreach (var user in users)
+            {
+                if (user.UserRoles.FirstOrDefault() is { } userRole && roleDict.TryGetValue(userRole.RoleId, out var roleEnum))
+                {
+                    roleEnumDict[user.Id] = RoleUtil.GetRole(roleEnum!);
+                }
+            }
+            var userOverviews = users.Select(x => x.ToOverview(roleEnumDict)).ToList();
             return PaginatedLiftNetRes<UserOverview>.SuccessResponse(userOverviews);
         }
     }

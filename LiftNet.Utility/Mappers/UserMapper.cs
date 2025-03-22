@@ -2,6 +2,7 @@
 using LiftNet.Contract.Enums;
 using LiftNet.Contract.Views.Users;
 using LiftNet.Domain.Entities;
+using LiftNet.Domain.Enums;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -47,9 +48,9 @@ namespace LiftNet.Utility.Mappers
             };
         }
 
-        public static UserOverView ToView(this UserDto userDto)
+        public static UserOverview ToView(this UserDto userDto)
         {
-            return new UserOverView
+            return new UserOverview
             {
                 Id = userDto.Id,
                 Email = userDto.Email,
@@ -62,7 +63,7 @@ namespace LiftNet.Utility.Mappers
             };
         }
 
-        public static UserDto ToDto(this UserOverView userView)
+        public static UserDto ToDto(this UserOverview userView)
         {
             return new UserDto
             {
@@ -77,17 +78,24 @@ namespace LiftNet.Utility.Mappers
             };
         }
 
-        public static UserOverview ToOverview(this User user)
+        public static UserOverview ToOverview(this User user, Dictionary<string, LiftNetRoleEnum>? roleMapping = null)
         {
-            return new UserOverview
+            var result = new UserOverview
             {
                 Id = user.Id,
                 Email = user.Email!,
                 Username = user.UserName!,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Avatar = user.Avatar
+                Avatar = user.Avatar,
+                IsDeleted = user.IsDeleted,
+                IsSuspended = user.IsSuspended
             };
+            if (roleMapping != null)
+            {
+                result.Role = roleMapping[user.Id];
+            }
+            return result;
         }
     }
 }

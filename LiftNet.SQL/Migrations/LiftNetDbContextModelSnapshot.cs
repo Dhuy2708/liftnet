@@ -32,7 +32,8 @@ namespace LiftNet.Persistence.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BookerId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("BookerId1");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -58,7 +59,7 @@ namespace LiftNet.Persistence.Migrations
 
                     b.HasIndex("BookerId");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("Appointments", (string)null);
                 });
 
             modelBuilder.Entity("LiftNet.Domain.Entities.AppointmentParticipant", b =>
@@ -86,7 +87,7 @@ namespace LiftNet.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("AppointmentParticipants");
+                    b.ToTable("AppointmentParticipants", (string)null);
                 });
 
             modelBuilder.Entity("LiftNet.Domain.Entities.Role", b =>
@@ -141,7 +142,7 @@ namespace LiftNet.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("SocialConnections");
+                    b.ToTable("SocialConnections", (string)null);
                 });
 
             modelBuilder.Entity("LiftNet.Domain.Entities.User", b =>
