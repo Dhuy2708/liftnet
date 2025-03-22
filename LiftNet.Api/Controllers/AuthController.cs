@@ -1,5 +1,6 @@
 ﻿using LiftNet.Api.Requests;
 using LiftNet.Api.ToDto;
+using LiftNet.Contract.Views;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Auths.Commands.Requests;
 using MediatR;
@@ -31,7 +32,7 @@ namespace LiftNet.Api.Controllers
         }
 
         [HttpPost("login")]
-        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(LiftNetRes<TokenInfo>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Login(LoginRequest req)
         {
             var result = await _mediator.Send(req.ToCommand());

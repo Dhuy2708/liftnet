@@ -1,5 +1,6 @@
 ﻿using LiftNet.Contract.Dtos.Auth;
 using LiftNet.Contract.Interfaces.IRepos;
+using LiftNet.Contract.Views;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
@@ -9,10 +10,11 @@ using LiftNet.Ioc;
 using LiftNet.SharedKenel.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace LiftNet.Handler.Auths.Commands
 {
-    public class LoginHandler : IRequestHandler<LoginCommand, LiftNetRes<string>>
+    public class LoginHandler : IRequestHandler<LoginCommand, LiftNetRes<TokenInfo>>
     {
         private readonly ILiftLogger<LoginHandler> _logger;
         private readonly UserManager<User> _userManager;
@@ -24,7 +26,7 @@ namespace LiftNet.Handler.Auths.Commands
             _logger = logger;
         }
 
-        public async Task<LiftNetRes<string>> Handle(LoginCommand request, CancellationToken cancellationToken)
+        public async Task<LiftNetRes<TokenInfo>> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
             await new LoginCommandValidator(_userManager).ValidateAndThrowAsync(request);
 
@@ -36,8 +38,19 @@ namespace LiftNet.Handler.Auths.Commands
 
             _logger.Info($"attempt to login, username: {request.Username}");
             var token = await _authRepo.LogInAsync(loginModel);
+            if (token == null)
+            {
+                _logger.Error("failed to login");
+                return LiftNetRes<TokenInfo>.ErrorResponse("Failed to login");
+            }
+
             _logger.Info("login successfully");
-            return LiftNetRes<string>.SuccessResponse(token);
+            var tokenInfo = new TokenInfo()
+            {
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                ExpiresAt = token.ValidTo
+            };
+            return LiftNetRes<TokenInfo>.SuccessResponse(tokenInfo);
         }
     }
 }
