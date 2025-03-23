@@ -1,10 +1,15 @@
 ﻿using LiftNet.Contract.Dtos;
+using LiftNet.Domain.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace LiftNet.Api.Requests.Auths
 {
     public class RegisterRequest
     {
+        public LiftNetRoleEnum Role
+        {
+            get; set;
+        }
         public string Email
         {
             get; set;

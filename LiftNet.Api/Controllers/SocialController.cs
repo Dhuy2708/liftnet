@@ -39,7 +39,7 @@ namespace LiftNet.Api.Controllers
 
         [HttpPost("search/followed")]
         [ProducesResponseType(typeof(PaginatedLiftNetRes<UserOverview>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> SearchFollowUser(QueryCondition cond)
+        public async Task<IActionResult> SearchFollowUser([FromQuery] QueryCondition cond)
         {
             var req = new SearchFollowedUserRequest()
             {

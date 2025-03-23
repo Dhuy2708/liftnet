@@ -54,11 +54,19 @@ namespace LiftNet.Handler.Searches.Queries
 
             // role filter
             var role = cond.FindCondition("role")?.Values.FirstOrDefault();
-            if (role.IsNotNullOrEmpty() && Int32.TryParse(role, out var roleInt))
+            if (role.IsNullOrEmpty())
             {
+                return PaginatedLiftNetRes<UserOverview>.ErrorResponse("Role filter required");
+            }
+            if (Int32.TryParse(role, out var roleInt))
+            {
+                if (roleInt != (int)LiftNetRoleEnum.Seeker && roleInt != (int)LiftNetRoleEnum.Coach)
+                {
+                    return PaginatedLiftNetRes<UserOverview>.ErrorResponse("Invalid role");
+                }
                 var roleStr = ((LiftNetRoleEnum)roleInt).ToString();
-                var roleId = _roleManager.GetRoleIdAsync(new Role { Name = roleStr}).Result;
-                queryable = queryable.Where(x => x.UserRoles.Any(r => r.RoleId == roleId));
+                var roleId = _roleManager.FindByNameAsync(roleStr).Result;
+                queryable = queryable.Where(x => x.UserRoles.Any(r => r.RoleId == roleId!.Id));
             }
 
             queryable = queryable.OrderBy(x => x.UserName);

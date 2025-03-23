@@ -1,4 +1,5 @@
 ﻿using LiftNet.Contract.Dtos;
+using LiftNet.Domain.Enums;
 using LiftNet.Domain.Response;
 using MediatR;
 using System;
@@ -11,6 +12,10 @@ namespace LiftNet.Handler.Auths.Commands.Requests
 {
     public class RegisterCommand : IRequest<LiftNetRes>
     {
+        public LiftNetRoleEnum Role
+        {
+            get; set;
+        }
         public string Email
         {
             get; set;

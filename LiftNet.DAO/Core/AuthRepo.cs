@@ -50,11 +50,11 @@ namespace LiftNet.Repositories.Core
 
             if (result.Succeeded)
             {
-                if (!await _roleManager.RoleExistsAsync(LiftNetRoleEnum.Seeker.ToString()))
+                if (!await _roleManager.RoleExistsAsync(model.Role.ToString()))
                 {
-                    await _roleManager.CreateAsync(new Role(LiftNetRoleEnum.Seeker.ToString()));
+                    await _roleManager.CreateAsync(new Role(model.Role.ToString()));
                 }
-                await _userManager.AddToRoleAsync(user, LiftNetRoleEnum.Seeker.ToString());
+                await _userManager.AddToRoleAsync(user, model.Role.ToString());
             }
             return result;
         }

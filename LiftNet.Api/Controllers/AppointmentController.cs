@@ -43,7 +43,7 @@ namespace LiftNet.Api.Controllers
             return StatusCode(500, result);
         }
 
-        [HttpGet("list")]
+        [HttpPost("list")]
         [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
         [ProducesResponseType(typeof(PaginatedLiftNetRes<AppointmentOverview>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> ListAppointments([FromQuery] QueryCondition cond)

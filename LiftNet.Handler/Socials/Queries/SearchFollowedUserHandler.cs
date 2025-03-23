@@ -61,8 +61,8 @@ namespace LiftNet.Handler.Socials.Queries
             if (role.IsNotNullOrEmpty() && Int32.TryParse(role, out var roleInt))
             {
                 var roleStr = ((LiftNetRoleEnum)roleInt).ToString();
-                var roleId = _roleManager.GetRoleIdAsync(new Role { Name = roleStr }).Result;
-                queryable = queryable.Where(x => x.UserRoles.Any(r => r.RoleId == roleId));
+                var roleId = _roleManager.FindByNameAsync(roleStr).Result;
+                queryable = queryable.Where(x => x.UserRoles.Any(r => r.RoleId == roleId!.Id));
             }
 
             queryable = queryable.Where(x => followedUserIds.Contains(x.Id));
