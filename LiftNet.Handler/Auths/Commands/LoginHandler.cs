@@ -41,7 +41,7 @@ namespace LiftNet.Handler.Auths.Commands
             if (token == null)
             {
                 _logger.Error("failed to login");
-                return LiftNetRes<TokenInfo>.ErrorResponse("Failed to login");
+                return LiftNetRes<TokenInfo>.ErrorResponse("Username or password is not correct!");
             }
 
             _logger.Info("login successfully");

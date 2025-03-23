@@ -1,4 +1,4 @@
-﻿namespace LiftNet.Api.Requests
+﻿namespace LiftNet.Api.Requests.Auths
 {
     public class LoginRequest
     {
