@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LiftNet.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,10 @@ namespace LiftNet.Contract.Dtos.Auth
 {
     public class RegisterModel
     {
+        public required LiftNetRoleEnum Role
+        {
+            get; set;
+        }
         public required string FirstName
         {
             get; set;

@@ -9,6 +9,7 @@ namespace LiftNet.Api.ToDto
         {
             return new RegisterCommand
             {
+                Role = request.Role,
                 Email = request.Email,
                 Username = request.Username,
                 Password = request.Password,

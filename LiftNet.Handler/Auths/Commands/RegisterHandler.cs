@@ -42,6 +42,7 @@ namespace LiftNet.Handler.Auths.Commands
             }
             var registerModel = new RegisterModel()
             {
+                Role = request.Role,
                 Email = request.Email,
                 Username = request.Username,
                 Password = request.Password,

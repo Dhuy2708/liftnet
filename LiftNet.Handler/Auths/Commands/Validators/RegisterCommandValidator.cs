@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using LiftNet.Domain.Entities;
+using LiftNet.Domain.Enums;
 using LiftNet.Handler.Auths.Commands.Requests;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
@@ -16,6 +17,11 @@ namespace LiftNet.Handler.Auths.Commands.Validators
     {
         public RegisterCommandValidator()
         {
+            RuleFor(x => x.Role)
+                 .NotEmpty().WithMessage("Role is required.")
+                 .IsInEnum().WithMessage("Invalid role.")
+                 .Must(role => role != LiftNetRoleEnum.Admin)
+                 .WithMessage("Admin role is not allowed.");
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage("Email is required.")
                 .EmailAddress().WithMessage("Invalid email format.");
