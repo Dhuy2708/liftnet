@@ -38,8 +38,9 @@ namespace LiftNet.Api.Controllers
         }
 
         [HttpPost("search/followed")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
         [ProducesResponseType(typeof(PaginatedLiftNetRes<UserOverview>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> SearchFollowUser([FromQuery] QueryCondition cond)
+        public async Task<IActionResult> SearchFollowUser(QueryCondition cond)
         {
             var req = new SearchFollowedUserRequest()
             {
@@ -65,6 +66,24 @@ namespace LiftNet.Api.Controllers
             }
 
             var request = new FollowUserCommand()
+            {
+                UserId = UserId,
+                TargetId = targetId,
+            };
+            var result = await _mediator.Send(request);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpPost("unfollow")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> UnfollowUser(string targetId)
+        {
+            var request = new UnfollowUserCommand()
             {
                 UserId = UserId,
                 TargetId = targetId,

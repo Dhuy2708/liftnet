@@ -1,4 +1,5 @@
-﻿using LiftNet.Contract.Interfaces.IRepos;
+﻿using LiftNet.Contract.Enums;
+using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Views.Users;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Enums;
@@ -39,12 +40,20 @@ namespace LiftNet.Handler.Socials.Queries
             var userId = request.UserId;
             var cond = request.Conditions;
 
-            var followedUserIds = await _uow.SocialConnectionRepo.GetQueryable()
-                                           .Where(x => x.UserId == userId)
-                                           .Select(x => x.TargetId)
-                                           .ToListAsync();
+            var roles = _roleManager.Roles.ToList();
 
             var queryable = _uow.UserRepo.GetQueryable();
+            queryable = queryable.Include(x => x.UserRoles);
+
+            var notAdminRoles = roles.Where(x => !x.Name.Eq(LiftNetRoleEnum.Admin.ToString())).Select(x => x.Id).ToList();
+            queryable = queryable.Where(x => notAdminRoles.Contains(x.UserRoles.First().RoleId));
+
+            // followed filter
+            var followedUserIds = await _uow.SocialConnectionRepo.GetQueryable()
+                                           .Where(x => x.UserId == userId && x.Status == (int)SocialConnectionStatus.Following)
+                                           .Select(x => x.TargetId)
+                                           .ToListAsync();
+            queryable = queryable.Where(x => followedUserIds.Contains(x.Id));
 
             // search text
             var searchTxt = cond.FindCondition("search")?.Values.FirstOrDefault();
@@ -65,12 +74,12 @@ namespace LiftNet.Handler.Socials.Queries
                 queryable = queryable.Where(x => x.UserRoles.Any(r => r.RoleId == roleId!.Id));
             }
 
-            queryable = queryable.Where(x => followedUserIds.Contains(x.Id));
+
+            
             queryable = queryable.OrderBy(x => x.UserName);
             queryable = queryable.BuildPaginated(cond);
 
             var users = await queryable.ToListAsync();
-            var roles = _roleManager.Roles.ToList();
             var roleDict = roles.ToDictionary(x => x.Id, x => x.Name);
             Dictionary<string, LiftNetRoleEnum> roleEnumDict = new();
 

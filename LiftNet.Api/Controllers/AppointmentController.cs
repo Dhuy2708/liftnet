@@ -46,7 +46,7 @@ namespace LiftNet.Api.Controllers
         [HttpPost("list")]
         [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
         [ProducesResponseType(typeof(PaginatedLiftNetRes<AppointmentOverview>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> ListAppointments([FromQuery] QueryCondition cond)
+        public async Task<IActionResult> ListAppointments(QueryCondition cond)
         {
             var req = new ListAppointmentsQuery()
             {

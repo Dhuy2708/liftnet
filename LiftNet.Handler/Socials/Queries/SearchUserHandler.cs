@@ -38,9 +38,13 @@ namespace LiftNet.Handler.Searches.Queries
             var userId = request.UserId;
             var cond = request.Conditions;
 
-            var queryable = _userRepo.GetQueryable();
+            var roles = _roleManager.Roles.ToList();
 
+            var queryable = _userRepo.GetQueryable();
             queryable = queryable.Include(x => x.UserRoles);
+
+            var notAdminRoles = roles.Where(x => !x.Name.Eq(LiftNetRoleEnum.Admin.ToString())).Select(x => x.Id).ToList();
+            queryable = queryable.Where(x => notAdminRoles.Contains(x.UserRoles.First().RoleId));
 
             // search text
             var searchTxt = cond.FindCondition("search")?.Values.FirstOrDefault();
@@ -54,11 +58,8 @@ namespace LiftNet.Handler.Searches.Queries
 
             // role filter
             var role = cond.FindCondition("role")?.Values.FirstOrDefault();
-            if (role.IsNullOrEmpty())
-            {
-                return PaginatedLiftNetRes<UserOverview>.ErrorResponse("Role filter required");
-            }
-            if (Int32.TryParse(role, out var roleInt))
+ 
+            if (role.IsNotNullOrEmpty() && Int32.TryParse(role, out var roleInt))
             {
                 if (roleInt != (int)LiftNetRoleEnum.Seeker && roleInt != (int)LiftNetRoleEnum.Coach)
                 {
@@ -75,7 +76,6 @@ namespace LiftNet.Handler.Searches.Queries
 
             var users = await queryable.ToListAsync();
 
-            var roles = _roleManager.Roles.ToList();
             var roleDict = roles.ToDictionary(x => x.Id, x => x.Name);
             Dictionary<string, LiftNetRoleEnum> roleEnumDict = new();
 

@@ -12,7 +12,7 @@ namespace LiftNet.Contract.Dtos.Query
             public List<ConditionItem> ConditionItems
             {
                 get; set;
-            }
+            } = [];
 
             public int PageNumber
             {
