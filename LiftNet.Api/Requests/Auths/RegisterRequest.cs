@@ -1,7 +1,7 @@
 ﻿using LiftNet.Contract.Dtos;
 using System.ComponentModel.DataAnnotations;
 
-namespace LiftNet.Api.Requests
+namespace LiftNet.Api.Requests.Auths
 {
     public class RegisterRequest
     {

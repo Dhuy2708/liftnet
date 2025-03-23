@@ -1,6 +1,7 @@
 ﻿using LiftNet.Contract.Dtos.Auth;
 using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Domain.Entities;
+using LiftNet.Domain.Exceptions;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Auths.Commands.Requests;
@@ -27,7 +28,18 @@ namespace LiftNet.Handler.Auths.Commands
 
         public async Task<LiftNetRes> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
-            await new RegisterCommandValidator(_userManager).ValidateAndThrowAsync(request);
+            await new RegisterCommandValidator().ValidateAndThrowAsync(request);
+
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user != null)
+            {
+                throw new BadRequestException(["Email is already registered with account."], "Email is already registered with account.");
+            }
+            user = await _userManager.FindByNameAsync(request.Username);
+            if (user != null)
+            {
+                throw new BadRequestException(["Username is already taken."], "Username is already taken.");
+            }
             var registerModel = new RegisterModel()
             {
                 Email = request.Email,

@@ -15,5 +15,11 @@ namespace LiftNet.Domain.Exceptions
         {
             ValidationFailure = validationFailure;
         }
+
+        public BadRequestException(List<string> errors, List<ValidationFailure>? validationFailure = null)
+            : base(errors, string.Empty)
+        {
+            ValidationFailure = validationFailure;
+        }
     }
 }
