@@ -8,6 +8,7 @@ using LiftNet.Handler.Socials.Commands.Requets;
 using LiftNet.Utility.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,12 @@ namespace LiftNet.Handler.Socials.Commands
                 return LiftNetRes.ErrorResponse("You can't follow an admin.");
             }
 
+            var isFollowUserExist = await _uow.UserRepo.GetQueryable()
+                                                       .AnyAsync(x => x.Id == targetId && !x.IsDeleted);      
+            if (!isFollowUserExist)
+            {
+                return LiftNetRes.ErrorResponse("User not found.");
+            }
             _logger.Info($"Begin to follow user, target: {targetId}");
             var queryable = _uow.SocialConnectionRepo.GetQueryable();
             var connection = queryable.FirstOrDefault(x => x.UserId == userId && x.TargetId == targetId);
@@ -60,9 +67,13 @@ namespace LiftNet.Handler.Socials.Commands
                 await _uow.SocialConnectionRepo.Create(newConnection);
             }
 
-            await _uow.CommitAsync();
-            _logger.Info("follow success");
-            return LiftNetRes.SuccessResponse("Followed successfully.");
+            var result = await _uow.CommitAsync();
+            if (result > 0)
+            {
+                _logger.Info("follow success");
+                return LiftNetRes.SuccessResponse("Followed successfully.");
+            }
+            return LiftNetRes.ErrorResponse("Failed to follow.");
         }
     }
 } 
