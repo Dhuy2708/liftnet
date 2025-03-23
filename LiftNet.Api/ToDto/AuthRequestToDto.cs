@@ -1,4 +1,4 @@
-﻿using LiftNet.Api.Requests;
+﻿using LiftNet.Api.Requests.Auths;
 using LiftNet.Handler.Auths.Commands.Requests;
 
 namespace LiftNet.Api.ToDto

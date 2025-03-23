@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Appointments.Queries
 {
-    public class ListAppointmentHandler : IRequestHandler<ListAppointmentsQuery, PaginatedLiftNetRes<AppointmentView>>
+    public class ListAppointmentHandler : IRequestHandler<ListAppointmentsQuery, PaginatedLiftNetRes<AppointmentOverview>>
     {
         private readonly IAppointmentRepo _appointmentRepo;
 
@@ -28,7 +28,7 @@ namespace LiftNet.Handler.Appointments.Queries
             _appointmentRepo = appointmentRepo;
         }
 
-        public async Task<PaginatedLiftNetRes<AppointmentView>> Handle(ListAppointmentsQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedLiftNetRes<AppointmentOverview>> Handle(ListAppointmentsQuery request, CancellationToken cancellationToken)
         {
             var queryable = _appointmentRepo.GetQueryable();
             var conditions = request.Conditions;
@@ -49,8 +49,8 @@ namespace LiftNet.Handler.Appointments.Queries
             var appointments = await query.ToListAsync();
 
             var count = await _appointmentRepo.GetCount();
-            var appointmentDtos = appointments.Select(x => x.ToView()).ToList();
-            return PaginatedLiftNetRes<AppointmentView>.SuccessResponse(appointmentDtos, conditions.PageNumber, conditions.PageSize, count);
+            var appointmentDtos = appointments.Select(x => x.ToOverview()).ToList();
+            return PaginatedLiftNetRes<AppointmentOverview>.SuccessResponse(appointmentDtos, conditions.PageNumber, conditions.PageSize, count);
         }
 
         public IQueryable<Appointment> BuildQuery(IQueryable<Appointment> queryable, QueryCondition conditions)

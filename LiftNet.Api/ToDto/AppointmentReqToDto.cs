@@ -1,4 +1,4 @@
-﻿using LiftNet.Api.Requests;
+﻿using LiftNet.Api.Requests.Appointments;
 using LiftNet.Contract.Dtos;
 using LiftNet.Contract.Enums;
 using LiftNet.Utility.Mappers;

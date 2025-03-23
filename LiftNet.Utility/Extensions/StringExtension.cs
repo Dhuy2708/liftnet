@@ -13,6 +13,11 @@ namespace LiftNet.Utility.Extensions
             return String.IsNullOrEmpty(str);
         }
 
+        public static bool IsNotNullOrEmpty(this string? str)
+        {
+            return !String.IsNullOrEmpty(str);
+        }
+
         public static bool Eq(this string? str, string strToCompare)
         {
             if (str == null || strToCompare == null)

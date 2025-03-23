@@ -50,5 +50,13 @@ namespace LiftNet.Contract.Views.Appointments
         {
             get; set;
         }
+        public DateTime Created
+        {
+            get; set;
+        }
+        public DateTime Modified
+        {
+            get; set;
+        }
     }
 }

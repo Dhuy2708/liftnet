@@ -59,6 +59,16 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        public DateTime Created
+        {
+            get; set;
+        }
+
+        public DateTime Modified
+        {
+            get; set;
+        } = DateTime.UtcNow;
+
         // mapping
         public User? Booker
         {

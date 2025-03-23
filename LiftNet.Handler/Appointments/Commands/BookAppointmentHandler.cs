@@ -24,6 +24,8 @@ namespace LiftNet.Handler.Appointments.Commands
         {
             request.Appointment.Status = Contract.Enums.AppointmentStatus.Pending;
             var entity = request.Appointment.ToEntity();
+            entity.Created = DateTime.UtcNow;
+            entity.Modified = DateTime.UtcNow;
             var result = await _appointmentRepo.Create(entity);
             if (result > 0)
             {
