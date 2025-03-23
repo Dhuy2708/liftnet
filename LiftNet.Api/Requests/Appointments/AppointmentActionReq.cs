@@ -1,6 +1,6 @@
 ﻿using LiftNet.Contract.Enums;
 
-namespace LiftNet.Api.Requests
+namespace LiftNet.Api.Requests.Appointments
 {
     public class AppointmentActionReq
     {

@@ -41,7 +41,7 @@ namespace LiftNet.Handler.Appointments.Commands
                 _logger.Error("appointment not found");
                 return LiftNetRes.ErrorResponse("Appointment not found");
             }
-
+            appointment.Modified = DateTime.UtcNow;
             if (request.Action is AppointmentActionRequestType.Accept)
             {
                 if (appointment.BookerId == request.UserId)

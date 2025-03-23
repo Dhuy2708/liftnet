@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Appointments.Queries.Requests
 {
-    public class ListAppointmentsQuery : IRequest<PaginatedLiftNetRes<AppointmentView>>
+    public class ListAppointmentsQuery : IRequest<PaginatedLiftNetRes<AppointmentOverview>>
     {
         public string UserId
         {

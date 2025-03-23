@@ -1,4 +1,4 @@
-﻿using LiftNet.Api.Requests;
+﻿using LiftNet.Api.Requests.Auths;
 using LiftNet.Api.ToDto;
 using LiftNet.Contract.Views;
 using LiftNet.Domain.Response;

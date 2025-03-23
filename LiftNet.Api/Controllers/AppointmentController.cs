@@ -1,9 +1,9 @@
-﻿
-using LiftNet.Api.Requests;
+﻿using LiftNet.Api.Requests.Appointments;
 using LiftNet.Api.ToDto;
 using LiftNet.Contract.Dtos.Query;
 using LiftNet.Contract.Views.Appointments;
 using LiftNet.Domain.Constants;
+using LiftNet.Domain.Exceptions;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Appointments.Commands.Requests;
 using LiftNet.Handler.Appointments.Queries.Requests;
@@ -45,7 +45,7 @@ namespace LiftNet.Api.Controllers
 
         [HttpGet("list")]
         [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
-        [ProducesResponseType(typeof(PaginatedLiftNetRes<AppointmentView>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(PaginatedLiftNetRes<AppointmentOverview>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> ListAppointments([FromQuery] QueryCondition cond)
         {
             var req = new ListAppointmentsQuery()
@@ -90,6 +90,38 @@ namespace LiftNet.Api.Controllers
                 UserId = UserId,
                 AppointmentId = req.AppointmentId,
                 Action = req.Action,
+            };
+            var result = await _mediator.Send(request);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpPost("edit")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> EditAppointment(EditAppointmentReq req)
+        {
+            if (UserId.IsNullOrEmpty())
+            {
+                return Unauthorized();
+            }
+            if (req.AppointmentId.IsNullOrEmpty())
+            {
+                return BadRequest(LiftNetRes.ErrorResponse("appointmentId is null or empty"));
+            }
+            var request = new EditAppointmentCommand()
+            {
+                UserId = UserId,
+                AppointmentId = req.AppointmentId,
+                Name = req.Name,
+                Description = req.Description,
+                StartTime = req.StartTime,
+                EndTime = req.EndTime,
+                RepeatingType = req.RepeatingType,
+                ParticipantIds = req.ParticipantIds,
             };
             var result = await _mediator.Send(request);
             if (result.Success)

@@ -1,23 +1,20 @@
-﻿using LiftNet.Contract.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LiftNet.Contract.Dtos;
+using LiftNet.Contract.Enums;
+using LiftNet.Contract.Views.Users;
 
-namespace LiftNet.Contract.Dtos
+namespace LiftNet.Contract.Views.Appointments
 {
-    public class AppointmentDto
+    public class AppointmentOverview
     {
         public string Id
         {
             get; set;
         }
-        public UserDto Booker
+        public UserOverview Booker
         {
             get; set;
         }
-        public List<UserDto> Participants
+        public int ParticipantCount
         {
             get; set;
         }
@@ -29,7 +26,7 @@ namespace LiftNet.Contract.Dtos
         {
             get; set;
         }
-        public AddressDto Address
+        public AddressView Address
         {
             get; set;
         }

@@ -1,23 +1,21 @@
 ﻿using LiftNet.Contract.Enums;
+using LiftNet.Domain.Response;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Contract.Dtos
+namespace LiftNet.Handler.Appointments.Commands.Requests
 {
-    public class AppointmentDto
+    public class EditAppointmentCommand : IRequest<LiftNetRes>
     {
-        public string Id
+        public string UserId
         {
             get; set;
         }
-        public UserDto Booker
-        {
-            get; set;
-        }
-        public List<UserDto> Participants
+        public string AppointmentId
         {
             get; set;
         }
@@ -29,19 +27,11 @@ namespace LiftNet.Contract.Dtos
         {
             get; set;
         }
-        public AddressDto Address
+        public DateTime? StartTime
         {
             get; set;
         }
-        public DateTime StartTime
-        {
-            get; set;
-        }
-        public DateTime EndTime
-        {
-            get; set;
-        }
-        public AppointmentStatus Status
+        public DateTime? EndTime
         {
             get; set;
         }
@@ -49,11 +39,7 @@ namespace LiftNet.Contract.Dtos
         {
             get; set;
         }
-        public DateTime Created
-        {
-            get; set;
-        }
-        public DateTime Modified
+        public List<string> ParticipantIds
         {
             get; set;
         }

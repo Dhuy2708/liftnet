@@ -28,6 +28,8 @@ namespace LiftNet.Utility.Mappers
                 EndTime = entity.EndTime,
                 Status = (AppointmentStatus)entity.Status,
                 RepeatingType = (RepeatingType)entity.RepeatingType,
+                Created = entity.Created,
+                Modified = entity.Modified,
             };
         }
 
@@ -45,6 +47,8 @@ namespace LiftNet.Utility.Mappers
                 EndTime = entity.EndTime,
                 Status = (AppointmentStatus)entity.Status,
                 RepeatingType = (RepeatingType)entity.RepeatingType,
+                Created = entity.Created,
+                Modified = entity.Modified,
             };
         }
 
@@ -70,9 +74,9 @@ namespace LiftNet.Utility.Mappers
             };
         }
 
-        public static AppointmentView ToView(this AppointmentDto dto)
+        public static AppointmentOverview ToOverview(this AppointmentDto dto)
         {
-            return new AppointmentView
+            return new AppointmentOverview
             {
                 Id = dto.Id,
                 Booker = dto.Booker?.ToView(),
@@ -84,12 +88,14 @@ namespace LiftNet.Utility.Mappers
                 EndTime = dto.EndTime,
                 Status = dto.Status,
                 RepeatingType = dto.RepeatingType,
+                Created = dto.Created,
+                Modified = dto.Modified,
             };
         }
 
-        public static AppointmentView ToView(this Appointment entity)
+        public static AppointmentOverview ToOverview(this Appointment entity)
         {
-            var view = entity.ToDto().ToView();
+            var view = entity.ToDto().ToOverview();
             return view;
         }
     }

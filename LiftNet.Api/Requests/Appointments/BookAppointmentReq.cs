@@ -1,27 +1,22 @@
-﻿using LiftNet.Contract.Dtos;
-using LiftNet.Contract.Enums;
-using LiftNet.Contract.Views.Users;
+﻿using LiftNet.Contract.Enums;
+using LiftNet.Contract.Views;
+using System.Diagnostics.CodeAnalysis;
 
-namespace LiftNet.Contract.Views.Appointments
+namespace LiftNet.Api.Requests.Appointments
 {
-    public class AppointmentView
+    public class BookAppointmentReq
     {
-        public string Id
+        public List<string> ParticipantIds
         {
             get; set;
         }
-        public UserOverview Booker
-        {
-            get; set;
-        }
-        public int ParticipantCount
-        {
-            get; set;
-        }
+
         public string Name
         {
             get; set;
         }
+
+        [AllowNull]
         public string Description
         {
             get; set;
@@ -35,10 +30,6 @@ namespace LiftNet.Contract.Views.Appointments
             get; set;
         }
         public DateTime EndTime
-        {
-            get; set;
-        }
-        public AppointmentStatus Status
         {
             get; set;
         }
