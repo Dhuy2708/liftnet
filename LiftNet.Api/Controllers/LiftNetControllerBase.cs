@@ -1,4 +1,5 @@
 ﻿using LiftNet.Domain.Constants;
+using LiftNet.Domain.Enums;
 using LiftNet.Domain.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -16,6 +17,11 @@ namespace LiftNet.Api.Controllers
         /// credential
         /// </summary>
         protected string UserId => User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
+        protected LiftNetRoleEnum Role => Roles.FirstOrDefault();
+        protected List<LiftNetRoleEnum> Roles => User.FindFirstValue(LiftNetClaimType.Roles)?
+                                                      .Split(", ")?
+                                                      .Select(x => (LiftNetRoleEnum)Enum.Parse(typeof(LiftNetRoleEnum), x))?
+                                                      .ToList() ?? [];
 
         private readonly IServiceProvider _serviceProvider;
         protected readonly IMediator _mediator;

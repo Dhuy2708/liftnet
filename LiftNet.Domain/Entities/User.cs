@@ -39,12 +39,6 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
-        // extension based on role
-        public string? Extension
-        {
-            get; set;
-        }
-
         [Required]
         [DefaultValue("GETUTCDATE()")]
         public DateTime CreatedAt
@@ -63,6 +57,11 @@ namespace LiftNet.Domain.Entities
         }
 
         public ICollection<UserRole> UserRoles
+        {
+            get; set;
+        }
+
+        public CoachExtension? Extension
         {
             get; set;
         }

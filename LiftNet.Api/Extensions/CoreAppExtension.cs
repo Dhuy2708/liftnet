@@ -65,6 +65,7 @@ namespace LiftNet.Api.Extensions
             #region ioc
             services.AddDependencies(typeof(Handler.HandlerAssemblyRef).Assembly);
             services.AddDependencies(typeof(Repositories.RepoAssemblyRef).Assembly);
+            services.AddDependencies(typeof(Service.ServiceAssemblyRef).Assembly);
             #endregion
 
             #region cqrs
