@@ -95,5 +95,24 @@ namespace LiftNet.Api.Controllers
             }
             return StatusCode(500, result);
         }
+
+        [HttpGet("profile/{id}")]
+        [ProducesResponseType(typeof(LiftNetRes<ProfileView>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> Profile([FromRoute] string id)
+        {
+            
+            var req = new UserProfileQuery()
+            {
+                IsSelf = UserId.Eq(id),
+                UserId = UserId,
+                ProfileId = id,
+            };
+            var result = await _mediator.Send(req);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
     }
 }
