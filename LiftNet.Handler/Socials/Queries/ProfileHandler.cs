@@ -31,6 +31,7 @@ namespace LiftNet.Handler.Socials.Queries
 
         public async Task<LiftNetRes<ProfileView>> Handle(UserProfileQuery request, CancellationToken cancellationToken)
         {
+            _logger.Info("get user profile");
             var profile = await _uow.UserRepo.GetQueryable().FirstOrDefaultAsync(x => x.Id == request.ProfileId);
 
             if (profile == null)
