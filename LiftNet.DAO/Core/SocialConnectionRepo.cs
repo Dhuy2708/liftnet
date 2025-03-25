@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Repositories.Core
 {
-    internal class SocialConnectionRepo : CrudBaseRepo<SocialConnection>, ISocialConnectionRepo, IDependency
+    internal class SocialConnectionRepo : CrudBaseRepo<SocialConnection>, ISocialConnectionRepo
     {
         public SocialConnectionRepo(LiftNetDbContext dbContext, ILiftLogger<CrudBaseRepo<SocialConnection>> logger) : base(dbContext, logger)
         {

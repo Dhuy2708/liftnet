@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Repositories.Core
 {
-    public class UnitOfWork : IUnitOfWork, IDependency
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly LiftNetDbContext _context;
         private IDbContextTransaction? _transaction;

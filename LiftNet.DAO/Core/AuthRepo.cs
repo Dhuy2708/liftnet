@@ -15,7 +15,7 @@ using System.Security.Claims;
 
 namespace LiftNet.Repositories.Core
 {
-    public class AuthRepo : IAuthRepo, IDependency
+    public class AuthRepo : IAuthRepo
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;

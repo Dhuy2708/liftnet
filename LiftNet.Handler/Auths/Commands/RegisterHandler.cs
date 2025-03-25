@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace LiftNet.Handler.Auths.Commands
 {
-    public class RegisterHandler : IRequestHandler<RegisterCommand, LiftNetRes>, IDependency
+    public class RegisterHandler : IRequestHandler<RegisterCommand, LiftNetRes>
     {
         private readonly UserManager<User> _userManager;
         private readonly IAuthRepo _authRepo;

@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LiftNet.Domain\LiftNet.Domain.csproj" />
+    <ProjectReference Include="..\LiftNet.Ioc\LiftNet.Ioc.csproj" />
   </ItemGroup>
 
 </Project>
