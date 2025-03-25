@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LiftNet.Service.Services
 {
-    internal class RoleService : IRoleService, IDependency
+    internal class RoleService : IRoleService
     {
         private readonly ILiftLogger<RoleService> _logger;
         private readonly RoleManager<Role> _roleManager;

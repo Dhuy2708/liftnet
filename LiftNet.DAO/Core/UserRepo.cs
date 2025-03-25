@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Repositories.Core
 {
-    internal class UserRepo : CrudBaseRepo<User>, IUserRepo, IDependency
+    internal class UserRepo : CrudBaseRepo<User>, IUserRepo
     {
         public UserRepo(LiftNetDbContext dbContext, ILiftLogger<CrudBaseRepo<User>> logger) : base(dbContext, logger)
         {

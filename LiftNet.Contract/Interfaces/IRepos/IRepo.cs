@@ -1,5 +1,4 @@
-﻿using LiftNet.Domain.Entities;
-using LiftNet.Ioc;
+﻿using LiftNet.Ioc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Contract.Interfaces.IRepos
 {
-    public interface ISocialConnectionRepo : ICrudBaseRepo<SocialConnection>, IDependency
+    public interface IRepo : IDependency
     {
     }
 }

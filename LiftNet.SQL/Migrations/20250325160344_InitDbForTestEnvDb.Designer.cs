@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LiftNet.Persistence.Migrations
 {
     [DbContext(typeof(LiftNetDbContext))]
-    [Migration("20250322103343_AddMappingTableForAppointmentAndUser")]
-    partial class AddMappingTableForAppointmentAndUser
+    [Migration("20250325160344_InitDbForTestEnvDb")]
+    partial class InitDbForTestEnvDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,11 +37,17 @@ namespace LiftNet.Persistence.Migrations
                     b.Property<string>("BookerId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Modified")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -90,6 +96,35 @@ namespace LiftNet.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("AppointmentParticipants");
+                });
+
+            modelBuilder.Entity("LiftNet.Domain.Entities.CoachExtension", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CoachId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ReviewCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SessionTrained")
+                        .HasColumnType("int");
+
+                    b.Property<float>("Star")
+                        .HasColumnType("real");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CoachId")
+                        .IsUnique();
+
+                    b.ToTable("CoachExtensions");
                 });
 
             modelBuilder.Entity("LiftNet.Domain.Entities.Role", b =>
@@ -177,9 +212,6 @@ namespace LiftNet.Persistence.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Extension")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -375,6 +407,17 @@ namespace LiftNet.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("LiftNet.Domain.Entities.CoachExtension", b =>
+                {
+                    b.HasOne("LiftNet.Domain.Entities.User", "Coach")
+                        .WithOne("Extension")
+                        .HasForeignKey("LiftNet.Domain.Entities.CoachExtension", "CoachId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Coach");
+                });
+
             modelBuilder.Entity("LiftNet.Domain.Entities.SocialConnection", b =>
                 {
                     b.HasOne("LiftNet.Domain.Entities.User", "Target")
@@ -457,6 +500,8 @@ namespace LiftNet.Persistence.Migrations
 
             modelBuilder.Entity("LiftNet.Domain.Entities.User", b =>
                 {
+                    b.Navigation("Extension");
+
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618

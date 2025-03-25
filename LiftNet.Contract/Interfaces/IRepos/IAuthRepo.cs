@@ -7,10 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using LiftNet.Contract.Dtos.Auth;
 using System.IdentityModel.Tokens.Jwt;
+using LiftNet.Ioc;
 
 namespace LiftNet.Contract.Interfaces.IRepos
 {
-    public interface IAuthRepo
+    public interface IAuthRepo : IDependency
     {
         Task<JwtSecurityToken?> LogInAsync(LoginModel logInViewModel);
         Task<IdentityResult> RegisterAsync(RegisterModel registerViewModel);
