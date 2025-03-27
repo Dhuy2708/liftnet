@@ -16,4 +16,21 @@ namespace LiftNet.Contract.Constants
         // log
         public const string LOG_KEY = "log";
     }
+
+    public class CosmosContainerId
+    {
+        public const string Feed = "feed";
+        public const string Comment = "comment";
+        public const string chat = "chat";
+    }
+
+    public class EnvKeys
+    {
+        public const string JWT_KEY = "JWT_KEY";
+        public const string JWT_ISSUER = "JWT_ISSUER";
+        public const string JWT_AUDIENCE = "JWT_AUDIENCE";
+        public const string SQL_CONNECTION_STRING = "SQL_CONNECTION_STRING";
+        public const string BLOB_CONNECTION_STRING = "BLOB_CONNECTION_STRING";
+        public const string COSMOS_CONNECTION_STRING = "COSMOS_CONNECTION_STRING";
+    }
 }

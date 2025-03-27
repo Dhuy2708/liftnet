@@ -17,7 +17,7 @@ public class Program
         builder.Services.RegisterAuth();
         builder.Services.RegisterDbConfig();
         builder.Services.RegisterAppContext();
-        builder.Services.RegisterCqrs();
+        builder.Services.RegisterCommon();
         builder.Services.RegisterInfras();
 
         builder.Services.AddControllers();

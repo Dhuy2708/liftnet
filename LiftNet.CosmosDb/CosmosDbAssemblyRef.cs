@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Contract.Interfaces.IServices
+namespace LiftNet.CosmosDb
 {
-    public interface IIndexService
+    public static class CosmosDbAssemblyRef
     {
     }
 }

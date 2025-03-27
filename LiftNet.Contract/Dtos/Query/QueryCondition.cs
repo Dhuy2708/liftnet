@@ -87,12 +87,13 @@ namespace LiftNet.Contract.Dtos.Query
 
             }
 
-            public ConditionItem(string property, List<string> values, QueryOperator queryOperator, QueryLogic logic = QueryLogic.None)
+            public ConditionItem(string property, List<string> values, FilterType filterType = FilterType.String, QueryOperator queryOperator = QueryOperator.Equal, QueryLogic logic = QueryLogic.None)
             {
                 Property = property;
                 Values = values;
                 Operator = queryOperator;
                 Logic = logic;
+                Type = filterType;
             }
         }
 

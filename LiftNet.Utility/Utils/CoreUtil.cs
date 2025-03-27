@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LiftNet.Contract.Constants;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,20 +33,20 @@ namespace LiftNet.Utility.Utils
 
         public byte[] GetSecretKey()
         {
-            string key = Environment.GetEnvironmentVariable("JWT_KEY")
+            string key = Environment.GetEnvironmentVariable(EnvKeys.JWT_KEY)
                          ?? throw new InvalidOperationException("JWT_KEY environment variable is not set.");
             return Encoding.UTF8.GetBytes(key);
         }
 
         public string GetIssuer()
         {
-            return Environment.GetEnvironmentVariable("JWT_ISSUER")
+            return Environment.GetEnvironmentVariable(EnvKeys.JWT_ISSUER)
                    ?? throw new InvalidOperationException("JWT_ISSUER environment variable is not set.");
         }
 
         public string GetValidAudience()
         {
-            return Environment.GetEnvironmentVariable("JWT_AUDIENCE")
+            return Environment.GetEnvironmentVariable(EnvKeys.JWT_AUDIENCE)
                    ?? throw new InvalidOperationException("JWT_AUDIENCE environment variable is not set.");
         }
     }

@@ -1,4 +1,5 @@
 ﻿using dotenv.net;
+using LiftNet.Contract.Constants;
 using LiftNet.Domain.Entities;
 using LiftNet.Persistence.Context;
 using Microsoft.AspNetCore.Identity;
@@ -12,7 +13,7 @@ namespace LiftNet.Api.Extensions
         public static IServiceCollection RegisterDbConfig(this IServiceCollection services)
         {
             DotEnv.Load();
-            var connectionString = Environment.GetEnvironmentVariable("SQL_CONNECTION_STRING")!;
+            var connectionString = Environment.GetEnvironmentVariable(EnvKeys.SQL_CONNECTION_STRING)!;
 
             services.AddDbContext<LiftNetDbContext>(opt =>
             {
