@@ -2,6 +2,7 @@
 using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Views;
 using LiftNet.Domain.Entities;
+using LiftNet.Domain.Exceptions;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Auths.Commands.Requests;
@@ -29,6 +30,12 @@ namespace LiftNet.Handler.Auths.Commands
         public async Task<LiftNetRes<TokenInfo>> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
             await new LoginCommandValidator(_userManager).ValidateAndThrowAsync(request);
+
+            var user = await _userManager.FindByNameAsync(request.Username);
+            if (user == null)
+            {
+                throw new NotFoundException("Email or username not exist");
+            }
 
             var loginModel = new LoginModel()
             {

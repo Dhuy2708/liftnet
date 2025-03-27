@@ -18,11 +18,6 @@ namespace LiftNet.Handler.Auths.Commands.Validators
             _userManager = userManager;
             RuleFor(x => x.Username).NotNull().NotEmpty().WithMessage("Username is required.");
             RuleFor(x => x.Password).NotNull().NotEmpty().WithMessage("Password is required.");
-            RuleFor(x => x.Username).MustAsync(async (username, cancellation) =>
-            {
-                var user = await _userManager.FindByNameAsync(username);
-                return user != null;
-            }).WithMessage("User not found.");
         }
     }
 }
