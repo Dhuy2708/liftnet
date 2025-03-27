@@ -22,6 +22,7 @@ namespace LiftNet.Contract.Constants
         public const string Feed = "feed";
         public const string Comment = "comment";
         public const string Chat = "chat";
+        public const string Schedule = "schedule";
     }
 
     public class EnvKeys
