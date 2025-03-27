@@ -1,11 +1,10 @@
-﻿using LiftNet.Domain.Constants;
-using LiftNet.Domain.Enums;
+﻿using LiftNet.Api.Utils;
+using LiftNet.Contract.Constants;
+using LiftNet.Domain.Constants;
 using LiftNet.Domain.Interfaces;
-using LiftNet.Ioc;
 using LiftNet.Logger.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Reflection;
 using System.Text;
 
 namespace LiftNet.Api.Extensions
@@ -40,8 +39,8 @@ namespace LiftNet.Api.Extensions
 #endif
                 x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                 {
-                    ValidIssuer = Environment.GetEnvironmentVariable("JWT_ISSUER"),
-                    ValidAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE"),
+                    ValidIssuer = Environment.GetEnvironmentVariable(EnvKeys.JWT_ISSUER),
+                    ValidAudience = Environment.GetEnvironmentVariable(EnvKeys.JWT_AUDIENCE),
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JWT_KEY")!)),
 
                     ValidateIssuer = true,
@@ -60,7 +59,7 @@ namespace LiftNet.Api.Extensions
 
             return services;
         }
-        public static IServiceCollection RegisterCqrs(this IServiceCollection services)
+        public static IServiceCollection RegisterCommon(this IServiceCollection services)
         {
             #region ioc
             services.AddDependencies(typeof(Repositories.RepoAssemblyRef).Assembly);
@@ -74,13 +73,8 @@ namespace LiftNet.Api.Extensions
                                 ));
             #endregion
 
-            #region logger
             services.AddSingleton(typeof(ILiftLogger<>), typeof(LiftLogger<>));
-            #endregion
-
-            #region inmemory
             services.AddMemoryCache();
-            #endregion
 
             return services;
         }
@@ -88,23 +82,6 @@ namespace LiftNet.Api.Extensions
         public static IServiceCollection RegisterAppContext(this IServiceCollection services)
         {
             services.AddHttpContextAccessor();
-            return services;
-        }
-
-        private static IServiceCollection AddDependencies(this IServiceCollection services, Assembly assembly)
-        {
-            var types = assembly.GetTypes()
-                .Where(t => t.IsClass && !t.IsAbstract && typeof(IDependency).IsAssignableFrom(t));
-
-            foreach (var type in types)
-            {
-                var interfaces = type.GetInterfaces().Where(i => i != typeof(IDependency));
-                foreach (var @interface in interfaces)
-                {
-                    services.AddScoped(@interface, type);
-                }
-            }
-
             return services;
         }
     }
