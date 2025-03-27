@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LiftNet.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitDbForTestEnvDb : Migration
+    public partial class InitDbTestEnv : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

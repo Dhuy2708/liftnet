@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LiftNet.Persistence.Migrations
 {
     [DbContext(typeof(LiftNetDbContext))]
-    [Migration("20250325160344_InitDbForTestEnvDb")]
-    partial class InitDbForTestEnvDb
+    [Migration("20250327173141_InitDbTestEnv")]
+    partial class InitDbTestEnv
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -4,7 +4,9 @@ using LiftNet.AzureBlob.Services;
 using LiftNet.Contract.Constants;
 using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Interfaces.IServices.Indexes;
+using LiftNet.CosmosDb.Contracts;
 using LiftNet.CosmosDb.Services;
+using LiftNet.Utility.Extensions;
 using Microsoft.Azure.Cosmos;
 
 namespace LiftNet.Api.Extensions
@@ -22,8 +24,12 @@ namespace LiftNet.Api.Extensions
             #endregion
 
             #region cosmos
-            var cosmosCnnStr = Environment.GetEnvironmentVariable(EnvKeys.COSMOS_CONNECTION_STRING);
-            services.AddSingleton(provider => new CosmosClient(cosmosCnnStr));
+            var cosmosCnnStr = Environment.GetEnvironmentVariable(EnvKeys.COSMOS_CONNECTION_STRING) ?? throw new ArgumentNullException("Cosmos connection string is not found.");
+            var cosmosDbId = Environment.GetEnvironmentVariable(EnvKeys.COSMOS_DATABASE_ID) ?? throw new ArgumentNullException("COSMOS_DATABASE_ID is null");
+
+            var cosmosClient = new CosmosClient(cosmosCnnStr);
+            services.AddSingleton(provider => new CosmosCredential(cosmosClient, cosmosDbId));
+     
             services.AddScoped(typeof(IIndexBaseService<>), typeof(IndexBaseService<>));
             services.AddDependencies(typeof(CosmosDb.CosmosDbAssemblyRef).Assembly);
             #endregion

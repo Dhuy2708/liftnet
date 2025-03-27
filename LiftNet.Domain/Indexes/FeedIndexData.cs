@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Domain.Indexes
 {
-    public class Feed : IndexData
+    public class FeedIndexData : IndexData
     {
         [JsonProperty(PropertyName = "content")]
         public string Content
