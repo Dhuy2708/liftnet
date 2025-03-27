@@ -1,4 +1,5 @@
-﻿using LiftNet.Contract.Interfaces.IServices.Indexes;
+﻿using LiftNet.Contract.Constants;
+using LiftNet.Contract.Interfaces.IServices.Indexes;
 using LiftNet.CosmosDb.Contracts;
 using LiftNet.Domain.Indexes;
 using LiftNet.Domain.Interfaces;
@@ -12,7 +13,7 @@ namespace LiftNet.CosmosDb.Services
 {
     public class ScheduleIndexService : IndexBaseService<ScheduleIndexData>, IScheduleIndexService
     {
-        public ScheduleIndexService(CosmosCredential cred, string containerId, ILiftLogger<IndexBaseService<ScheduleIndexData>> logger) : base(cred, containerId, logger)
+        public ScheduleIndexService(CosmosCredential cred, ILiftLogger<IndexBaseService<ScheduleIndexData>> logger) : base(cred, CosmosContainerId.Schedule, logger)
         {
         }
     }
