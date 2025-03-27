@@ -1,6 +1,6 @@
 ﻿using Azure;
 using LiftNet.Contract.Dtos.Query;
-using LiftNet.Contract.Interfaces.IServices;
+using LiftNet.Contract.Interfaces.IServices.Indexes;
 using LiftNet.CosmosDb.Contracts;
 using LiftNet.Domain.Indexes;
 using LiftNet.Domain.Interfaces;
