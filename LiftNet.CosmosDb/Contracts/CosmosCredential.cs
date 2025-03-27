@@ -17,5 +17,11 @@ namespace LiftNet.CosmosDb.Contracts
         {
             get; set;
         }
+
+        public CosmosCredential(CosmosClient client, string databaseId)
+        {
+            Client = client;
+            DatabaseId = databaseId;
+        }
     }
 }

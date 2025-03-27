@@ -4,6 +4,7 @@ using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Ioc;
 using LiftNet.Persistence.Context;
+using LiftNet.Utility.Extensions;
 using LiftNet.Utility.Utils;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -119,7 +120,7 @@ namespace LiftNet.Repositories.Core
 
             return entity;
         }
-        public async Task<IEnumerable<TEntity>> GetByIds<Tid>(IEnumerable<Tid> ids)
+        public async Task<IEnumerable<TEntity>> GetByIds<Tid>(IEnumerable<Tid> ids, List<string>? includes = null)
         {
             _logger.Info($"[BaseRepo<{typeof(TEntity).Name}>.GetByIds]: Assembling data...");
 
@@ -132,9 +133,16 @@ namespace LiftNet.Repositories.Core
                 throw new InvalidOperationException($"Key property 'Id' not found for entity {typeof(TEntity).Name}");
             }
 
-            IQueryable<TEntity> query = _dbContext.Set<TEntity>()
-                .Where(e => ids.Contains((Tid)keyProperty!.GetValue(e)!))
-                .AsNoTracking();
+            IQueryable<TEntity> query = _dbContext.Set<TEntity>();
+            if (includes.IsNotNullOrEmpty())
+            {
+                includes.ForEach(x =>
+                {
+                    query = query.Include(x);
+                });
+            }
+            query = query.Where(e => ids.Contains((Tid)keyProperty!.GetValue(e)!))
+                         .AsNoTracking();
 
             return await query.ToListAsync();
         }

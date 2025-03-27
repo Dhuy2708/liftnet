@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace LiftNet.CosmosDb.Services
 {
-    public class FeedIndexService : IndexBaseService<Feed>, IFeedIndexService
+    public class FeedIndexService : IndexBaseService<FeedIndexData>, IFeedIndexService
     {
         private readonly ILiftLogger<FeedIndexService> _logger;
         public FeedIndexService(CosmosCredential cred, 
-                                ILiftLogger<IndexBaseService<Feed>> bLogger, 
+                                ILiftLogger<IndexBaseService<FeedIndexData>> bLogger, 
                                 ILiftLogger<FeedIndexService> logger) 
             : base(cred, CosmosContainerId.Feed, bLogger)
         {

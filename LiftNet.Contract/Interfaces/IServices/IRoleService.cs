@@ -11,5 +11,6 @@ namespace LiftNet.Contract.Interfaces.IServices
     public interface IRoleService : IDependency
     {
         Task<LiftNetRoleEnum> GetRoleByUserId(string userId);
+        Task<Dictionary<string, LiftNetRoleEnum>> GetAllRoleDictAsync();
     }
 }

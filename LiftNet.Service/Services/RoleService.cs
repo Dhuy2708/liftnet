@@ -50,5 +50,11 @@ namespace LiftNet.Service.Services
             }
             return LiftNetRoleEnum.None;
         }
+
+        public async Task<Dictionary<string, LiftNetRoleEnum>> GetAllRoleDictAsync()
+        {
+            var roles = await _roleManager.Roles.ToListAsync();
+            return roles.ToDictionary(x => x.Id, x => RoleUtil.GetRole(x.Name!));
+        }
     }
 }

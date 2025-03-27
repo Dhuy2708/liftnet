@@ -1,5 +1,4 @@
-﻿using LiftNet.Domain.Enums.Index;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +13,7 @@ namespace LiftNet.Domain.Indexes
         public string Id
         {
             get; set;
-        }
+        } = Guid.NewGuid().ToString();
 
         [JsonProperty(PropertyName = "userid")]
         public string UserId
@@ -22,7 +21,7 @@ namespace LiftNet.Domain.Indexes
             get; set;
         }
 
-        [JsonProperty(PropertyName = "schema")]
+        [JsonProperty(PropertyName = "schema", NullValueHandling = NullValueHandling.Ignore)]
         public DataSchema Schema
         {
             get; set;
@@ -39,5 +38,18 @@ namespace LiftNet.Domain.Indexes
         {
             get; set;
         }
+    }
+
+    public enum DataSchema
+    {
+        None = 0,
+
+        // feed
+        Feed = 1,
+        Comment = 2,
+
+        // chat
+        Chat = 10,
+
     }
 }

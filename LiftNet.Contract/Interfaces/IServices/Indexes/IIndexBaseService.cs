@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Contract.Interfaces.IServices.Indexes
 {
-    public interface IIndexBaseService<T> : IDependency
+    public interface IIndexBaseService<T>
     {
         Task<T?> GetAsync(string id, string? partitionKey = null);
         Task<(List<T> Items, string? NextPageToken)> QueryAsync(QueryCondition condition);
