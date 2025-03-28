@@ -47,7 +47,9 @@ namespace LiftNet.Service.Services
 
         public async Task<List<User>> GetByIdsAsync(List<string> userIds)
         {
-            return (await _userRepo.GetByIds(userIds)).ToList();
+            var queryable = _userRepo.GetQueryable();
+            var result = await queryable.Where(x => userIds.Contains(x.Id)).ToListAsync();
+            return result;
         }
     }
 }

@@ -120,32 +120,6 @@ namespace LiftNet.Repositories.Core
 
             return entity;
         }
-        public async Task<IEnumerable<TEntity>> GetByIds<Tid>(IEnumerable<Tid> ids, List<string>? includes = null)
-        {
-            _logger.Info($"[BaseRepo<{typeof(TEntity).Name}>.GetByIds]: Assembling data...");
-
-            var keyProperty = typeof(TEntity).GetProperties()
-                .FirstOrDefault(p => p.Name.Equals("Id", StringComparison.OrdinalIgnoreCase));
-
-            if (keyProperty == null)
-            {
-                _logger.Error($"[BaseRepo<{typeof(TEntity).Name}>.GetByIds]: Key property not found.");
-                throw new InvalidOperationException($"Key property 'Id' not found for entity {typeof(TEntity).Name}");
-            }
-
-            IQueryable<TEntity> query = _dbContext.Set<TEntity>();
-            if (includes.IsNotNullOrEmpty())
-            {
-                includes.ForEach(x =>
-                {
-                    query = query.Include(x);
-                });
-            }
-            query = query.Where(e => ids.Contains((Tid)keyProperty!.GetValue(e)!))
-                         .AsNoTracking();
-
-            return await query.ToListAsync();
-        }
         #endregion
 
         #region check
@@ -316,24 +290,6 @@ namespace LiftNet.Repositories.Core
                 return await Update(entity);
             }
             return 0;
-        }
-
-        public async Task<int> DeleteRange(IEnumerable<object> ids)
-        {
-            var entities = await GetByIds(ids);
-            if (entities == null || !entities.Any())
-            {
-                return 0;
-            }
-            foreach (var entity in entities)
-            {
-                var isDeletedProperty = entity.GetType().GetProperty("isDeleted");
-                if (isDeletedProperty != null && isDeletedProperty.CanWrite)
-                {
-                    isDeletedProperty.SetValue(entity, true);
-                }
-            }
-            return await UpdateRange(entities);
         }
 
         public async Task<int> HardDelete(TEntity model)

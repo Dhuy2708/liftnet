@@ -24,7 +24,7 @@ namespace LiftNet.Api.Extensions
             #endregion
 
             #region cosmos
-            var cosmosCnnStr = Environment.GetEnvironmentVariable(EnvKeys.COSMOS_CONNECTION_STRING) ?? throw new ArgumentNullException("Cosmos connection string is not found.");
+            var cosmosCnnStr = Environment.GetEnvironmentVariable(EnvKeys.COSMOS_CONNECTION_STRING) ?? throw new ArgumentNullException("COSMOS_CONNECTION_STRING is null.");
             var cosmosDbId = Environment.GetEnvironmentVariable(EnvKeys.COSMOS_DATABASE_ID) ?? throw new ArgumentNullException("COSMOS_DATABASE_ID is null");
 
             var cosmosClient = new CosmosClient(cosmosCnnStr);
