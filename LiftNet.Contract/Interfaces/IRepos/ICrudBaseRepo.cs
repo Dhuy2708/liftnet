@@ -15,7 +15,6 @@ namespace LiftNet.Contract.Interfaces.IRepos
         Task<IEnumerable<T>> QueryByConditions(QueryCondition condition, string[]? includeProps = null);
         Task<IEnumerable<T>> GetAll(string[]? includeProps = null);
         Task<T?> GetById<TId>(TId id, string[]? includeProps = null, bool dontAssignNotDeleted = true);
-        Task<IEnumerable<T>> GetByIds<Tid>(IEnumerable<Tid> ids, List<string>? includes = null);
         Task<bool> IsExisted<TValue>(string key, TValue value);
         Task<bool> IsNotDeletedAsync<TId>(TId id);
         Task<bool> IsExistedByConditions(Dictionary<string, object> conditions, bool isAnd = true);

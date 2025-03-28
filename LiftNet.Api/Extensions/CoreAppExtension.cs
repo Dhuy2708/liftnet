@@ -5,6 +5,8 @@ using LiftNet.Domain.Interfaces;
 using LiftNet.Logger.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using NSwag.Generation.Processors.Security;
+using NSwag;
 using System.Text;
 
 namespace LiftNet.Api.Extensions
@@ -78,10 +80,28 @@ namespace LiftNet.Api.Extensions
 
             return services;
         }
-
         public static IServiceCollection RegisterAppContext(this IServiceCollection services)
         {
             services.AddHttpContextAccessor();
+            return services;
+        }
+        public static IServiceCollection AddSwagger(this IServiceCollection services)
+        {
+            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+            services.AddOpenApiDocument(options =>
+            {
+                options.Title = "Liftnet Apis";
+                options.AddSecurity("Bearer", Enumerable.Empty<string>(), new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme",
+                    Type = OpenApiSecuritySchemeType.ApiKey,
+                    In = OpenApiSecurityApiKeyLocation.Header,
+                    Name = "Authorization",
+                    Scheme = "Bearer"
+                });
+
+                options.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("Bearer"));
+            });
             return services;
         }
     }

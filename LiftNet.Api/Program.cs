@@ -21,6 +21,7 @@ public class Program
         builder.Services.RegisterInfras();
 
         builder.Services.AddControllers();
+        builder.Services.AddSwagger();
 
         // allow nullable fields in request model
         builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -28,26 +29,24 @@ public class Program
             options.SuppressModelStateInvalidFilter = true;
         });
 
-        // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-        builder.Services.AddOpenApiDocument(options =>
+#if DEBUG
+        builder.Services.AddCors(options =>
         {
-            options.AddSecurity("Bearer", Enumerable.Empty<string>(), new OpenApiSecurityScheme
-            {
-                Description = "JWT Authorization header using the Bearer scheme",
-                Type = OpenApiSecuritySchemeType.ApiKey,
-                In = OpenApiSecurityApiKeyLocation.Header,
-                Name = "Authorization",
-                Scheme = "Bearer"
-            });
-
-            options.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("Bearer"));
+            options.AddPolicy("AllowAll",
+                policy =>
+                {
+                    policy.AllowAnyOrigin() 
+                          .AllowAnyMethod()   
+                          .AllowAnyHeader(); 
+                });
         });
+#endif
 
         #region app
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
-        #if DEBUG
+#if DEBUG
         if (app.Environment.IsDevelopment())
         {
             app.UseOpenApi();
@@ -56,7 +55,7 @@ public class Program
                 options.DocumentTitle = "LiftNet API Documentation";
             });
         }
-        #endif
+#endif
 
         app.UseHttpsRedirection();
         app.UseAuthentication();
