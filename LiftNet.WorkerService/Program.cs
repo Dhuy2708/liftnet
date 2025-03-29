@@ -1,4 +1,4 @@
-﻿namespace WorkerService
+﻿namespace LiftNet.WorkerService
 {
     internal class Program
     {

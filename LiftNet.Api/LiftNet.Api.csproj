@@ -33,20 +33,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LiftNet.AzureStorage\LiftNet.AzureBlob.csproj" />
+    <ProjectReference Include="..\LiftNet.AzureBlob\LiftNet.AzureBlob.csproj" />
     <ProjectReference Include="..\LiftNet.Contract\LiftNet.Contract.csproj" />
     <ProjectReference Include="..\LiftNet.CosmosDb\LiftNet.CosmosDb.csproj" />
-    <ProjectReference Include="..\LiftNet.DAO\LiftNet.Repositories.csproj" />
     <ProjectReference Include="..\LiftNet.Domain\LiftNet.Domain.csproj" />
     <ProjectReference Include="..\LiftNet.Handler\LiftNet.Handler.csproj" />
     <ProjectReference Include="..\LiftNet.Ioc\LiftNet.Ioc.csproj" />
     <ProjectReference Include="..\LiftNet.Logger\LiftNet.Logger.csproj" />
+    <ProjectReference Include="..\LiftNet.Persistence\LiftNet.Persistence.csproj" />
+    <ProjectReference Include="..\LiftNet.Repositories\LiftNet.Repositories.csproj" />
     <ProjectReference Include="..\LiftNet.Service\LiftNet.Service.csproj" />
     <ProjectReference Include="..\LiftNet.SharedKenel\LiftNet.SharedKenel.csproj" />
-    <ProjectReference Include="..\LiftNet.SQL\LiftNet.Persistence.csproj" />
     <ProjectReference Include="..\LiftNet.Timer\LiftNet.Timer.csproj" />
     <ProjectReference Include="..\LiftNet.Utility\LiftNet.Utility.csproj" />
-    <ProjectReference Include="..\WorkerService\LiftNet.WorkerService.csproj" />
+    <ProjectReference Include="..\LiftNet.WorkerService\LiftNet.WorkerService.csproj" />
   </ItemGroup>
 
 </Project>

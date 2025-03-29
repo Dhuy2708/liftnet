@@ -8,14 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Handler.Searches.Queries.Requests
+namespace LiftNet.Handler.Socials.Queries.Requests
 {
     public class SearchUserQuery : IRequest<PaginatedLiftNetRes<UserOverview>>
     {
         public string UserId
         {
             get; set;
-        }   
+        }
         public QueryCondition Conditions
         {
             get; set;

@@ -3,7 +3,6 @@ using LiftNet.Contract.Views.Users;
 using LiftNet.Domain.Constants;
 using LiftNet.Domain.Exceptions;
 using LiftNet.Domain.Response;
-using LiftNet.Handler.Searches.Queries.Requests;
 using LiftNet.Handler.Socials.Commands.Requets;
 using LiftNet.Handler.Socials.Queries.Requests;
 using LiftNet.Utility.Extensions;
