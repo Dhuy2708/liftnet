@@ -19,10 +19,7 @@ namespace LiftNet.Api.ToDto
                 Participants = req.ParticipantIds.Select(x => new UserDto()
                 {
                     Id = x
-                }).Concat([new UserDto()
-                        {
-                            Id = bookerId
-                        }]).ToList(),
+                }).ToList(),
                 Name = req.Name,
                 Description = req.Description,
                 StartTime = req.StartTime,

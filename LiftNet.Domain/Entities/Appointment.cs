@@ -75,6 +75,9 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        /// <summary>
+        /// only have participants, dont have booker
+        /// </summary>
         public ICollection<AppointmentParticipant> Participants
         {
             get; set;

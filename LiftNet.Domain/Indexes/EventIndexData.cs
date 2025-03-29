@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Domain.Indexes
 {
-    public class ScheduleIndexData : IndexData
+    public class EventIndexData : IndexData
     {
         [JsonProperty(PropertyName = "title")]
         public string Title

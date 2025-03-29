@@ -58,7 +58,6 @@ namespace LiftNet.Handler.Appointments.Commands
                 {
                     AppointmentId = appointment.Id,
                     UserId = x,
-                    IsBooker = x.Eq(appointment.BookerId!)
                 }).ToList();
                 appointment.Participants = newParticipants;
             }

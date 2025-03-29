@@ -31,6 +31,8 @@ namespace LiftNet.Api.Controllers
             {
                 return Unauthorized();
             }
+            req.ParticipantIds = req.ParticipantIds.Distinct().ToList();
+            req.ParticipantIds.Remove(UserId);
             var request = new BookAppointmentCommand()
             {
                 Appointment = req.ToDto(UserId),
@@ -111,6 +113,10 @@ namespace LiftNet.Api.Controllers
             if (req.AppointmentId.IsNullOrEmpty())
             {
                 return BadRequest(LiftNetRes.ErrorResponse("appointmentId is null or empty"));
+            }
+            if (!req.ParticipantIds.Contains(UserId))
+            {
+                return BadRequest(LiftNetRes.ErrorResponse("you cant remove yourself as a booker"));
             }
             var request = new EditAppointmentCommand()
             {

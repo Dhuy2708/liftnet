@@ -15,9 +15,8 @@ namespace LiftNet.CosmosDb.Services
     {
         private readonly ILiftLogger<FeedIndexService> _logger;
         public FeedIndexService(CosmosCredential cred, 
-                                ILiftLogger<IndexBaseService<FeedIndexData>> bLogger, 
                                 ILiftLogger<FeedIndexService> logger) 
-            : base(cred, CosmosContainerId.Feed, bLogger)
+            : base(cred, CosmosContainerId.Feed)
         {
             _logger = logger;
         }

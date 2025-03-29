@@ -37,7 +37,7 @@ namespace LiftNet.Domain.Indexes
         public DateTime ModifiedAt
         {
             get; set;
-        }
+        } = DateTime.UtcNow;
     }
 
     public enum DataSchema
@@ -48,8 +48,11 @@ namespace LiftNet.Domain.Indexes
         Feed = 1,
         Comment = 2,
 
-        // chat
-        Chat = 10,
+        // schedule
+        Schedule = 10,
+        Event = 11,
 
+        // chat
+        Chat = 20,
     }
 }
