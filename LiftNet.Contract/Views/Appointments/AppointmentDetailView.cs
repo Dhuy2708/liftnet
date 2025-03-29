@@ -22,7 +22,7 @@ namespace LiftNet.Contract.Views.Appointments
         {
             get; set;
         }
-        public List<UserOverview> Participants
+        public List<UserOverview> OtherParticipants
         {
             get; set;
         }

@@ -18,9 +18,9 @@ namespace LiftNet.Contract.Enums
     public enum RepeatingType
     {
         None = 0,
-        Everyday = 1,
-        EveryWeek = 2,
-        EveryMonth = 3,
-        EveryYear = 4,
+        Daily = 1,
+        Weekly = 2,
+        Monthly = 3,
+        Yearly = 4,
     }
 }
