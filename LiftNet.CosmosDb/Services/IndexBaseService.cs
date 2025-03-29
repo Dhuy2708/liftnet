@@ -21,12 +21,10 @@ namespace LiftNet.CosmosDb.Services
     public class IndexBaseService<T> : IIndexBaseService<T> where T : IndexData
     {
         private readonly Container _container;
-        private readonly ILiftLogger<IndexBaseService<T>> _logger;
-        public IndexBaseService(CosmosCredential cred, string containerId, ILiftLogger<IndexBaseService<T>> logger)
+        public IndexBaseService(CosmosCredential cred, string containerId)
         {
             var client = cred.Client;
             _container = client.GetContainer(cred.DatabaseId, containerId);
-            _logger = logger;
         }
 
         public async Task<T?> GetAsync(string id, string? partitionKey = null)
@@ -124,7 +122,6 @@ namespace LiftNet.CosmosDb.Services
             }
             catch (CosmosException ex)
             {
-                _logger.Error($"Patch item failed: {ex.Message}");
                 return false;
             }
         }

@@ -11,9 +11,10 @@ using System.Threading.Tasks;
 
 namespace LiftNet.CosmosDb.Services
 {
-    public class ScheduleIndexService : IndexBaseService<ScheduleIndexData>, IScheduleIndexService
+    public class EventIndexService : IndexBaseService<EventIndexData>, IScheduleIndexService
     {
-        public ScheduleIndexService(CosmosCredential cred, ILiftLogger<IndexBaseService<ScheduleIndexData>> logger) : base(cred, CosmosContainerId.Schedule, logger)
+        public EventIndexService(CosmosCredential cred) 
+                : base(cred, CosmosContainerId.Schedule)
         {
         }
     }

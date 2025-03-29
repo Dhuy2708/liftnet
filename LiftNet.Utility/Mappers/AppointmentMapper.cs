@@ -14,7 +14,7 @@ namespace LiftNet.Utility.Mappers
 {
     public static class AppointmentMapper
     {
-        public static AppointmentDetailView ToDetailView(this Appointment entity)
+        public static AppointmentDetailView ToDetailView(this Appointment entity, bool editable = false)
         {
             return new AppointmentDetailView
             {
@@ -38,7 +38,7 @@ namespace LiftNet.Utility.Mappers
             return new AppointmentDto
             {
                 Id = entity.Id,
-                Booker = entity.Booker?.ToDto(),
+                Booker = entity.Booker?.ToDto()!,
                 Participants = entity.Participants?.Select(x => x.User.ToDto()).ToList() ?? [],
                 Name = entity.Name,
                 Description = entity.Description,
@@ -62,8 +62,7 @@ namespace LiftNet.Utility.Mappers
                 {
                     UserId = x.Id,
                     AppointmentId = dto.Id,
-                    IsBooker = x.Id.Eq(dto.Booker.Id) ? true : false,
-                }).ToList(),
+                }).ToList() ?? [],
                 Name = dto.Name,
                 Description = dto.Description,
                 Address = JsonConvert.SerializeObject(dto.Address),
@@ -79,8 +78,8 @@ namespace LiftNet.Utility.Mappers
             return new AppointmentOverview
             {
                 Id = dto.Id,
-                Booker = dto.Booker?.ToView(),
-                ParticipantCount = dto.Participants.Count,
+                Booker = dto.Booker?.ToView()!,
+                ParticipantCount = dto.Participants.Count + 1,
                 Name = dto.Name,
                 Description = dto.Description,
                 Address = dto.Address?.ToView(),
@@ -95,6 +94,11 @@ namespace LiftNet.Utility.Mappers
 
         public static AppointmentOverview ToOverview(this Appointment entity)
         {
+            var booker = entity.Participants.FirstOrDefault(x => x.Id.Equals(entity.BookerId));
+            if (booker != null)
+            {
+                entity.Participants.Remove(booker);
+            }
             var view = entity.ToDto().ToOverview();
             return view;
         }

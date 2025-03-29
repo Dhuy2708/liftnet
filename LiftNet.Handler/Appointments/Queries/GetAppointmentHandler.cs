@@ -37,7 +37,7 @@ namespace LiftNet.Handler.Appointments.Queries
             {
                 throw new NotFoundException("Appointment not found");
             }
-            return LiftNetRes<AppointmentDetailView>.SuccessResponse(appointment.ToDetailView());
+            return LiftNetRes<AppointmentDetailView>.SuccessResponse(appointment.ToDetailView(request.UserId.Eq(appointment.BookerId!)));
         }
     }
 }

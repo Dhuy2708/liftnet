@@ -57,13 +57,36 @@ namespace LiftNet.Handler.Appointments.Commands
             var participants = await _userService.GetByIdsAsync(participantIds);
             var userIdRoleDict = await _userService.GetUserIdRoleDict(participantIds);
 
-            var schedule = new ScheduleIndexData()
+            var bookerEvent = new EventIndexData()
             {
+                UserId = request.Appointment.Booker.Id,
+                Schema = DataSchema.Event,
                 Title = request.Appointment.Name,
                 Description = request.Appointment.Description,
                 StartTime = request.Appointment.StartTime,
                 EndTime = request.Appointment.EndTime,
+                Rule = Domain.Enums.Indexes.RepeatRule.None,
+                CreatedAt = DateTime.UtcNow,
+                ModifiedAt = DateTime.UtcNow,
             };
+
+            //participantIds.ForEach(p =>
+            //{
+
+            //});
+
+            //var participantEvent = new EventIndexData()
+            //{
+            //    UserId = request.Appointment.Participants,
+            //    Schema = DataSchema.Event,
+            //    Title = request.Appointment.Name,
+            //    Description = request.Appointment.Description,
+            //    StartTime = request.Appointment.StartTime,
+            //    EndTime = request.Appointment.EndTime,
+            //    Rule = Domain.Enums.Indexes.RepeatRule.None,
+            //    CreatedAt = DateTime.UtcNow,
+            //    ModifiedAt = DateTime.UtcNow,
+            //}
 
             List<ParticipantIndexData> participantIndex = [];
             participants.ForEach(p =>
@@ -83,8 +106,8 @@ namespace LiftNet.Handler.Appointments.Commands
                     });
                 }
             });
-            schedule.Participants = participantIndex;
-            var resultIndex = await _indexService.UpsertAsync(schedule);
+            bookerEvent.Participants = participantIndex;
+            var resultIndex = await _indexService.UpsertAsync(bookerEvent);
 
             if (resultIndex != null)
             {

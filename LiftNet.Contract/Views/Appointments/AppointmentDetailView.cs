@@ -14,6 +14,10 @@ namespace LiftNet.Contract.Views.Appointments
         {
             get; set;
         }
+        public bool Editable
+        {
+            get; set;
+        }
         public UserOverview Booker
         {
             get; set;
