@@ -12,7 +12,6 @@ namespace LiftNet.Contract.Interfaces.IRepos
         IAppointmentRepo AppointmentRepo { get; }
         ISocialConnectionRepo SocialConnectionRepo { get;}
         IUserRepo UserRepo { get;}
-
         Task BeginTransactionAsync();
         Task<int> CommitAsync();
         Task RollbackAsync();

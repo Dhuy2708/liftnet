@@ -4,7 +4,7 @@ using LiftNet.Domain.Entities;
 using LiftNet.Domain.Enums;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
-using LiftNet.Handler.Searches.Queries.Requests;
+using LiftNet.Handler.Socials.Queries.Requests;
 using LiftNet.Utility.Extensions;
 using LiftNet.Utility.Mappers;
 using LiftNet.Utility.Utils;
@@ -17,7 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Handler.Searches.Queries
+namespace LiftNet.Handler.Socials.Queries
 {
     public class SearchUserHandler : IRequestHandler<SearchUserQuery, PaginatedLiftNetRes<UserOverview>>
     {
@@ -50,7 +50,7 @@ namespace LiftNet.Handler.Searches.Queries
             var searchTxt = cond.FindCondition("search")?.Values.FirstOrDefault();
             if (searchTxt.IsNotNullOrEmpty())
             {
-                queryable = queryable.Where(x => x.UserName!.Contains(searchTxt!) || 
+                queryable = queryable.Where(x => x.UserName!.Contains(searchTxt!) ||
                                                  x.Email!.Contains(searchTxt!) ||
                                                  x.FirstName.Contains(searchTxt!) ||
                                                  x.LastName.Contains(searchTxt!));
@@ -58,8 +58,8 @@ namespace LiftNet.Handler.Searches.Queries
 
             // role filter
             var role = cond.FindCondition("role")?.Values.FirstOrDefault();
- 
-            if (role.IsNotNullOrEmpty() && Int32.TryParse(role, out var roleInt))
+
+            if (role.IsNotNullOrEmpty() && int.TryParse(role, out var roleInt))
             {
                 if (roleInt != (int)LiftNetRoleEnum.Seeker && roleInt != (int)LiftNetRoleEnum.Coach)
                 {

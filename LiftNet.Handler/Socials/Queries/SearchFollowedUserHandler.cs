@@ -5,7 +5,6 @@ using LiftNet.Domain.Entities;
 using LiftNet.Domain.Enums;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
-using LiftNet.Handler.Searches.Queries;
 using LiftNet.Handler.Socials.Queries.Requests;
 using LiftNet.Utility.Extensions;
 using LiftNet.Utility.Mappers;

@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Domain", "LiftNet.D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Service", "LiftNet.Service\LiftNet.Service.csproj", "{556D0E11-DA3C-4EAF-9552-E069C90401FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Persistence", "LiftNet.SQL\LiftNet.Persistence.csproj", "{E900A76D-228F-4762-A5EF-7B98E9A1F88A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Persistence", "LiftNet.Persistence\LiftNet.Persistence.csproj", "{E900A76D-228F-4762-A5EF-7B98E9A1F88A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{F1874BBF-4C3E-4C56-90C0-EF6C5C1EC36D}"
 EndProject
@@ -25,7 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Job", "Job", "{E3216631-4397-4661-8ECB-FB97215D1E84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Repositories", "LiftNet.DAO\LiftNet.Repositories.csproj", "{8EECB153-38A5-4AE9-B22D-632479E58273}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Repositories", "LiftNet.Repositories\LiftNet.Repositories.csproj", "{8EECB153-38A5-4AE9-B22D-632479E58273}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{2CAE0459-C29B-46AC-B789-F8C94D4DA15D}"
 EndProject
@@ -33,7 +33,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.SharedKenel", "Lift
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{54129E85-CF27-4CA3-A940-14FB5F245269}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.AzureBlob", "LiftNet.AzureStorage\LiftNet.AzureBlob.csproj", "{70C0B10D-D03E-4C1A-8220-392FA31C6D2B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.AzureBlob", "LiftNet.AzureBlob\LiftNet.AzureBlob.csproj", "{70C0B10D-D03E-4C1A-8220-392FA31C6D2B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Logger", "LiftNet.Logger\LiftNet.Logger.csproj", "{E95242C0-B698-47E1-B5A0-ACCF25504392}"
 EndProject
@@ -41,7 +41,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Worker", "Worker", "{BA0CB1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Timer", "LiftNet.Timer\LiftNet.Timer.csproj", "{DF98EA3E-E17D-4F81-BEE4-F9154CB03F38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.WorkerService", "WorkerService\LiftNet.WorkerService.csproj", "{F386A170-8D50-4037-8EEC-B7FE2A6AED60}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.WorkerService", "LiftNet.WorkerService\LiftNet.WorkerService.csproj", "{F386A170-8D50-4037-8EEC-B7FE2A6AED60}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Handler", "LiftNet.Handler\LiftNet.Handler.csproj", "{854C8EFA-99BA-48BA-A038-5AB9426DBA0D}"
 EndProject
