@@ -16,11 +16,16 @@ namespace LiftNet.Utility.Mappers
     {
         public static AppointmentDetailView ToDetailView(this Appointment entity, bool editable = false)
         {
+            var booker = entity.Participants.FirstOrDefault(x => x.IsBooker);
+            if (booker != null)
+            {
+                entity.Participants.Remove(booker);
+            }
             return new AppointmentDetailView
             {
                 Id = entity.Id,
                 Booker = entity.Booker.ToDto().ToView(),
-                Participants = entity.Participants?.Select(x => x.User!.ToDto().ToView())?.ToList() ?? [],
+                OtherParticipants = entity.Participants?.Select(x => x.User!.ToDto().ToView())?.ToList() ?? [],
                 Name = entity.Name,
                 Description = entity.Description,
                 Address = JsonConvert.DeserializeObject<AddressDto>(entity.Address).ToView(),
@@ -52,6 +57,11 @@ namespace LiftNet.Utility.Mappers
             };
         }
 
+        public static List<AppointmentDto> ToDtos(this List<Appointment> entities)
+        {
+            return entities.Select(x => x.ToDto()).ToList();
+        }
+
         public static Appointment ToEntity(this AppointmentDto dto)
         {
             return new Appointment
@@ -62,6 +72,7 @@ namespace LiftNet.Utility.Mappers
                 {
                     UserId = x.Id,
                     AppointmentId = dto.Id,
+                    IsBooker = x.Id.Equals(dto.Booker?.Id),
                 }).ToList() ?? [],
                 Name = dto.Name,
                 Description = dto.Description,
@@ -79,7 +90,7 @@ namespace LiftNet.Utility.Mappers
             {
                 Id = dto.Id,
                 Booker = dto.Booker?.ToView()!,
-                ParticipantCount = dto.Participants.Count + 1,
+                ParticipantCount = dto.Participants.Count,
                 Name = dto.Name,
                 Description = dto.Description,
                 Address = dto.Address?.ToView(),
@@ -94,11 +105,6 @@ namespace LiftNet.Utility.Mappers
 
         public static AppointmentOverview ToOverview(this Appointment entity)
         {
-            var booker = entity.Participants.FirstOrDefault(x => x.Id.Equals(entity.BookerId));
-            if (booker != null)
-            {
-                entity.Participants.Remove(booker);
-            }
             var view = entity.ToDto().ToOverview();
             return view;
         }

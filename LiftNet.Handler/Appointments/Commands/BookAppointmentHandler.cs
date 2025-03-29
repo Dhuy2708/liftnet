@@ -3,6 +3,7 @@ using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Interfaces.IServices.Indexes;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Enums;
+using LiftNet.Domain.Enums.Indexes;
 using LiftNet.Domain.Indexes;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
@@ -57,63 +58,32 @@ namespace LiftNet.Handler.Appointments.Commands
             var participants = await _userService.GetByIdsAsync(participantIds);
             var userIdRoleDict = await _userService.GetUserIdRoleDict(participantIds);
 
-            var bookerEvent = new EventIndexData()
+            List<EventIndexData> events = [];
+            foreach (var item in participantIds)
             {
-                UserId = request.Appointment.Booker.Id,
-                Schema = DataSchema.Event,
-                Title = request.Appointment.Name,
-                Description = request.Appointment.Description,
-                StartTime = request.Appointment.StartTime,
-                EndTime = request.Appointment.EndTime,
-                Rule = Domain.Enums.Indexes.RepeatRule.None,
-                CreatedAt = DateTime.UtcNow,
-                ModifiedAt = DateTime.UtcNow,
-            };
-
-            //participantIds.ForEach(p =>
-            //{
-
-            //});
-
-            //var participantEvent = new EventIndexData()
-            //{
-            //    UserId = request.Appointment.Participants,
-            //    Schema = DataSchema.Event,
-            //    Title = request.Appointment.Name,
-            //    Description = request.Appointment.Description,
-            //    StartTime = request.Appointment.StartTime,
-            //    EndTime = request.Appointment.EndTime,
-            //    Rule = Domain.Enums.Indexes.RepeatRule.None,
-            //    CreatedAt = DateTime.UtcNow,
-            //    ModifiedAt = DateTime.UtcNow,
-            //}
-
-            List<ParticipantIndexData> participantIndex = [];
-            participants.ForEach(p =>
-            {
-                if (userIdRoleDict.TryGetValue(p.Id, out var role))
+                var eventItem = new EventIndexData()
                 {
-                    participantIndex.Add(new ParticipantIndexData()
-                    {
-                        Id = p.Id,
-                        Username = p.UserName!,
-                        Email = p.Email!,
-                        FirstName = p.FirstName,
-                        LastName = p.LastName,
-                        Role = role,
-                        Avatar = p.Avatar,
-                        Status = Domain.Enums.Indexes.ParticipantStatus.Pending
-                    });
-                }
-            });
-            bookerEvent.Participants = participantIndex;
-            var resultIndex = await _indexService.UpsertAsync(bookerEvent);
-
-            if (resultIndex != null)
-            {
-                return LiftNetRes.SuccessResponse($"Create appointment {request.Appointment.Name} successfully");
+                    UserId = item,
+                    Schema = DataSchema.Event,
+                    Title = request.Appointment.Name,
+                    Description = request.Appointment.Description,
+                    StartTime = request.Appointment.StartTime,
+                    AppointmentId = entity.Id,
+                    EndTime = request.Appointment.EndTime,
+                    Rule = (RepeatRule)(int)request.Appointment.RepeatingType,
+                    CreatedAt = DateTime.UtcNow,
+                    ModifiedAt = DateTime.UtcNow,
+                };
+                events.Add(eventItem);
             }
-
+            try
+            {
+                await _indexService.BulkUpsertAsync(events);
+            }
+            catch
+            {
+                await _appointmentRepo.HardDelete(entity);
+            }
             return LiftNetRes.ErrorResponse($"Create appointment {request.Appointment.Name} failed");
         }
     }

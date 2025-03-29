@@ -4,6 +4,7 @@ using LiftNet.Contract.Enums;
 using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Views.Appointments;
 using LiftNet.Domain.Entities;
+using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Appointments.Queries.Requests;
 using LiftNet.Ioc;
@@ -22,14 +23,17 @@ namespace LiftNet.Handler.Appointments.Queries
     public class ListAppointmentHandler : IRequestHandler<ListAppointmentsQuery, PaginatedLiftNetRes<AppointmentOverview>>
     {
         private readonly IAppointmentRepo _appointmentRepo;
+        private readonly ILiftLogger<ListAppointmentHandler> _logger;
 
-        public ListAppointmentHandler(IAppointmentRepo appointmentRepo)
+        public ListAppointmentHandler(IAppointmentRepo appointmentRepo, ILiftLogger<ListAppointmentHandler> logger)
         {
             _appointmentRepo = appointmentRepo;
+            _logger = logger;
         }
 
         public async Task<PaginatedLiftNetRes<AppointmentOverview>> Handle(ListAppointmentsQuery request, CancellationToken cancellationToken)
         {
+            _logger.Info("begin list appointment overviews");
             var queryable = _appointmentRepo.GetQueryable();
             var conditions = request.Conditions;
 
@@ -50,6 +54,8 @@ namespace LiftNet.Handler.Appointments.Queries
 
             var count = await _appointmentRepo.GetCount();
             var appointmentDtos = appointments.Select(x => x.ToOverview()).ToList();
+
+            _logger.Info("list appointment overviews successfully");
             return PaginatedLiftNetRes<AppointmentOverview>.SuccessResponse(appointmentDtos, conditions.PageNumber, conditions.PageSize, count);
         }
 

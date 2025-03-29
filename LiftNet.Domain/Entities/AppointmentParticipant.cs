@@ -30,6 +30,11 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        public bool IsBooker
+        {
+            get; set;
+        }
+
         // mapping
         public Appointment Appointment
         {

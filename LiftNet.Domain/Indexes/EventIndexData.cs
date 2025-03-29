@@ -27,7 +27,7 @@ namespace LiftNet.Domain.Indexes
         public string Color
         {
             get; set;
-        } = "#2196F3";
+        } = LiftNetColor.DEFAULT;
 
         [JsonProperty(PropertyName = "starttime")]
         public DateTime StartTime
@@ -41,8 +41,8 @@ namespace LiftNet.Domain.Indexes
             get; set;
         }
 
-        [JsonProperty(PropertyName = "participants")]
-        public List<ParticipantIndexData> Participants
+        [JsonProperty(PropertyName = "appointmentid", NullValueHandling = NullValueHandling.Ignore)]
+        public string AppointmentId
         {
             get; set;
         }

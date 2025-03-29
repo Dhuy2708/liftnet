@@ -16,7 +16,6 @@ namespace LiftNet.Api.Requests.Appointments
             get; set;
         }
 
-        [AllowNull]
         public string Description
         {
             get; set;
