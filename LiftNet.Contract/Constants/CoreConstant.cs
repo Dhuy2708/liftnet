@@ -17,6 +17,11 @@ namespace LiftNet.Contract.Constants
         public const string LOG_KEY = "log";
     }
 
+    public class LiftNetVersionKeys
+    {
+        public const string VN_GEO_VERSION = "VN_GEO_VERSION";
+    }
+
     public class CosmosContainerId
     {
         public const string Feed = "feed";

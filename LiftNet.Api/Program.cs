@@ -29,7 +29,7 @@ public class Program
             options.SuppressModelStateInvalidFilter = true;
         });
 
-#if DEBUG
+//#if DEBUG
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowAll",
@@ -40,22 +40,18 @@ public class Program
                           .AllowAnyHeader(); 
                 });
         });
-#endif
+//#endif
 
         #region app
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
-#if DEBUG
-        if (app.Environment.IsDevelopment())
+    
+        app.UseOpenApi();
+        app.UseSwaggerUi(options =>
         {
-            app.UseOpenApi();
-            app.UseSwaggerUi(options =>
-            {
-                options.DocumentTitle = "LiftNet API Documentation";
-            });
-        }
-#endif
+            options.DocumentTitle = "LiftNet API Documentation";
+        });
 
         app.UseHttpsRedirection();
         app.UseAuthentication();
