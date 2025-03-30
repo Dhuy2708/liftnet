@@ -30,6 +30,9 @@ COPY ["LiftNet.CosmosDb/LiftNet.CosmosDb.csproj", "LiftNet.CosmosDb/"]
 COPY ["LiftNet.Ioc/LiftNet.Ioc.csproj", "LiftNet.Ioc/"]
 COPY ["LiftNet.Repositories/LiftNet.Repositories.csproj", "LiftNet.Repositories/"]
 
+# job
+COPY ["LiftNet.Job/LiftNet.Job.csproj", "LiftNet.Job/"]
+
 # worker
 COPY ["LiftNet.Timer/LiftNet.Timer.csproj", "LiftNet.Timer/"]
 COPY ["LiftNet.WorkerService/LiftNet.WorkerService.csproj", "LiftNet.WorkerService/"]
