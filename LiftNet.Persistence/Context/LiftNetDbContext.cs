@@ -33,5 +33,10 @@ namespace LiftNet.Persistence.Context
         public DbSet<Province> Provinces { get; set; }
         public DbSet<District> Districts { get; set; }
         public DbSet<Ward> Wards { get; set; }
+
+        // jobs
+        public DbSet<SystemJob> SystemJobs { get; set; }
+        public DbSet<CustomerJob> CustomerJobs { get; set; }
+        public DbSet<ActionJob> ActionJobs { get; set; }
     }
 }
