@@ -11,9 +11,11 @@ namespace LiftNet.Contract.Interfaces.IRepos
 {
     public interface IJobRepo
     {
-        Task<int> InsertJob(JobType type, string userId = null);
+        Task<int> InsertJob(JobType type, JobStatus status, string userId = null);
         Task<int> UpdateJobFailed(JobType type);
         Task<int> UpdateJobFinished(JobType type);
-        Task<SystemJob> GetJob(JobType type);
+        Task<SystemJob?> GetSystemJob(JobType type);
+        Task<CustomerJob?> GetCustomerJob(JobType type);
+        Task<ActionJob?> GetActionJob(JobType type);
     }
 }

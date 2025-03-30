@@ -27,7 +27,7 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
-        public DateTime EndTime
+        public DateTime? EndTime
         {
             get; set;
         }
