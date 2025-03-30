@@ -22,9 +22,16 @@ namespace LiftNet.Persistence.Context
             ContextConfig.Configure(modelBuilder);
         }
 
+        public DbSet<Domain.Entities.Version> Versions { get; set; }
+
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<AppointmentParticipant> AppointmentParticipants { get; set; }
         public DbSet<SocialConnection> SocialConnections { get; set; }
         public DbSet<CoachExtension> CoachExtensions { get; set; }
+
+        // vn geo
+        public DbSet<Province> Provinces { get; set; }
+        public DbSet<District> Districts { get; set; }
+        public DbSet<Ward> Wards { get; set; }
     }
 }
