@@ -16,4 +16,10 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LiftNet.Contract\LiftNet.Contract.csproj" />
+    <ProjectReference Include="..\LiftNet.Job\LiftNet.Job.csproj" />
+    <ProjectReference Include="..\LiftNet.Utility\LiftNet.Utility.csproj" />
+  </ItemGroup>
+
 </Project>
