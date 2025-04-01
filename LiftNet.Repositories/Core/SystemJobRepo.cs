@@ -57,6 +57,21 @@ namespace LiftNet.Repositories.Core
             try
             {
                 var systemJob = await GetLastJob(type);
+                if (systemJob == null)
+                {
+                    var firstInserted = new SystemJob()
+                    {
+                        Id = JobUtil.GetJobId(type),
+                        Type = (int)type,
+                        StartTime = DateTime.UtcNow,
+                        EndTime = null,
+                        Status = (int)JobStatus.Waiting,
+                    };
+                    await _dbContext.SystemJobs.AddAsync(firstInserted);
+                    await _dbContext.SaveChangesAsync();
+                    return firstInserted;
+                }
+
                 if (systemJob!.EndTime == null || systemJob.Status != (int)JobStatus.Finished)
                 {
                     _logger.Error("last job not finished, return");
@@ -72,6 +87,7 @@ namespace LiftNet.Repositories.Core
                     Status = (int)JobStatus.Waiting,
                 };
                 await _dbContext.SystemJobs.AddAsync(inserted);
+                await _dbContext.SaveChangesAsync();
                 return inserted;
             }
             catch (Exception e)

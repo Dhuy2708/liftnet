@@ -19,7 +19,7 @@ namespace LiftNet.Contract.Constants
 
     public class LiftNetVersionKeys
     {
-        public const string VN_GEO_VERSION = "VN_GEO_VERSION";
+        public const string VN_GEO = "VN_GEO_VERSION";
     }
 
     public class CosmosContainerId

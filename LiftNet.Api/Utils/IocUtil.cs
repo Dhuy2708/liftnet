@@ -12,10 +12,18 @@ namespace LiftNet.Api.Utils
 
             foreach (var type in types)
             {
-                var interfaces = type.GetInterfaces().Where(i => i != typeof(IDependency));
-                foreach (var @interface in interfaces)
+                var interfaces = type.GetInterfaces().Where(i => i != typeof(IDependency)).ToList();
+
+                if (interfaces.Any())
                 {
-                    services.AddScoped(@interface, type);
+                    foreach (var @interface in interfaces)
+                    {
+                        services.AddScoped(@interface, type);
+                    }
+                }
+                else
+                {
+                    services.AddScoped(type);
                 }
             }
 

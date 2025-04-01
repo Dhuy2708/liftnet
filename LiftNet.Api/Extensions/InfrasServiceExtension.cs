@@ -6,8 +6,11 @@ using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Interfaces.IServices.Indexes;
 using LiftNet.CosmosDb.Contracts;
 using LiftNet.CosmosDb.Services;
+using LiftNet.ProvinceSDK.Apis;
+using LiftNet.Timer.Service;
 using LiftNet.Utility.Extensions;
 using Microsoft.Azure.Cosmos;
+using Quartz;
 
 namespace LiftNet.Api.Extensions
 {
@@ -37,6 +40,37 @@ namespace LiftNet.Api.Extensions
             #region mapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             #endregion
+
+            #region province sdk
+            services.AddDependencies(typeof(ProvinceSDK.ProvinceSdkAssemblyRef).Assembly);
+            #endregion
+
+            #region quartz
+            services.RegisterQuartzService();
+            #endregion
+            return services;
+        }
+
+        public static IServiceCollection RegisterQuartzService(this IServiceCollection services)
+        {
+            services.AddQuartz(q =>
+            {
+                q.AddJob<ProvinceDiscService>(opts => opts.WithIdentity("ProvinceDiscJob", "DiscJobs"));
+
+                q.AddTrigger(opts => opts
+                    .ForJob("ProvinceDiscJob", "DiscJobs")
+                    .WithIdentity("ProvinceDiscTrigger", "DiscTriggers")
+                    .StartNow() 
+                    .WithSimpleSchedule(schedule => schedule
+                        .WithIntervalInMinutes(50)
+                        .RepeatForever()
+                    )
+                );
+            });
+
+            services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+            services.AddTransient<ProvinceDiscService>();
+
 
             return services;
         }
