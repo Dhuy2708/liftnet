@@ -19,7 +19,7 @@ namespace LiftNet.Api.Controllers
         {
             var req = new SearchProvincesRequest()
             {
-                Q = q
+                Q = q ?? string.Empty
             };
             var result = await _mediator.Send(req);
             if (result.Success)
@@ -36,7 +36,7 @@ namespace LiftNet.Api.Controllers
             var req = new SearchDistrictsRequest()
             {
                 ProvinceCode = provinceCode,
-                Q = q
+                Q = q ?? string.Empty
             };
             var result = await _mediator.Send(req);
             if (result.Success)
@@ -54,7 +54,7 @@ namespace LiftNet.Api.Controllers
             {
                 ProvinceCode = provinceCode,
                 DistrictCode = districtCode,
-                Q = q
+                Q = q ?? string.Empty
             };
             var result = await _mediator.Send(req);
             if (result.Success)
