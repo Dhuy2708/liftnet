@@ -4,7 +4,7 @@ using LiftNet.JobService.System;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Text; 
 using System.Threading.Tasks;
 
 namespace LiftNet.Job.Factory
@@ -14,10 +14,10 @@ namespace LiftNet.Job.Factory
         private readonly Dictionary<JobType, Lazy<IActionJob>> _lazyJobActions = [];
         private readonly Dictionary<JobType, Lazy<ISystemJob>> _lazyMainJobs = [];
 
-        public JobFactory()
+        public JobFactory(IServiceProvider provider)
         {
             // main
-            _lazyMainJobs.TryAdd(JobType.ProvinceDiscovery, new Lazy<ISystemJob>(() => new ProvinceDiscoveryService(JobType.ProvinceDiscovery)));
+            _lazyMainJobs.TryAdd(JobType.ProvinceDiscovery, new Lazy<ISystemJob>(() => new ProvinceDiscoveryService(provider)));
 
             // action
             // 
