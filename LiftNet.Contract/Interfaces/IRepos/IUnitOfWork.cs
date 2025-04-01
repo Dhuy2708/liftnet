@@ -12,6 +12,10 @@ namespace LiftNet.Contract.Interfaces.IRepos
         IAppointmentRepo AppointmentRepo { get; }
         ISocialConnectionRepo SocialConnectionRepo { get;}
         IUserRepo UserRepo { get;}
+        IProvinceRepo ProvinceRepo { get;}
+        IDistrictRepo DistrictRepo { get;}
+        IWardRepo WardRepo { get;}
+        IVersionRepo VersionRepo { get;}
         Task BeginTransactionAsync();
         Task<int> CommitAsync();
         Task RollbackAsync();

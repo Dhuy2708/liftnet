@@ -61,6 +61,49 @@ namespace LiftNet.Repositories.Core
             }
         }
 
+        private IProvinceRepo? _provinceRepo = null;
+        public IProvinceRepo ProvinceRepo
+        {
+            get
+            {
+                _provinceRepo ??= _serviceProvider.GetRequiredService<IProvinceRepo>();
+                _provinceRepo.AutoSave = false;
+                return _provinceRepo;
+            }
+        }
+
+        private IDistrictRepo? _districtRepo = null;
+        public IDistrictRepo DistrictRepo
+        {
+            get
+            {
+                _districtRepo ??= _serviceProvider.GetRequiredService<IDistrictRepo>();
+                _districtRepo.AutoSave = false;
+                return _districtRepo;
+            }
+        }
+
+        private IWardRepo? _wardRepo = null;
+        public IWardRepo WardRepo
+        {
+            get
+            {
+                _wardRepo ??= _serviceProvider.GetRequiredService<IWardRepo>();
+                _wardRepo.AutoSave = false;
+                return _wardRepo;
+            }
+        }
+
+        private IVersionRepo? _versionRepo = null;
+        public IVersionRepo VersionRepo
+        {
+            get
+            {
+                _versionRepo ??= _serviceProvider.GetRequiredService<IVersionRepo>();
+                _versionRepo.AutoSave = false;
+                return _versionRepo;
+            }
+        }
         #endregion
 
         public async Task BeginTransactionAsync()
