@@ -1,5 +1,6 @@
 ﻿using LiftNet.Contract.Dtos;
 using LiftNet.Contract.Views;
+using LiftNet.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +37,7 @@ namespace LiftNet.Utility.Mappers
             };
         }
 
+        #region province
         public static ProvinceDto ToDto(this ProvinceView provinceView)
         {
             if (provinceView == null) return null;
@@ -60,6 +62,22 @@ namespace LiftNet.Utility.Mappers
             };
         }
 
+        public static ProvinceDto ToDto(this Province entity)
+        {
+            if (entity == null) return null;
+
+            return new ProvinceDto
+            {
+                Code = entity.Code,
+                CodeName = entity.CodeName,
+                DivisionType = entity.DivisionType,
+                Name = entity.Name,
+                PhoneCode = entity.PhoneCode,
+            };
+        }
+        #endregion
+
+        #region district
         public static DistrictDto ToDto(this DistrictView districtView)
         {
             if (districtView == null) return null;
@@ -82,6 +100,21 @@ namespace LiftNet.Utility.Mappers
             };
         }
 
+        public static DistrictDto ToDto(this District entity)
+        {
+            if (entity == null) return null;
+
+            return new DistrictDto
+            {
+                Code = entity.Code,
+                CodeName = entity.CodeName,
+                DivisionType = entity.DivisionType,
+                Name = entity.Name,
+            };
+        }
+        #endregion
+
+        #region ward
         public static WardDto ToDto(this WardView wardView)
         {
             if (wardView == null) return null;
@@ -103,5 +136,20 @@ namespace LiftNet.Utility.Mappers
                 Name = wardDto.Name
             };
         }
+        public static WardDto ToDto(this Ward entity)
+        {
+            if (entity == null) return null;
+
+            return new WardDto
+            {
+                Code = entity.Code,
+                CodeName = entity.CodeName,
+                DivisionType = entity.DivisionType,
+                Name = entity.Name,
+                DistrictCode = entity.DistrictCode,
+            };
+        }
+
+        #endregion
     }
 }

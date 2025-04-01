@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace LiftNet.ProvinceSDK.Apis
 {
-    public class BaseApi : IDependency
+    public class BaseGeoApi : IDependency
     {
         private readonly HttpClient _httpClient;
-        public BaseApi()
+        public BaseGeoApi()
         {
             var handler = new HttpClientHandler
             {
