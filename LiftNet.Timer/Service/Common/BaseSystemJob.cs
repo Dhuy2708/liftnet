@@ -34,7 +34,7 @@ namespace LiftNet.Timer.Service.Common
             {
                 return true;
             }
-            if (job.EndTime == null || job.Status != (int)JobStatus.Finished)
+            if (job.EndTime == null || !(job.Status == (int)JobStatus.Finished || job.Status == (int)JobStatus.Failed))
             {
                 return false;
             }
@@ -64,7 +64,14 @@ namespace LiftNet.Timer.Service.Common
                 {
                     _ = await _systemJobRepo.UpdateJobStatus(job.Id, JobStatus.InProgress);
                     var status = await KickOffJobServiceAsync();
-                    _ = await _systemJobRepo.UpdateJobStatus(job.Id, JobStatus.Finished);
+                    if (status is JobStatus.Finished)
+                    {
+                        _ = await _systemJobRepo.FinishJob(job.Id, true, _scanTime);
+                    }
+                    else
+                    {
+                        _ = await _systemJobRepo.FinishJob(job.Id, false, _scanTime);
+                    }
                 }
                 catch (Exception jobEx)
                 {

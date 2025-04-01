@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LiftNet.Persistence.Migrations
 {
     [DbContext(typeof(LiftNetDbContext))]
-    [Migration("20250330084828_AddVersionTable")]
-    partial class AddVersionTable
+    [Migration("20250401182947_DisableIdentityInsertInGeoTables3")]
+    partial class DisableIdentityInsertInGeoTables3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,41 @@ namespace LiftNet.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("LiftNet.Domain.Entities.ActionJob", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ActionJobs");
+                });
 
             modelBuilder.Entity("LiftNet.Domain.Entities.Appointment", b =>
                 {
@@ -127,15 +162,47 @@ namespace LiftNet.Persistence.Migrations
                     b.ToTable("CoachExtensions");
                 });
 
-            modelBuilder.Entity("LiftNet.Domain.Entities.District", b =>
+            modelBuilder.Entity("LiftNet.Domain.Entities.CustomerJob", b =>
                 {
-                    b.Property<int>("Code")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Code"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CodeName")
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("CustomerJobs");
+                });
+
+            modelBuilder.Entity("LiftNet.Domain.Entities.District", b =>
+                {
+                    b.Property<int>("Code")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Codename")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -157,15 +224,33 @@ namespace LiftNet.Persistence.Migrations
                     b.ToTable("Districts");
                 });
 
-            modelBuilder.Entity("LiftNet.Domain.Entities.Province", b =>
+            modelBuilder.Entity("LiftNet.Domain.Entities.LiftNetVersion", b =>
                 {
-                    b.Property<int>("Code")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Code"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CodeName")
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Versions");
+                });
+
+            modelBuilder.Entity("LiftNet.Domain.Entities.Province", b =>
+                {
+                    b.Property<int>("Code")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Codename")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -238,6 +323,28 @@ namespace LiftNet.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("SocialConnections");
+                });
+
+            modelBuilder.Entity("LiftNet.Domain.Entities.SystemJob", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SystemJobs");
                 });
 
             modelBuilder.Entity("LiftNet.Domain.Entities.User", b =>
@@ -346,36 +453,12 @@ namespace LiftNet.Persistence.Migrations
                     b.ToTable("UserRoles", (string)null);
                 });
 
-            modelBuilder.Entity("LiftNet.Domain.Entities.Version", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Key")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Versions");
-                });
-
             modelBuilder.Entity("LiftNet.Domain.Entities.Ward", b =>
                 {
                     b.Property<int>("Code")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Code"));
-
-                    b.Property<string>("CodeName")
+                    b.Property<string>("Codename")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -488,6 +571,17 @@ namespace LiftNet.Persistence.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("LiftNet.Domain.Entities.ActionJob", b =>
+                {
+                    b.HasOne("LiftNet.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("LiftNet.Domain.Entities.Appointment", b =>
                 {
                     b.HasOne("LiftNet.Domain.Entities.User", "Booker")
@@ -525,6 +619,17 @@ namespace LiftNet.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Coach");
+                });
+
+            modelBuilder.Entity("LiftNet.Domain.Entities.CustomerJob", b =>
+                {
+                    b.HasOne("LiftNet.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("LiftNet.Domain.Entities.District", b =>

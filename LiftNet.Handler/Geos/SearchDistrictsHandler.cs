@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Geos
 {
-    public class SearchDistrictsHandler : IRequestHandler<SearchDistrictsRequest, LiftNetRes<List<DistrictView>>
+    public class SearchDistrictsHandler : IRequestHandler<SearchDistrictsRequest, LiftNetRes<List<DistrictView>>>
     {
         private readonly ILiftLogger<SearchDistrictsHandler> _logger;
         private readonly IGeoService _geoService;

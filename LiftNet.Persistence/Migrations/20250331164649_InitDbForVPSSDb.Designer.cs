@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LiftNet.Persistence.Migrations
 {
     [DbContext(typeof(LiftNetDbContext))]
-    [Migration("20250330102318_AddJobTables")]
-    partial class AddJobTables
+    [Migration("20250331164649_InitDbForVPSSDb")]
+    partial class InitDbForVPSSDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -205,7 +205,7 @@ namespace LiftNet.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Code"));
 
-                    b.Property<string>("CodeName")
+                    b.Property<string>("Codename")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -235,7 +235,7 @@ namespace LiftNet.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Code"));
 
-                    b.Property<string>("CodeName")
+                    b.Property<string>("Codename")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -315,7 +315,7 @@ namespace LiftNet.Persistence.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("EndTime")
+                    b.Property<DateTime?>("EndTime")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("StartTime")
@@ -467,7 +467,7 @@ namespace LiftNet.Persistence.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Code"));
 
-                    b.Property<string>("CodeName")
+                    b.Property<string>("Codename")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

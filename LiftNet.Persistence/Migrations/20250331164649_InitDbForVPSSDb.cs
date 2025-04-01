@@ -6,11 +6,27 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LiftNet.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class InitDbTestEnv : Migration
+    public partial class InitDbForVPSSDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Provinces",
+                columns: table => new
+                {
+                    Code = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CodeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DivisionType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneCode = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Provinces", x => x.Code);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
@@ -23,6 +39,21 @@ namespace LiftNet.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SystemJobs",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SystemJobs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -58,6 +89,42 @@ namespace LiftNet.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Versions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Key = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Versions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Districts",
+                columns: table => new
+                {
+                    Code = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CodeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DivisionType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProvinceCode = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Districts", x => x.Code);
+                    table.ForeignKey(
+                        name: "FK_Districts_Provinces_ProvinceCode",
+                        column: x => x.ProvinceCode,
+                        principalTable: "Provinces",
+                        principalColumn: "Code",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RoleClaims",
                 columns: table => new
                 {
@@ -74,6 +141,30 @@ namespace LiftNet.Persistence.Migrations
                         name: "FK_RoleClaims_Roles_RoleId",
                         column: x => x.RoleId,
                         principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ActionJobs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ActionJobs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ActionJobs_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -121,6 +212,30 @@ namespace LiftNet.Persistence.Migrations
                     table.ForeignKey(
                         name: "FK_CoachExtensions_Users_CoachId",
                         column: x => x.CoachId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CustomerJobs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CustomerJobs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CustomerJobs_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -239,6 +354,28 @@ namespace LiftNet.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Wards",
+                columns: table => new
+                {
+                    Code = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CodeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DivisionType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DistrictCode = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Wards", x => x.Code);
+                    table.ForeignKey(
+                        name: "FK_Wards_Districts_DistrictCode",
+                        column: x => x.DistrictCode,
+                        principalTable: "Districts",
+                        principalColumn: "Code",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AppointmentParticipants",
                 columns: table => new
                 {
@@ -266,6 +403,11 @@ namespace LiftNet.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_ActionJobs_UserId",
+                table: "ActionJobs",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AppointmentParticipants_AppointmentId",
                 table: "AppointmentParticipants",
                 column: "AppointmentId");
@@ -285,6 +427,16 @@ namespace LiftNet.Persistence.Migrations
                 table: "CoachExtensions",
                 column: "CoachId",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CustomerJobs_UserId",
+                table: "CustomerJobs",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Districts_ProvinceCode",
+                table: "Districts",
+                column: "ProvinceCode");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
@@ -334,11 +486,19 @@ namespace LiftNet.Persistence.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Wards_DistrictCode",
+                table: "Wards",
+                column: "DistrictCode");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ActionJobs");
+
             migrationBuilder.DropTable(
                 name: "AppointmentParticipants");
 
@@ -346,10 +506,16 @@ namespace LiftNet.Persistence.Migrations
                 name: "CoachExtensions");
 
             migrationBuilder.DropTable(
+                name: "CustomerJobs");
+
+            migrationBuilder.DropTable(
                 name: "RoleClaims");
 
             migrationBuilder.DropTable(
                 name: "SocialConnections");
+
+            migrationBuilder.DropTable(
+                name: "SystemJobs");
 
             migrationBuilder.DropTable(
                 name: "UserClaims");
@@ -364,13 +530,25 @@ namespace LiftNet.Persistence.Migrations
                 name: "UserTokens");
 
             migrationBuilder.DropTable(
+                name: "Versions");
+
+            migrationBuilder.DropTable(
+                name: "Wards");
+
+            migrationBuilder.DropTable(
                 name: "Appointments");
 
             migrationBuilder.DropTable(
                 name: "Roles");
 
             migrationBuilder.DropTable(
+                name: "Districts");
+
+            migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Provinces");
         }
     }
 }

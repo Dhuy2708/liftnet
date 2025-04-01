@@ -11,8 +11,9 @@ namespace LiftNet.Contract.Interfaces.IRepos
 {
     public interface ISystemJobRepo : IDependency
     {
+        Task<SystemJob?> GetLastJob(JobType type);
         Task<SystemJob?> InsertJob(JobType type);
         Task<int> UpdateJobStatus(string jobId, JobStatus status);
-        Task<SystemJob?> GetLastJob(JobType type);
+        Task<int> FinishJob(string jobId, bool isSuccess, DateTime? scanTime = null);
     }
 }

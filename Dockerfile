@@ -28,10 +28,12 @@ COPY ["LiftNet.Persistence/LiftNet.Persistence.csproj", "LiftNet.Persistence/"]
 COPY ["LiftNet.AzureBlob/LiftNet.AzureBlob.csproj", "LiftNet.AzureBlob/"]
 COPY ["LiftNet.CosmosDb/LiftNet.CosmosDb.csproj", "LiftNet.CosmosDb/"]
 COPY ["LiftNet.Ioc/LiftNet.Ioc.csproj", "LiftNet.Ioc/"]
+COPY ["LiftNet.ProvinceSDK/LiftNet.ProvinceSDK.csproj", "LiftNet.ProvinceSDK/"]
 COPY ["LiftNet.Repositories/LiftNet.Repositories.csproj", "LiftNet.Repositories/"]
 
 # job
 COPY ["LiftNet.Job/LiftNet.Job.csproj", "LiftNet.Job/"]
+COPY ["LiftNet.JobService/LiftNet.JobService.csproj", "LiftNet.JobService/"]
 
 # worker
 COPY ["LiftNet.Timer/LiftNet.Timer.csproj", "LiftNet.Timer/"]

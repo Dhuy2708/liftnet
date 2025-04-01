@@ -25,6 +25,33 @@ namespace LiftNet.Repositories.Core
             _logger = logger;
         }
 
+        public async Task<int> FinishJob(string jobId, bool isSuccess, DateTime? scanTime = null)
+        {
+            var job = _dbContext.SystemJobs.Where(x => x.Id == jobId).FirstOrDefault();
+            if (job == null)
+            {
+                _logger.Error($"job with jobId: {jobId} doesnt exist");
+                return 0;
+            }
+            if (scanTime != null)
+            {
+                job.EndTime = scanTime;
+            }
+            else
+            {
+                job.EndTime = DateTime.UtcNow;
+            }
+            if (isSuccess)
+            {
+                job.Status = (int)JobStatus.Finished;
+            }
+            else
+            {
+                job.Status = (int)JobStatus.Failed;
+            }
+            return await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<SystemJob?> GetLastJob(JobType type)
         {
             if (!SystemJobFamily.Contains(type))
@@ -72,7 +99,7 @@ namespace LiftNet.Repositories.Core
                     return firstInserted;
                 }
 
-                if (systemJob!.EndTime == null || systemJob.Status != (int)JobStatus.Finished)
+                if (systemJob!.EndTime == null || !(systemJob.Status == (int)JobStatus.Finished || systemJob.Status == (int)JobStatus.Failed))
                 {
                     _logger.Error("last job not finished, return");
                     return null;
