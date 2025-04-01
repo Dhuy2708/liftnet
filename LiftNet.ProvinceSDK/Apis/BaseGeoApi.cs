@@ -1,6 +1,9 @@
-﻿using LiftNet.Ioc;
+﻿using LiftNet.Domain.Entities;
+using LiftNet.Ioc;
 using LiftNet.ProvinceSDK.Contracts;
+using Microsoft.AspNetCore.WebUtilities;
 using System;
+using System.Buffers.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,20 +35,24 @@ namespace LiftNet.ProvinceSDK.Apis
             response.EnsureSuccessStatusCode();
 
             var json = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<ApiVersion>(json, new JsonSerializerOptions
+            var apiVersion = JsonSerializer.Deserialize<ApiVersion>(json, new JsonSerializerOptions
             {
-                PropertyNameCaseInsensitive = true
+                PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower
             });
-
-            return result?.DataVersion ?? string.Empty;
+            return apiVersion?.DataVersion ?? string.Empty;
         }
 
-        public async Task<string> GetAllDivisionsJson()
+        public async Task<List<Province>> GetAllDivisionsJson()
         {
-            var response = await _httpClient.GetAsync("");
+            string urlWithParams = QueryHelpers.AddQueryString(string.Empty, "depth", "3");
+            var response = await _httpClient.GetAsync(urlWithParams);
             response.EnsureSuccessStatusCode();
             var json = await response.Content.ReadAsStringAsync();
-            return json;
+            var result = JsonSerializer.Deserialize<List<Province>>(json, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower 
+            });
+            return result ?? [];
         }
     }
 }

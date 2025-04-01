@@ -5,7 +5,7 @@
 namespace LiftNet.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class AddVnGeoTables : Migration
+    public partial class DisableIdentityInsertInGeoTables3 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -14,9 +14,8 @@ namespace LiftNet.Persistence.Migrations
                 name: "Provinces",
                 columns: table => new
                 {
-                    Code = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CodeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Code = table.Column<int>(type: "int", nullable: false),
+                    Codename = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DivisionType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneCode = table.Column<int>(type: "int", nullable: false)
@@ -30,9 +29,8 @@ namespace LiftNet.Persistence.Migrations
                 name: "Districts",
                 columns: table => new
                 {
-                    Code = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CodeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Code = table.Column<int>(type: "int", nullable: false),
+                    Codename = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DivisionType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProvinceCode = table.Column<int>(type: "int", nullable: false)
@@ -52,9 +50,8 @@ namespace LiftNet.Persistence.Migrations
                 name: "Wards",
                 columns: table => new
                 {
-                    Code = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CodeName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Code = table.Column<int>(type: "int", nullable: false),
+                    Codename = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DivisionType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DistrictCode = table.Column<int>(type: "int", nullable: false)

@@ -12,11 +12,12 @@ namespace LiftNet.Domain.Entities
     public sealed class Ward
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public required int Code
         {
             get; set;
         }
-        public string CodeName
+        public string Codename
         {
             get; set;
         }

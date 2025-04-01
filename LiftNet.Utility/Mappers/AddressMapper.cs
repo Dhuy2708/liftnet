@@ -69,7 +69,7 @@ namespace LiftNet.Utility.Mappers
             return new ProvinceDto
             {
                 Code = entity.Code,
-                CodeName = entity.CodeName,
+                CodeName = entity.Codename,
                 DivisionType = entity.DivisionType,
                 Name = entity.Name,
                 PhoneCode = entity.PhoneCode,
@@ -107,7 +107,7 @@ namespace LiftNet.Utility.Mappers
             return new DistrictDto
             {
                 Code = entity.Code,
-                CodeName = entity.CodeName,
+                CodeName = entity.Codename,
                 DivisionType = entity.DivisionType,
                 Name = entity.Name,
             };
@@ -143,7 +143,7 @@ namespace LiftNet.Utility.Mappers
             return new WardDto
             {
                 Code = entity.Code,
-                CodeName = entity.CodeName,
+                CodeName = entity.Codename,
                 DivisionType = entity.DivisionType,
                 Name = entity.Name,
                 DistrictCode = entity.DistrictCode,
