@@ -11,12 +11,12 @@ namespace LiftNet.JobService
     public abstract class BaseJobService : IJob
     {
         protected readonly JobType _jobType;
-        protected readonly IServiceProvider _serviceProvider;
+        protected readonly IServiceProvider _provider;
 
         public BaseJobService(JobType jobType, IServiceProvider provider)
         {
             _jobType = jobType;
-            _serviceProvider = provider;
+            _provider = provider;
         }
 
         public abstract Task KickOffAsync();

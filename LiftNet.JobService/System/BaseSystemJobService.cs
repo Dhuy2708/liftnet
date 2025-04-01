@@ -12,10 +12,10 @@ namespace LiftNet.JobService.System
 {
     public abstract class BaseSystemJobService : BaseJobService, ISystemJob
     {
-        private readonly ISystemJobRepo _systemJobRepo;
+        private ISystemJobRepo _systemJobRepo => _provider.GetRequiredService<ISystemJobRepo>();
+
         protected BaseSystemJobService(JobType jobType, IServiceProvider provider) : base(jobType, provider)
         {
-            _systemJobRepo = provider.GetRequiredService<ISystemJobRepo>();
         }
 
         protected async Task<bool> CheckJobCanRun(TimeSpan intervalTime)
