@@ -1,6 +1,5 @@
 ﻿using LiftNet.Contract.Enums.Job;
 using LiftNet.Contract.Interfaces.IJobs;
-using LiftNet.JobService.System;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +16,6 @@ namespace LiftNet.Job.Factory
         public JobFactory(IServiceProvider provider)
         {
             // main
-            _lazyMainJobs.TryAdd(JobType.ProvinceDiscovery, new Lazy<ISystemJob>(() => new ProvinceDiscoveryService(provider)));
 
             // action
             // 

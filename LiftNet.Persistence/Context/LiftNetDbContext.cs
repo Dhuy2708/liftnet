@@ -22,7 +22,7 @@ namespace LiftNet.Persistence.Context
             ContextConfig.Configure(modelBuilder);
         }
 
-        public DbSet<Domain.Entities.Version> Versions { get; set; }
+        public DbSet<Domain.Entities.LiftNetVersion> Versions { get; set; }
 
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<AppointmentParticipant> AppointmentParticipants { get; set; }

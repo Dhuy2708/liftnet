@@ -1,4 +1,5 @@
-﻿using LiftNet.ProvinceSDK.Contracts;
+﻿using LiftNet.Ioc;
+using LiftNet.ProvinceSDK.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,17 +9,25 @@ using System.Threading.Tasks;
 
 namespace LiftNet.ProvinceSDK.Apis
 {
-    public class BaseApi
+    public class BaseApi : IDependency
     {
         private readonly HttpClient _httpClient;
-        public BaseApi(HttpClient httpClient)
+        public BaseApi()
         {
-            _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://provinces.open-api.vn/api/");
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => true
+            };
+            _httpClient = new HttpClient(handler)
+            {
+                BaseAddress = new Uri("https://provinces.open-api.vn/api/")
+            };
+            _httpClient.DefaultRequestHeaders.Add("User-Agent", "User-Agent-Here");
         }
 
         public async Task<string> GetVersionAsync()
         {
+           
             var response = await _httpClient.GetAsync("version/");
             response.EnsureSuccessStatusCode();
 
@@ -29,6 +38,14 @@ namespace LiftNet.ProvinceSDK.Apis
             });
 
             return result?.DataVersion ?? string.Empty;
+        }
+
+        public async Task<string> GetAllDivisionsJson()
+        {
+            var response = await _httpClient.GetAsync("");
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            return json;
         }
     }
 }

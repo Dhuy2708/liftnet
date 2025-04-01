@@ -11,8 +11,8 @@ namespace LiftNet.ProvinceSDK.Apis
     {
         private readonly ILiftLogger<ProvinceApi> _logger;
 
-        public ProvinceApi(HttpClient httpClient, ILiftLogger<ProvinceApi> logger)
-            : base(httpClient)
+        public ProvinceApi(ILiftLogger<ProvinceApi> logger)
+            : base()
         {
             _logger = logger;
         }

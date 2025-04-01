@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace LiftNet.Domain.Entities
 {
     [Table("Versions")]
-    public sealed class Version
+    public sealed class LiftNetVersion
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

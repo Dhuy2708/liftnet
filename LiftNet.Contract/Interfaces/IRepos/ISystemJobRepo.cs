@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Contract.Interfaces.IRepos
 {
-    public interface ISystemJobRepo
+    public interface ISystemJobRepo : IDependency
     {
         Task<SystemJob?> InsertJob(JobType type);
         Task<int> UpdateJobStatus(string jobId, JobStatus status);
