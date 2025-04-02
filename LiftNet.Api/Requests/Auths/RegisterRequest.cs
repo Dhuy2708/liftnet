@@ -30,7 +30,27 @@ namespace LiftNet.Api.Requests.Auths
         {
             get; set;
         }
-        public AddressDto? Address
+        public AddressRequest? Address
+        {
+            get; set;
+        }
+    }
+
+    public class AddressRequest
+    {
+        public int ProvinceCode
+        {
+            get; set; 
+        }
+        public int DistrictCode
+        {
+            get; set;
+        }
+        public int WardCode
+        {
+            get; set;
+        }
+        public string Location
         {
             get; set;
         }

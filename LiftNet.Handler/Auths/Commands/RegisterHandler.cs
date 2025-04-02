@@ -48,7 +48,7 @@ namespace LiftNet.Handler.Auths.Commands
                 Password = request.Password,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                Address = request.Address
+                //Address = // request.Address
             };
             _logger.Info($"attempt to register, username: {request.Username}");
             var result = await _authRepo.RegisterAsync(registerModel);
