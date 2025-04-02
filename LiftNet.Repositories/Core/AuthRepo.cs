@@ -42,7 +42,10 @@ namespace LiftNet.Repositories.Core
                 Email = model.Email,
                 UserName = model.Username,
                 CreatedAt = DateTime.Now,
-                Address = JsonConvert.SerializeObject(model.Address),
+                ProvinceCode = model.ProvinceCode,
+                DistrictCode = model.DistrictCode,
+                WardCode = model.WardCode,
+                Location = model.Location,
                 IsDeleted = false,
                 IsSuspended = false,
             };

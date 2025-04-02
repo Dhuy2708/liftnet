@@ -22,7 +22,7 @@ namespace LiftNet.Contract.Dtos
         {
             get; set;
         }
-        public string Address
+        public string Location
         {
             get; set;
         }

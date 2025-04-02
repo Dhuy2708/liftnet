@@ -24,7 +24,14 @@ namespace LiftNet.Utility.Mappers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Avatar = user.Avatar,
-                Address = JsonConvert.DeserializeObject<AddressDto>(user.Address ?? string.Empty) ,
+                Address = user.Province != null ? new AddressDto
+                {
+                    Province = user.Province.ToDto(),
+                    District = user.District.ToDto(),
+                    Ward = user.Ward.ToDto(),
+                    Location = user.Location
+                } : null,
+                Location = user.Location,
                 CreatedAt = user.CreatedAt,
                 IsDeleted = user.IsDeleted,
                 IsSuspended = user.IsSuspended
@@ -41,10 +48,13 @@ namespace LiftNet.Utility.Mappers
                 FirstName = userDto.FirstName,
                 LastName = userDto.LastName,
                 Avatar = userDto.Avatar,
-                Address = JsonConvert.SerializeObject(userDto.Address),
+                Province = userDto.Address?.Province?.ToEntity(),
+                District = userDto.Address?.District?.ToEntity(),
+                Ward = userDto.Address?.Ward?.ToEntity(),
+                Location = userDto.Location,
                 CreatedAt = userDto.CreatedAt,
                 IsDeleted = userDto.IsDeleted,
-                IsSuspended = userDto.IsSuspended
+                IsSuspended = userDto.IsSuspended,
             };
         }
 

@@ -20,7 +20,7 @@ namespace LiftNet.Utility.Mappers
                 Province = addressView.Province?.ToDto(),
                 District = addressView.District?.ToDto(),
                 Ward = addressView.Ward?.ToDto(),
-                Address = addressView.Address
+                Location = addressView.Address
             };
         }
 
@@ -33,11 +33,24 @@ namespace LiftNet.Utility.Mappers
                 Province = addressDto.Province?.ToView(),
                 District = addressDto.District?.ToView(),
                 Ward = addressDto.Ward?.ToView(),
-                Address = addressDto.Address
+                Address = addressDto.Location
             };
         }
 
         #region province
+        public static Province ToEntity(this ProvinceDto dto)
+        {
+            if (dto == null) return null;
+            return new Province
+            {
+                Code = dto.Code,
+                Codename = dto.CodeName,
+                DivisionType = dto.DivisionType,
+                Name = dto.Name,
+                PhoneCode = dto.PhoneCode
+            };
+        }
+
         public static ProvinceDto ToDto(this ProvinceView provinceView)
         {
             if (provinceView == null) return null;
@@ -78,6 +91,18 @@ namespace LiftNet.Utility.Mappers
         #endregion
 
         #region district
+        public static District ToEntity(this DistrictDto dto)
+        {
+            if (dto == null) return null;
+            return new District
+            {
+                Code = dto.Code,
+                Codename = dto.CodeName,
+                DivisionType = dto.DivisionType,
+                Name = dto.Name
+            };
+        }
+
         public static DistrictDto ToDto(this DistrictView districtView)
         {
             if (districtView == null) return null;
@@ -115,6 +140,19 @@ namespace LiftNet.Utility.Mappers
         #endregion
 
         #region ward
+        public static Ward ToEntity(this WardDto dto)
+        {
+            if (dto == null) return null;
+            return new Ward
+            {
+                Code = dto.Code,
+                Codename = dto.CodeName,
+                DivisionType = dto.DivisionType,
+                Name = dto.Name,
+                DistrictCode = dto.DistrictCode
+            };
+        }
+
         public static WardDto ToDto(this WardView wardView)
         {
             if (wardView == null) return null;
