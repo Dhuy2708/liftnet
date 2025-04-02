@@ -46,7 +46,9 @@ namespace LiftNet.Api.Extensions
             #endregion
 
             #region quartz
+            #if !DEBUG
             services.RegisterQuartzService();
+            #endif
             #endregion
 
             return services;

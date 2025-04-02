@@ -352,9 +352,6 @@ namespace LiftNet.Persistence.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Avatar")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -367,6 +364,9 @@ namespace LiftNet.Persistence.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("DistrictCode")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -387,6 +387,9 @@ namespace LiftNet.Persistence.Migrations
 
                     b.Property<string>("LastName")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Location")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -412,6 +415,9 @@ namespace LiftNet.Persistence.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("ProvinceCode")
+                        .HasColumnType("int");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -422,7 +428,12 @@ namespace LiftNet.Persistence.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<int?>("WardCode")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("DistrictCode");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -431,6 +442,10 @@ namespace LiftNet.Persistence.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("ProvinceCode");
+
+                    b.HasIndex("WardCode");
 
                     b.ToTable("Users", (string)null);
                 });
@@ -657,6 +672,27 @@ namespace LiftNet.Persistence.Migrations
                     b.Navigation("Target");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("LiftNet.Domain.Entities.User", b =>
+                {
+                    b.HasOne("LiftNet.Domain.Entities.District", "District")
+                        .WithMany()
+                        .HasForeignKey("DistrictCode");
+
+                    b.HasOne("LiftNet.Domain.Entities.Province", "Province")
+                        .WithMany()
+                        .HasForeignKey("ProvinceCode");
+
+                    b.HasOne("LiftNet.Domain.Entities.Ward", "Ward")
+                        .WithMany()
+                        .HasForeignKey("WardCode");
+
+                    b.Navigation("District");
+
+                    b.Navigation("Province");
+
+                    b.Navigation("Ward");
                 });
 
             modelBuilder.Entity("LiftNet.Domain.Entities.UserRole", b =>

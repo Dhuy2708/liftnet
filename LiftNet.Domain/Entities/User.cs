@@ -34,7 +34,25 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
-        public string? Address
+        [ForeignKey(nameof(Province))]
+        public int? ProvinceCode
+        {
+            get; set;
+        }
+
+        [ForeignKey(nameof(District))]
+        public int? DistrictCode
+        {
+            get; set;
+        }
+
+        [ForeignKey(nameof(Ward))]
+        public int? WardCode
+        {
+            get; set;
+        }
+
+        public string? Location
         {
             get; set;
         }
@@ -52,6 +70,22 @@ namespace LiftNet.Domain.Entities
         }
 
         public bool IsSuspended
+        {
+            get; set;
+        }
+
+        // mapping
+        public Province? Province
+        {
+            get; set;
+        }
+
+        public District? District
+        {
+            get; set;
+        }
+
+        public Ward? Ward
         {
             get; set;
         }
