@@ -39,5 +39,6 @@ namespace LiftNet.Contract.Constants
         public const string BLOB_CONNECTION_STRING = "BLOB_CONNECTION_STRING";
         public const string COSMOS_CONNECTION_STRING = "COSMOS_CONNECTION_STRING";
         public const string COSMOS_DATABASE_ID = "COSMOS_DATABASE_ID";
+        public const string GOONG_MAP_API_KEY = "GOONG_MAP_API_KEY";
     }
 }
