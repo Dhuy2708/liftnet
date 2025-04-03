@@ -6,6 +6,8 @@ using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Interfaces.IServices.Indexes;
 using LiftNet.CosmosDb.Contracts;
 using LiftNet.CosmosDb.Services;
+using LiftNet.MapSDK.Apis;
+using LiftNet.MapSDK.Contracts;
 using LiftNet.ProvinceSDK.Apis;
 using LiftNet.Timer.Service;
 using LiftNet.Utility.Extensions;
@@ -41,14 +43,23 @@ namespace LiftNet.Api.Extensions
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             #endregion
 
-            #region province sdk
+            #region sdk
+            // province
             services.AddDependencies(typeof(ProvinceSDK.ProvinceSdkAssemblyRef).Assembly);
+
+            // map
+            services.AddSingleton(new MapApiKey
+            {
+                Key = Environment.GetEnvironmentVariable(EnvKeys.GOONG_MAP_API_KEY)!
+            });
+            
+            services.AddDependencies(typeof(MapSDK.MapSdkAssemblyRef).Assembly);
             #endregion
 
             #region quartz
-            #if !DEBUG
+#if !DEBUG
             services.RegisterQuartzService();
-            #endif
+#endif
             #endregion
 
             return services;

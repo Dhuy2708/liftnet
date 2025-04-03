@@ -3,6 +3,7 @@ using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Views;
 using LiftNet.Domain.Interfaces;
+using LiftNet.MapSDK.Apis;
 using LiftNet.Utility.Mappers;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,11 +18,15 @@ namespace LiftNet.Service.Services
     {
         private readonly ILiftLogger<GeoService> _logger;
         private readonly IUnitOfWork _uow;
+        private readonly AutocompleteApi _autocompleteApi;
 
-        public GeoService(ILiftLogger<GeoService> logger, IUnitOfWork uow)
+        public GeoService(ILiftLogger<GeoService> logger, 
+                          IUnitOfWork uow,
+                          AutocompleteApi autocompleteApi)
         {
             _logger = logger;
             _uow = uow;
+            _autocompleteApi = autocompleteApi;
         }
 
         public async Task<List<ProvinceDto>> SearchProvincesAsync(string q)
@@ -60,7 +65,6 @@ namespace LiftNet.Service.Services
             }
             return null;
         }
-
 
         public async Task<List<WardDto>> SearchWardsAsync(int provinceCode, int districtCode, string q)
         {
