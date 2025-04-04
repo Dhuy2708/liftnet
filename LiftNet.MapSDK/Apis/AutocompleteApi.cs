@@ -1,5 +1,6 @@
 ﻿using LiftNet.Ioc;
 using LiftNet.MapSDK.Contracts;
+using LiftNet.MapSDK.Contracts.Res;
 using System;
 using System.Buffers.Text;
 using System.Collections.Generic;
@@ -10,20 +11,11 @@ using System.Threading.Tasks;
 
 namespace LiftNet.MapSDK.Apis
 {
-    public class AutocompleteApi : IDependency
+    public class AutocompleteApi : BaseApi, IDependency
     {
-        private readonly HttpClient _httpClient;
-        private readonly string _baseUrl;
-        private readonly string _apiKey;
-        public AutocompleteApi(MapApiKey key)
+        private const string BaseUrl = "https://rsapi.goong.io/place/autocomplete";
+        public AutocompleteApi(MapApiKey key) : base (key.Key, BaseUrl)
         {
-            _baseUrl = "https://rsapi.goong.io/place/autocomplete";
-            _apiKey = key.Key;
-
-            _httpClient = new HttpClient()
-            {
-                BaseAddress = new Uri("https://provinces.open-api.vn/api/")
-            };
         }
 
         public async Task<List<Prediction>?> GetAutocompleteAsync(string input, double? latitude = null, double? longitude = null, int limit = 10, int radius = 10)
@@ -36,7 +28,8 @@ namespace LiftNet.MapSDK.Apis
             }
 
             var response = await _httpClient.GetAsync(url);
-            response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode)
+                return null;
 
             var jsonResponse = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<AutocompleteRes>(jsonResponse, new JsonSerializerOptions

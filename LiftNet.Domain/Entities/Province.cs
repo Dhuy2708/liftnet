@@ -34,6 +34,14 @@ namespace LiftNet.Domain.Entities
         {
             get; set;
         }
+        public double Latitude
+        {
+            get; set;
+        }
+        public double Longitude
+        {
+            get; set;
+        }
 
         // mapping
         public List<District> Districts

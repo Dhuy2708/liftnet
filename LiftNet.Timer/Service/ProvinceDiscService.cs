@@ -21,7 +21,7 @@ namespace LiftNet.Timer.Service
         private ProvinceApi _api => _provider.GetRequiredService<ProvinceApi>(); 
         private IUnitOfWork _uow => _provider.GetRequiredService<IUnitOfWork>();
 
-        public ProvinceDiscService(IServiceProvider provider) : base(JobType.ProvinceDiscovery, provider, TimeSpan.FromHours(2))
+        public ProvinceDiscService(IServiceProvider provider) : base(JobType.ProvinceDiscovery, provider, TimeSpan.FromDays(3))
         {
         }
 

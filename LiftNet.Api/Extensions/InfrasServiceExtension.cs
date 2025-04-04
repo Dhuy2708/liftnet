@@ -57,9 +57,7 @@ namespace LiftNet.Api.Extensions
             #endregion
 
             #region quartz
-#if !DEBUG
             services.RegisterQuartzService();
-#endif
             #endregion
 
             return services;
@@ -76,7 +74,7 @@ namespace LiftNet.Api.Extensions
                     .WithIdentity("ProvinceDiscTrigger", "DiscTriggers")
                     .StartNow() 
                     .WithSimpleSchedule(schedule => schedule
-                        .WithIntervalInHours(1)
+                        .WithIntervalInHours(24)
                         .RepeatForever()
                     )
                 );
