@@ -17,7 +17,7 @@ namespace LiftNet.MapSDK.Apis.Tests
         {
             try
             {
-                var key = "4rTDUviK2IUbIe5i026ag4e6rgyWkc16WgfQTzT2";
+                var key = "";
                 var mapApiKey = new MapApiKey
                 {
                     Key = key,
