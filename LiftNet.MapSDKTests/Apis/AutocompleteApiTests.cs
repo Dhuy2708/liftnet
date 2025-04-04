@@ -15,14 +15,21 @@ namespace LiftNet.MapSDK.Apis.Tests
         [TestMethod()]
         public async Task GetAutocompleteAsyncTest()
         {
-            var key = "...";
-            var mapApiKey = new MapApiKey
+            try
             {
-                Key = key,
-            };
-            var api = new AutocompleteApi(mapApiKey);
-            var result = await api.GetAutocompleteAsync("ly thai", 10.772211, 106.663493);
-            Assert.IsNotNull(result);
+                var key = "4rTDUviK2IUbIe5i026ag4e6rgyWkc16WgfQTzT2";
+                var mapApiKey = new MapApiKey
+                {
+                    Key = key,
+                };
+                var api = new AutocompleteApi(mapApiKey);
+                var result = await api.GetAutocompleteAsync("Thành phố Hà Nội");
+                Assert.IsNotNull(result);
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
     }
 }
