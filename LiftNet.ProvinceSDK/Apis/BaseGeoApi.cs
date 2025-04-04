@@ -32,7 +32,8 @@ namespace LiftNet.ProvinceSDK.Apis
         {
            
             var response = await _httpClient.GetAsync("version/");
-            response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode)
+                return string.Empty;
 
             var json = await response.Content.ReadAsStringAsync();
             var apiVersion = JsonSerializer.Deserialize<ApiVersion>(json, new JsonSerializerOptions
@@ -46,7 +47,8 @@ namespace LiftNet.ProvinceSDK.Apis
         {
             string urlWithParams = QueryHelpers.AddQueryString(string.Empty, "depth", "3");
             var response = await _httpClient.GetAsync(urlWithParams);
-            response.EnsureSuccessStatusCode();
+            if (!response.IsSuccessStatusCode)
+                return null;
             var json = await response.Content.ReadAsStringAsync();
             var result = JsonSerializer.Deserialize<List<Province>>(json, new JsonSerializerOptions
             {
