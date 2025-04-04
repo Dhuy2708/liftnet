@@ -1,7 +1,9 @@
 ﻿using LiftNet.Contract.Constants;
 using LiftNet.Contract.Enums.Job;
 using LiftNet.Contract.Interfaces.IRepos;
+using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Domain.Interfaces;
+using LiftNet.MapSDK.Apis;
 using LiftNet.ProvinceSDK.Apis;
 using LiftNet.Timer.Service.Common;
 using LiftNet.Utility.Extensions;
@@ -20,6 +22,7 @@ namespace LiftNet.Timer.Service
         private ILiftLogger<ProvinceDiscService> _logger => _provider.GetRequiredService<ILiftLogger<ProvinceDiscService>>(); 
         private ProvinceApi _api => _provider.GetRequiredService<ProvinceApi>(); 
         private IUnitOfWork _uow => _provider.GetRequiredService<IUnitOfWork>();
+        private IGeoService _geoService => _provider.GetRequiredService<IGeoService>();
 
         public ProvinceDiscService(IServiceProvider provider) : base(JobType.ProvinceDiscovery, provider, TimeSpan.FromDays(3))
         {
@@ -57,8 +60,14 @@ namespace LiftNet.Timer.Service
                     return JobStatus.Failed;
                 }
 
-                foreach (var province in allDivisions)
+                foreach (var province in allDivisions!)
                 {
+                    (var lat, var lng) = await _geoService.FowardGeoCodeAsync(province.Name);
+                    if (lat == 0 || lng == 0)
+                    {
+                        _logger.Error($"error while getting lat and lng of province: {province.Name}");
+                        return JobStatus.Failed;
+                    }
                     foreach (var district in province.Districts)
                     {
                         district.ProvinceCode = province.Code;
@@ -96,7 +105,6 @@ namespace LiftNet.Timer.Service
                 return;
             }
             await _uow.ProvinceRepo.HardDeleteRange(oldProvinces);
-            await _uow.CommitAsync();
         }
     }
 }

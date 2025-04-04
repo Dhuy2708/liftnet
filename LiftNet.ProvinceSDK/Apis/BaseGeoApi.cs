@@ -30,7 +30,6 @@ namespace LiftNet.ProvinceSDK.Apis
 
         public async Task<string> GetVersionAsync()
         {
-           
             var response = await _httpClient.GetAsync("version/");
             if (!response.IsSuccessStatusCode)
                 return string.Empty;
@@ -43,7 +42,7 @@ namespace LiftNet.ProvinceSDK.Apis
             return apiVersion?.DataVersion ?? string.Empty;
         }
 
-        public async Task<List<Province>> GetAllDivisionsJson()
+        public async Task<List<Province>?> GetAllDivisionsJson()
         {
             string urlWithParams = QueryHelpers.AddQueryString(string.Empty, "depth", "3");
             var response = await _httpClient.GetAsync(urlWithParams);

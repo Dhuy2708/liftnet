@@ -2,6 +2,7 @@
 using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Views;
+using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
 using LiftNet.MapSDK.Apis;
 using LiftNet.Utility.Mappers;
@@ -19,14 +20,33 @@ namespace LiftNet.Service.Services
         private readonly ILiftLogger<GeoService> _logger;
         private readonly IUnitOfWork _uow;
         private readonly AutocompleteApi _autocompleteApi;
+        private readonly GeoCodeApi _geoCodeApi;
 
-        public GeoService(ILiftLogger<GeoService> logger, 
+        public GeoService(ILiftLogger<GeoService> logger,
                           IUnitOfWork uow,
-                          AutocompleteApi autocompleteApi)
+                          AutocompleteApi autocompleteApi,
+                          GeoCodeApi geoCodeApi)
         {
             _logger = logger;
             _uow = uow;
             _autocompleteApi = autocompleteApi;
+            _geoCodeApi = geoCodeApi;
+        }
+
+        public async Task<List<Province>> GetAllDivisionsAsync()
+        {
+            try
+            {
+                var queryable = _uow.ProvinceRepo.GetQueryable();
+                queryable = queryable.Include(x => x.Districts)
+                                     .ThenInclude(x => x.Wards);
+                var result = await queryable.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"error while getting all divisions");
+            }
+            return [];
         }
 
         public async Task<List<ProvinceDto>> SearchProvincesAsync(string q)
@@ -72,7 +92,7 @@ namespace LiftNet.Service.Services
             {
                 var queryable = _uow.WardRepo.GetQueryable();
 
-                var wards = await queryable.Where(x => x.District.ProvinceCode == provinceCode && 
+                var wards = await queryable.Where(x => x.District.ProvinceCode == provinceCode &&
                                                             x.DistrictCode == districtCode &&
                                                             x.Name.Contains(q))
                                                .ToListAsync();
@@ -83,7 +103,33 @@ namespace LiftNet.Service.Services
             {
                 _logger.Error(ex, "error while searching wards");
             }
-            return null;
+            return [];
+        }
+
+        public async Task<(double lat, double lng)> FowardGeoCodeAsync(string address)
+        {
+            try
+            {
+                var result = await _geoCodeApi.FowardGeoCodeAsync(address);
+                if (result == null)
+                {
+                    return default;
+                }
+                var mostPotentialResult = result.FirstOrDefault();
+                if (mostPotentialResult == null)
+                {
+                    return default;
+                }
+
+                var lat = mostPotentialResult!.Geometry.Location.Lat;
+                var lng = mostPotentialResult!.Geometry.Location.Lng;
+                return (lat, lng);  
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"error while foward geocode address: {address}");
+            }
+            return default;
         }
     }
 }
