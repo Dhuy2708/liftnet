@@ -63,5 +63,12 @@ namespace LiftNet.Api.Controllers
             }
             return StatusCode(500, result);
         }
+
+        [HttpGet("location/search")]
+        [ProducesResponseType(typeof(List<WardView>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> SearchLocations([FromQuery] int provinceCode, [FromQuery] int districtCode, [FromQuery] string q)
+        {
+            return Ok();
+        }
     }
 }
