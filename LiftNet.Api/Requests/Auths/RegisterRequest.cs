@@ -50,7 +50,7 @@ namespace LiftNet.Api.Requests.Auths
         {
             get; set;
         }
-        public string Location
+        public string PlaceId
         {
             get; set;
         }

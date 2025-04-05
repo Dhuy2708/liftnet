@@ -32,5 +32,20 @@ namespace LiftNet.MapSDK.Apis
 
             return res?.Results;
         }
+
+        public async Task<List<ReverseGeocodeResult>?> ReverseGeoCodeAsync(double latitude, double longitude)
+        {
+            var url = $"{_baseUrl}?latlng={latitude},{longitude}&api_key={_apiKey}";
+
+            var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+                return null;
+
+            var json = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower };
+            var res = JsonSerializer.Deserialize<ReverseGeocodeRes>(json, options);
+
+            return res?.Results;
+        }
     }
 }

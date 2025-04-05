@@ -19,5 +19,7 @@ namespace LiftNet.Contract.Interfaces.IServices
         Task<(double lat, double lng)> FowardGeoCodeAsync(string address);
         Task<(double lat, double lng)> GetCoordinatesByProvinceCodeAsync(int provinceCode);
         Task<List<PlacePredictionView>> AutocompleteSearchAsync(string input, double? latitude = null, double? longitude = null);
+        Task<string> ReverseGeoCodeAsync(double latitude, double longitude);
+        Task<string> GetPlaceNameAsync(string placeId);
     }
 }
