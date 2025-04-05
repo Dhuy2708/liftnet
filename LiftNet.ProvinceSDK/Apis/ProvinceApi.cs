@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.ProvinceSDK.Apis
 {
-    public class ProvinceApi : BaseGeoApi
+    public class ProvinceApi : BaseApi
     {
         private readonly ILiftLogger<ProvinceApi> _logger;
 

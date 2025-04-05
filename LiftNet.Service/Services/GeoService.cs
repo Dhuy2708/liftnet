@@ -5,6 +5,7 @@ using LiftNet.Contract.Views;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
 using LiftNet.MapSDK.Apis;
+using LiftNet.MapSDK.Contracts.Res;
 using LiftNet.Utility.Mappers;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace LiftNet.Service.Services
 {
@@ -31,6 +33,15 @@ namespace LiftNet.Service.Services
             _uow = uow;
             _autocompleteApi = autocompleteApi;
             _geoCodeApi = geoCodeApi;
+        }
+
+        private string NormalizeVietnamese(string input)
+        {
+            input = input.Replace("đ", "d").Replace("Đ", "D");
+
+            return string.Concat(input.Normalize(NormalizationForm.FormD)
+                                      .Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark))
+                         .ToLower();
         }
 
         public async Task<List<Province>> GetAllDivisionsAsync()
@@ -53,10 +64,12 @@ namespace LiftNet.Service.Services
         {
             try
             {
-                var queryable = _uow.ProvinceRepo.GetQueryable();
+                var normalizedQuery = NormalizeVietnamese(q);
+                var provinces = await _uow.ProvinceRepo.GetQueryable()
+                                                       .ToListAsync(); // Fetch data into memory
 
-                var provinces = await queryable.Where(x => x.Name.Contains(q))
-                                               .ToListAsync();
+                provinces = provinces.Where(x => NormalizeVietnamese(x.Name).Contains(normalizedQuery))
+                                     .ToList(); // Apply filtering in memory
 
                 return provinces.Select(x => x.ToDto()).ToList();
             }
@@ -64,38 +77,42 @@ namespace LiftNet.Service.Services
             {
                 _logger.Error(ex, "error while searching provinces");
             }
-            return null;
+            return new List<ProvinceDto>();
         }
 
         public async Task<List<DistrictDto>> SearchDistrictsAsync(int provinceCode, string q)
         {
             try
             {
-                var queryable = _uow.DistrictRepo.GetQueryable();
+                var normalizedQuery = NormalizeVietnamese(q);
+                var districts = await _uow.DistrictRepo.GetQueryable()
+                                                       .Where(x => x.ProvinceCode == provinceCode)
+                                                       .ToListAsync(); // Fetch data into memory
 
-                var districits = await queryable.Where(x => x.ProvinceCode == provinceCode &&
-                                                            x.Name.Contains(q))
-                                               .ToListAsync();
+                districts = districts.Where(x => NormalizeVietnamese(x.Name).Contains(normalizedQuery))
+                                     .ToList(); // Apply filtering in memory
 
-                return districits.Select(x => x.ToDto()).ToList();
+                return districts.Select(x => x.ToDto()).ToList();
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, "error while searching districts");
             }
-            return null;
+            return new List<DistrictDto>();
         }
 
         public async Task<List<WardDto>> SearchWardsAsync(int provinceCode, int districtCode, string q)
         {
             try
             {
-                var queryable = _uow.WardRepo.GetQueryable();
+                var normalizedQuery = NormalizeVietnamese(q);
+                var wards = await _uow.WardRepo.GetQueryable()
+                                               .Where(x => x.District.ProvinceCode == provinceCode &&
+                                                           x.DistrictCode == districtCode)
+                                               .ToListAsync(); // Fetch data into memory
 
-                var wards = await queryable.Where(x => x.District.ProvinceCode == provinceCode &&
-                                                            x.DistrictCode == districtCode &&
-                                                            x.Name.Contains(q))
-                                               .ToListAsync();
+                wards = wards.Where(x => NormalizeVietnamese(x.Name).Contains(normalizedQuery))
+                             .ToList(); // Apply filtering in memory
 
                 return wards.Select(x => x.ToDto()).ToList();
             }
@@ -103,7 +120,7 @@ namespace LiftNet.Service.Services
             {
                 _logger.Error(ex, "error while searching wards");
             }
-            return [];
+            return new List<WardDto>();
         }
 
         public async Task<(double lat, double lng)> FowardGeoCodeAsync(string address)
@@ -130,6 +147,55 @@ namespace LiftNet.Service.Services
                 _logger.Error(ex, $"error while foward geocode address: {address}");
             }
             return default;
+        }
+
+        public async Task<(double lat, double lng)> GetCoordinatesByProvinceCodeAsync(int provinceCode)
+        {
+            try
+            {
+                var province = await _uow.ProvinceRepo.GetQueryable()
+                    .Where(x => x.Code == provinceCode)
+                    .Select(x => new { x.Latitude, x.Longitude })
+                    .FirstOrDefaultAsync();
+
+                if (province == null)
+                {
+                    _logger.Error($"Province with code {provinceCode} not found.");
+                    return (0, 0);
+                }
+
+                return (province.Latitude, province.Longitude);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error while fetching coordinates.");
+                return (0, 0);
+            }
+        }
+
+        public async Task<List<PlacePredictionView>> AutocompleteSearchAsync(string input, double? latitude = null, double? longitude = null)
+        {
+            try
+            {
+                var predictions = await _autocompleteApi.GetAutocompleteAsync(input, latitude, longitude);
+
+                if (predictions == null)
+                {
+                    _logger.Error("No predictions found.");
+                    return new List<PlacePredictionView>();
+                }
+
+                return predictions.Select(p => new PlacePredictionView
+                {
+                    Description = p.Description,
+                    PlaceId = p.PlaceId
+                }).ToList();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error while fetching autocomplete predictions.");
+                return new List<PlacePredictionView>();
+            }
         }
     }
 }

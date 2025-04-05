@@ -30,10 +30,12 @@ namespace LiftNet.Handler.Geos
             _logger.Info("begin search districts");
 
             var dtos = await _geoService.SearchDistrictsAsync(request.ProvinceCode, request.Q);
-            if (dtos == null)
+
+            if (dtos == null || !dtos.Any())
             {
-                return LiftNetRes<List<DistrictView>>.ErrorResponse("Failed to search districts");
+                return LiftNetRes<List<DistrictView>>.ErrorResponse("No districts found");
             }
+
             var views = dtos.Select(x => x.ToView()).ToList();
             return LiftNetRes<List<DistrictView>>.SuccessResponse(views);
         }

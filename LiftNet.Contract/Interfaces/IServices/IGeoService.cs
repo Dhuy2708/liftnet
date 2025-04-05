@@ -17,5 +17,7 @@ namespace LiftNet.Contract.Interfaces.IServices
         Task<List<DistrictDto>> SearchDistrictsAsync(int provinceCode, string q);
         Task<List<WardDto>> SearchWardsAsync(int provinceCode, int districtCode, string q);
         Task<(double lat, double lng)> FowardGeoCodeAsync(string address);
+        Task<(double lat, double lng)> GetCoordinatesByProvinceCodeAsync(int provinceCode);
+        Task<List<PlacePredictionView>> AutocompleteSearchAsync(string input, double? latitude = null, double? longitude = null);
     }
 }

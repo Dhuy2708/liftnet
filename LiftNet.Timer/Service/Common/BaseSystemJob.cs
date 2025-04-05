@@ -18,16 +18,29 @@ namespace LiftNet.Timer.Service.Common
         private ILiftLogger<BaseSystemJob> _logger => _provider.GetRequiredService<ILiftLogger<BaseSystemJob>>();
 
         protected readonly JobType _jobType;
-        protected readonly TimeSpan _intervalTime;
         protected DateTime _scanTime => DateTime.UtcNow;
 
-        protected BaseSystemJob(JobType jobType, IServiceProvider provider, TimeSpan intervalTime) : base(provider)
+        protected BaseSystemJob(JobType jobType, IServiceProvider provider) : base(provider)
         {
             _jobType = jobType;
-            _intervalTime = intervalTime;
         }
 
-        protected async Task<bool> CheckJobCanRun(TimeSpan intervalTime)
+        // this should be for main job, timer job already config interval time 
+        //protected async Task<bool> CheckJobCanRun(TimeSpan intervalTime)
+        //{
+        //    var job = await _systemJobRepo.GetLastJob(_jobType);
+        //    if (job == null)
+        //    {
+        //        return true;
+        //    }
+        //    if (job.EndTime == null || !(job.Status == (int)JobStatus.Finished || job.Status == (int)JobStatus.Failed))
+        //    {
+        //        return false;
+        //    }
+        //    return _scanTime.Subtract(job.EndTime.Value) > intervalTime;
+        //}
+
+        protected async Task<bool> CheckJobCanRun()
         {
             var job = await _systemJobRepo.GetLastJob(_jobType);
             if (job == null)
@@ -38,7 +51,7 @@ namespace LiftNet.Timer.Service.Common
             {
                 return false;
             }
-            return _scanTime.Subtract(job.EndTime.Value) > intervalTime;
+            return true;
         }
 
         public override async Task Execute(IJobExecutionContext context)
@@ -46,7 +59,7 @@ namespace LiftNet.Timer.Service.Common
             try
             {
                 _logger.Info($"begin job, type: {_jobType}");
-                if (!await CheckJobCanRun(_intervalTime))
+                if (!await CheckJobCanRun())
                 {
                     _logger.Info($"job has been run before, skip");
                     return;

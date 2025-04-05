@@ -30,9 +30,9 @@ namespace LiftNet.Handler.Geos
 
             var dtos = await _geoService.SearchProvincesAsync(request.Q);
             
-            if (dtos == null)
+            if (dtos == null || !dtos.Any())
             {
-                return LiftNetRes<List<ProvinceView>>.ErrorResponse("Failed to search provinces");
+                return LiftNetRes<List<ProvinceView>>.ErrorResponse("No provinces found");
             }
             var views = dtos.Select(x => x.ToView()).ToList();
             return LiftNetRes<List<ProvinceView>>.SuccessResponse(views);

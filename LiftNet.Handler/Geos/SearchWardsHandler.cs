@@ -30,9 +30,9 @@ namespace LiftNet.Handler.Geos
 
             var dtos = await _geoService.SearchWardsAsync(request.ProvinceCode, request.DistrictCode, request.Q);
 
-            if (dtos == null)
+            if (dtos == null || !dtos.Any())
             {
-                return LiftNetRes<List<WardView>>.ErrorResponse("Failed to search wards");
+                return LiftNetRes<List<WardView>>.ErrorResponse("No wards found");
             }
             var views = dtos.Select(x => x.ToView()).ToList();
             return LiftNetRes<List<WardView>>.SuccessResponse(views);

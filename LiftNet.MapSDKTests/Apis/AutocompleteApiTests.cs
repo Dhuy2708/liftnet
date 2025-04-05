@@ -22,8 +22,11 @@ namespace LiftNet.MapSDK.Apis.Tests
                 {
                     Key = key,
                 };
-                var api = new AutocompleteApi(mapApiKey);
-                var result = await api.GetAutocompleteAsync("Thành phố Hà Nội");
+                //var api = new AutocompleteApi(mapApiKey);
+                //var result = await api.GetAutocompleteAsync("Thành phố Hà Nội");
+
+                var api = new GeoCodeApi(mapApiKey);
+                var result = await api.FowardGeoCodeAsync("Tỉnh Lào Cai");
                 Assert.IsNotNull(result);
             }
             catch (Exception ex)
