@@ -1,8 +1,11 @@
-﻿using LiftNet.Contract.Dtos.Auth;
+﻿using LiftNet.Contract.Dtos;
+using LiftNet.Contract.Dtos.Auth;
 using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Interfaces.IServices;
+using LiftNet.Contract.Interfaces.IServices.Indexes;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Exceptions;
+using LiftNet.Domain.Indexes;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Auths.Commands.Requests;
@@ -23,32 +26,39 @@ namespace LiftNet.Handler.Auths.Commands
         private readonly ILiftLogger<RegisterHandler> _logger;
         private readonly IUnitOfWork _uow;
         private readonly IGeoService _geoService;
+        private readonly IAddressIndexService _addressIndexService;
 
         public RegisterHandler(UserManager<User> userManager, 
                                IAuthRepo authRepo, 
                                IUnitOfWork uow,
                                ILiftLogger<RegisterHandler> logger,
-                               IGeoService geoService) // Inject GeoService
+                               IGeoService geoService,
+                               IAddressIndexService addressIndexService) // Inject AddressIndexService
         {
             _userManager = userManager;
             _authRepo = authRepo;
             _uow = uow;
             _logger = logger;
             _geoService = geoService;
+            _addressIndexService = addressIndexService;
         }
 
         public async Task<LiftNetRes> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
             await new RegisterCommandValidator().ValidateAndThrowAsync(request);
-
-            var placeName = string.Empty;
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user != null)
+            {
+                throw new BadRequestException(["Email is already registered with account."], "Email is already registered with account.");
+            }
+            PlaceDetailDto? placeDetail = null;
             if (request.Address != null)
             {
                 var provinceCode = request.Address!.ProvinceCode;
                 var districtCode = request.Address!.DistrictCode;
                 var wardCode = request.Address!.WardCode;
-
-                if (provinceCode == 0 || districtCode == 0 || wardCode == 0 || request.Address.PlaceId.IsNullOrEmpty())
+                var placeId = request.Address.PlaceId;
+                if (provinceCode == 0 || districtCode == 0 || wardCode == 0 || placeId.IsNullOrEmpty())
                 {
                     throw new BadRequestException(["Address codes are not valid"], "Address codes are not valid.");
                 }
@@ -61,21 +71,16 @@ namespace LiftNet.Handler.Auths.Commands
                 {
                     throw new BadRequestException(["Address codes are not valid"], "Address codes are not valid.");
                 }
-                placeName = await _geoService.GetPlaceNameAsync(request.Address!.PlaceId.ToString());
+                placeDetail = await _geoService.GetPlaceDetailAsync(placeId);
             }
 
-            var user = await _userManager.FindByEmailAsync(request.Email);
-            if (user != null)
-            {
-                throw new BadRequestException(["Email is already registered with account."], "Email is already registered with account.");
-            }
+          
             user = await _userManager.FindByNameAsync(request.Username);
             if (user != null)
             {
                 throw new BadRequestException(["Username is already taken."], "Username is already taken.");
             }
             
-
             var registerModel = new RegisterModel()
             {
                 Role = request.Role,
@@ -87,17 +92,71 @@ namespace LiftNet.Handler.Auths.Commands
                 ProvinceCode = request.Address?.ProvinceCode,
                 DistrictCode = request.Address?.DistrictCode,
                 WardCode = request.Address?.WardCode,
-                Location = placeName 
+                Location = placeDetail?.PlaceName ?? string.Empty, 
             };
             _logger.Info($"attempt to register, username: {request.Username}");
             var result = await _authRepo.RegisterAsync(registerModel);
             if (result.Succeeded)
             {
-                _logger.Info("register user successfully");
-                return LiftNetRes.SuccessResponse(message: "User registered successfully.");
+                if (placeDetail == null)
+                {
+                    _logger.Info("register user successfully");
+                    return LiftNetRes.SuccessResponse(message: "User registered successfully.");
+                }
+                var newUser = await _userManager.FindByEmailAsync(request.Email);
+                try
+                {
+                    var cosmosResult = await InsertCosmosAsync(newUser!.Id, placeDetail);
+                    if (cosmosResult != 0)
+                    {
+                        _logger.Info("register user successfully");
+                        return LiftNetRes.SuccessResponse(message: "User registered successfully.");
+                    }
+                    else
+                    {
+                        await _userManager.DeleteAsync(newUser!);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "Error inserting into Cosmos DB");
+                    await _userManager.DeleteAsync(newUser!);
+                }
             }
             _logger.Error("failed to register user");
             return LiftNetRes.ErrorResponse(message: "Failed to register.", errors: result.Errors.Select(x => x.Description).ToList());
+        }
+
+        private async Task<int> InsertCosmosAsync(string userId, PlaceDetailDto placeDetail)
+        {
+            if (userId.IsNullOrEmpty() || placeDetail == null)
+            {
+                return 0;
+            }
+       
+            if (placeDetail == null)
+            {
+                return 0;
+            }
+            var addressIndexData = new AddressIndexData
+            {
+                Id = userId,
+                UserId = userId,
+                PlaceId = placeDetail.PlaceId,
+                PlaceName = placeDetail.PlaceName,
+                FormattedAddress = placeDetail.FormattedAddress,
+                Latitude = placeDetail.Latitude,
+                Longitude = placeDetail.Longitude,
+                Schema = DataSchema.Address,
+                CreatedAt = DateTime.UtcNow,
+                ModifiedAt = DateTime.UtcNow
+            };
+            var result = await _addressIndexService.UpsertAsync(addressIndexData);
+            if (result != null)
+            {
+                return 1; 
+            }
+            return 0;
         }
     }
 }

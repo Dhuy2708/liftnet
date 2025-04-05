@@ -54,5 +54,8 @@ namespace LiftNet.Domain.Indexes
 
         // chat
         Chat = 20,
+
+        // address
+        Address = 30 // Added schema for Address
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Contract.Interfaces.IServices.Indexes
 {
-    public interface IScheduleIndexService : IIndexBaseService<EventIndexData>, IDependency
+    public interface IEventIndexService : IIndexBaseService<EventIndexData>, IDependency
     {
     }
 }

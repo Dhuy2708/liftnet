@@ -240,5 +240,32 @@ namespace LiftNet.Service.Services
                 return string.Empty;
             }
         }
+
+        public async Task<PlaceDetailDto?> GetPlaceDetailAsync(string placeId)
+        {
+            try
+            {
+                var placeDetail = await _placeApi.GetPlaceDetailAsync(placeId);
+                if (placeDetail == null)
+                {
+                    _logger.Error($"No place detail found for placeId: {placeId}");
+                    return null;
+                }
+
+                return new PlaceDetailDto
+                {
+                    PlaceName = placeDetail.Name,
+                    PlaceId = placeDetail.PlaceId,
+                    Latitude = placeDetail.Geometry.Location.Lat,
+                    Longitude = placeDetail.Geometry.Location.Lng,
+                    FormattedAddress = placeDetail.FormattedAddress
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error while fetching place detail for placeId: {placeId}");
+                return null;
+            }
+        }
     }
 }
