@@ -23,12 +23,12 @@ namespace LiftNet.Handler.Appointments.Commands
     {
         private readonly ILiftLogger<BookAppointmentHandler> _logger;
         private readonly IAppointmentRepo _appointmentRepo;
-        private readonly IScheduleIndexService _indexService;
+        private readonly IEventIndexService _indexService;
         private readonly IRoleService _roleService;
         private readonly IUserService _userService;
 
         public BookAppointmentHandler(IAppointmentRepo appointmentRepo, 
-                                      IScheduleIndexService indexService, 
+                                      IEventIndexService indexService, 
                                       IUserService userService,
                                       ILiftLogger<BookAppointmentHandler> logger,
                                       IRoleService roleService)

@@ -22,7 +22,7 @@ namespace LiftNet.MapSDK.Apis
                 return null;
 
             var json = await response.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+            var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower };
             var res = JsonSerializer.Deserialize<PlaceDetailRes>(json, options);
 
             return res?.Result;

@@ -21,5 +21,6 @@ namespace LiftNet.Contract.Interfaces.IServices
         Task<List<PlacePredictionView>> AutocompleteSearchAsync(string input, double? latitude = null, double? longitude = null);
         Task<string> ReverseGeoCodeAsync(double latitude, double longitude);
         Task<string> GetPlaceNameAsync(string placeId);
+        Task<PlaceDetailDto?> GetPlaceDetailAsync(string placeId);
     }
 }
