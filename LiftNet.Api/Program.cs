@@ -29,24 +29,23 @@ public class Program
             options.SuppressModelStateInvalidFilter = true;
         });
 
-//#if DEBUG
+        //#if DEBUG
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowAll",
-                policy =>
-                {
-                    policy.AllowAnyOrigin() 
-                          .AllowAnyMethod()   
-                          .AllowAnyHeader(); 
-                });
+            options.AddPolicy("AllowAll", policy =>
+            {
+                policy.AllowAnyOrigin()
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+            });
         });
-//#endif
+        //#endif
 
         #region app
         var app = builder.Build();
-
+        app.UseCors("AllowAll");
         // Configure the HTTP request pipeline.
-    
+
         app.UseOpenApi();
         app.UseSwaggerUi(options =>
         {
