@@ -1,4 +1,5 @@
-﻿using LiftNet.MapSDK.Contracts;
+﻿using LiftNet.Ioc;
+using LiftNet.MapSDK.Contracts;
 using LiftNet.MapSDK.Contracts.Res;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.MapSDK.Apis
 {
-    public class GeoCodeApi : BaseApi
+    public class GeoCodeApi : BaseApi, IDependency
     {
         private const string BaseUrl = "https://rsapi.goong.io/geocode";
 
@@ -26,7 +27,7 @@ namespace LiftNet.MapSDK.Apis
                 return null;
 
             var json = await response.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower };
             var res = JsonSerializer.Deserialize<ForwardGeocodeRes>(json, options);
 
             return res?.Results;

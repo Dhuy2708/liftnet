@@ -1,4 +1,5 @@
-﻿using dotenv.net;
+﻿using System.Diagnostics;
+using dotenv.net;
 using LiftNet.Api.Utils;
 using LiftNet.AzureBlob.Services;
 using LiftNet.Contract.Constants;
@@ -57,7 +58,9 @@ namespace LiftNet.Api.Extensions
             #endregion
 
             #region quartz
+#if !DEBUG
             services.RegisterQuartzService();
+#endif
             #endregion
 
             return services;
@@ -74,7 +77,7 @@ namespace LiftNet.Api.Extensions
                     .WithIdentity("ProvinceDiscTrigger", "DiscTriggers")
                     .StartNow() 
                     .WithSimpleSchedule(schedule => schedule
-                        .WithIntervalInHours(24)
+                        .WithIntervalInHours(24 * 7)
                         .RepeatForever()
                     )
                 );

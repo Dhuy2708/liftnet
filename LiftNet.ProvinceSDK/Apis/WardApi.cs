@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.ProvinceSDK.Apis
 {
-    public class WardApi : BaseGeoApi
+    public class WardApi : BaseApi
     {
     }
 }

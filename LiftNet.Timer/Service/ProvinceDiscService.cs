@@ -3,7 +3,6 @@ using LiftNet.Contract.Enums.Job;
 using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Domain.Interfaces;
-using LiftNet.MapSDK.Apis;
 using LiftNet.ProvinceSDK.Apis;
 using LiftNet.Timer.Service.Common;
 using LiftNet.Utility.Extensions;
@@ -24,8 +23,8 @@ namespace LiftNet.Timer.Service
         private IUnitOfWork _uow => _provider.GetRequiredService<IUnitOfWork>();
         private IGeoService _geoService => _provider.GetRequiredService<IGeoService>();
 
-        public ProvinceDiscService(IServiceProvider provider) : base(JobType.ProvinceDiscovery, provider, TimeSpan.FromDays(3))
-        {
+        public ProvinceDiscService(IServiceProvider provider) : base(JobType.ProvinceDiscovery, provider)
+        {  
         }
 
         protected override async Task<JobStatus> KickOffJobServiceAsync()
@@ -47,7 +46,6 @@ namespace LiftNet.Timer.Service
                     return JobStatus.Finished;
                 }
 
-                await DeleteOldData();
                 _ = await _uow.VersionRepo.Create(new Domain.Entities.LiftNetVersion()
                 {
                     Key = LiftNetVersionKeys.VN_GEO,
@@ -62,12 +60,14 @@ namespace LiftNet.Timer.Service
 
                 foreach (var province in allDivisions!)
                 {
+                    await Task.Delay(500);
                     (var lat, var lng) = await _geoService.FowardGeoCodeAsync(province.Name);
                     if (lat == 0 || lng == 0)
                     {
                         _logger.Error($"error while getting lat and lng of province: {province.Name}");
-                        return JobStatus.Failed;
                     }
+                    province.Latitude = lat;
+                    province.Longitude = lng;
                     foreach (var district in province.Districts)
                     {
                         district.ProvinceCode = province.Code;
@@ -77,7 +77,7 @@ namespace LiftNet.Timer.Service
                         }
                     }
                 }
-                _ = await _uow.ProvinceRepo.CreateRange(allDivisions);
+                _ = await _uow.ProvinceRepo.UpdateRange(allDivisions);
                 var result = await _uow.CommitAsync();
 
                 if (result > 0)
