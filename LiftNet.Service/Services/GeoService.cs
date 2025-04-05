@@ -23,16 +23,19 @@ namespace LiftNet.Service.Services
         private readonly IUnitOfWork _uow;
         private readonly AutocompleteApi _autocompleteApi;
         private readonly GeoCodeApi _geoCodeApi;
+        private readonly PlaceApi _placeApi;
 
         public GeoService(ILiftLogger<GeoService> logger,
                           IUnitOfWork uow,
                           AutocompleteApi autocompleteApi,
-                          GeoCodeApi geoCodeApi)
+                          GeoCodeApi geoCodeApi,
+                          PlaceApi placeApi) // Inject PlaceApi
         {
             _logger = logger;
             _uow = uow;
             _autocompleteApi = autocompleteApi;
             _geoCodeApi = geoCodeApi;
+            _placeApi = placeApi;
         }
 
         private string NormalizeVietnamese(string input)
@@ -188,13 +191,53 @@ namespace LiftNet.Service.Services
                 return predictions.Select(p => new PlacePredictionView
                 {
                     Description = p.Description,
-                    PlaceId = p.PlaceId
+                    PlaceId = p.PlaceId,
                 }).ToList();
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, "Error while fetching autocomplete predictions.");
                 return new List<PlacePredictionView>();
+            }
+        }
+
+        public async Task<string> ReverseGeoCodeAsync(double latitude, double longitude)
+        {
+            try
+            {
+                var result = await _geoCodeApi.ReverseGeoCodeAsync(latitude, longitude);
+                if (result == null || !result.Any())
+                {
+                    _logger.Error($"No reverse geocode result found for coordinates: {latitude}, {longitude}");
+                    return string.Empty;
+                }
+
+                return result.FirstOrDefault()?.FormattedAddress ?? string.Empty;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error while reverse geocoding coordinates: {latitude}, {longitude}");
+                return string.Empty;
+            }
+        }
+
+        public async Task<string> GetPlaceNameAsync(string placeId)
+        {
+            try
+            {
+                var placeDetail = await _placeApi.GetPlaceDetailAsync(placeId);
+                if (placeDetail == null)
+                {
+                    _logger.Error($"No place detail found for placeId: {placeId}");
+                    return string.Empty;
+                }
+
+                return placeDetail.Name;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error while fetching place name for placeId: {placeId}");
+                return string.Empty;
             }
         }
     }

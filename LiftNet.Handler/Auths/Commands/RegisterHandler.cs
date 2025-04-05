@@ -1,5 +1,6 @@
 ﻿using LiftNet.Contract.Dtos.Auth;
 using LiftNet.Contract.Interfaces.IRepos;
+using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Exceptions;
 using LiftNet.Domain.Interfaces;
@@ -8,6 +9,7 @@ using LiftNet.Handler.Auths.Commands.Requests;
 using LiftNet.Handler.Auths.Commands.Validators;
 using LiftNet.Ioc;
 using LiftNet.SharedKenel.Extensions;
+using LiftNet.Utility.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,32 +22,37 @@ namespace LiftNet.Handler.Auths.Commands
         private readonly IAuthRepo _authRepo;
         private readonly ILiftLogger<RegisterHandler> _logger;
         private readonly IUnitOfWork _uow;
+        private readonly IGeoService _geoService;
 
         public RegisterHandler(UserManager<User> userManager, 
                                IAuthRepo authRepo, 
                                IUnitOfWork uow,
-                               ILiftLogger<RegisterHandler> logger)
+                               ILiftLogger<RegisterHandler> logger,
+                               IGeoService geoService) // Inject GeoService
         {
             _userManager = userManager;
             _authRepo = authRepo;
             _uow = uow;
             _logger = logger;
+            _geoService = geoService;
         }
 
         public async Task<LiftNetRes> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
             await new RegisterCommandValidator().ValidateAndThrowAsync(request);
 
+            var placeName = string.Empty;
             if (request.Address != null)
             {
                 var provinceCode = request.Address!.ProvinceCode;
                 var districtCode = request.Address!.DistrictCode;
                 var wardCode = request.Address!.WardCode;
 
-                if (provinceCode == 0 || districtCode == 0 || wardCode == 0)
+                if (provinceCode == 0 || districtCode == 0 || wardCode == 0 || request.Address.PlaceId.IsNullOrEmpty())
                 {
                     throw new BadRequestException(["Address codes are not valid"], "Address codes are not valid.");
                 }
+           
                 var isAddressValid = await _uow.WardRepo.GetQueryable()
                                                .AnyAsync(w => w.Code == wardCode &&
                                                               w.DistrictCode == districtCode &&
@@ -54,6 +61,7 @@ namespace LiftNet.Handler.Auths.Commands
                 {
                     throw new BadRequestException(["Address codes are not valid"], "Address codes are not valid.");
                 }
+                placeName = await _geoService.GetPlaceNameAsync(request.Address!.PlaceId.ToString());
             }
 
             var user = await _userManager.FindByEmailAsync(request.Email);
@@ -66,6 +74,8 @@ namespace LiftNet.Handler.Auths.Commands
             {
                 throw new BadRequestException(["Username is already taken."], "Username is already taken.");
             }
+            
+
             var registerModel = new RegisterModel()
             {
                 Role = request.Role,
@@ -77,7 +87,7 @@ namespace LiftNet.Handler.Auths.Commands
                 ProvinceCode = request.Address?.ProvinceCode,
                 DistrictCode = request.Address?.DistrictCode,
                 WardCode = request.Address?.WardCode,
-                Location = request.Address?.Location
+                Location = placeName 
             };
             _logger.Info($"attempt to register, username: {request.Username}");
             var result = await _authRepo.RegisterAsync(registerModel);
