@@ -8,6 +8,8 @@ using Microsoft.IdentityModel.Tokens;
 using NSwag.Generation.Processors.Security;
 using NSwag;
 using System.Text;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace LiftNet.Api.Extensions
 {
@@ -15,6 +17,7 @@ namespace LiftNet.Api.Extensions
     {
         public static IServiceCollection RegisterAuth(this IServiceCollection services)
         {
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -49,9 +52,10 @@ namespace LiftNet.Api.Extensions
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    RoleClaimType = LiftNetClaimType.Roles,
                 };
+                x.MapInboundClaims = false;
             });
+            JsonWebTokenHandler.DefaultMapInboundClaims = false;
 
             services.AddAuthorization(options =>
             {

@@ -7,6 +7,10 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Linq;
+using System.Security.Claims;
+using LiftNet.Domain.Constants;
+using LiftNet.Handler.Auths.Queries.Requests;
 
 namespace LiftNet.Api.Controllers
 {
@@ -54,6 +58,28 @@ namespace LiftNet.Api.Controllers
                 return Ok(result);
             }
             return StatusCode(500, result);
+        }
+
+        [HttpGet("basicInfo")]
+        [Authorize]
+        [ProducesResponseType(typeof(LiftNetRes<BasicUserInfo>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetBasicInfo()
+        {
+            var userId = User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized(LiftNetRes.ErrorResponse("User not authenticated"));
+            }
+
+            var query = new GetBasicUserInfoQuery { UserId = userId };
+            var result = await _mediator.Send(query);
+            
+            if (!result.Success)
+            {
+                return StatusCode(500, result);
+            }
+
+            return Ok(result);
         }
     }
 }
