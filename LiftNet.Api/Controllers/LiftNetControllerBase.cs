@@ -16,12 +16,29 @@ namespace LiftNet.Api.Controllers
         /// <summary>
         /// credential
         /// </summary>
-        protected string UserId => User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
-        protected LiftNetRoleEnum Role => Roles.FirstOrDefault();
-        protected List<LiftNetRoleEnum> Roles => User.FindFirstValue(LiftNetClaimType.Roles)?
-                                                      .Split(", ")?
-                                                      .Select(x => (LiftNetRoleEnum)Enum.Parse(typeof(LiftNetRoleEnum), x))?
-                                                      .ToList() ?? [];
+        protected string UserId => User?.FindFirstValue(LiftNetClaimType.UId) ?? "";
+        protected string Username => User?.FindFirstValue(LiftNetClaimType.Username) ?? "";
+        
+        protected LiftNetRoleEnum Role => Roles?.FirstOrDefault() ?? LiftNetRoleEnum.None;
+        
+        protected List<LiftNetRoleEnum> Roles
+        {
+            get
+            {
+                var rolesString = User?.FindFirstValue(LiftNetClaimType.Roles);
+                if (string.IsNullOrEmpty(rolesString))
+                    return [];
+
+                return rolesString.Split(", ", StringSplitOptions.RemoveEmptyEntries)
+                                .Select(x => 
+                                {
+                                    return Enum.TryParse<LiftNetRoleEnum>(x, out var role) 
+                                        ? role 
+                                        : LiftNetRoleEnum.None;
+                                })
+                                .ToList();
+            }
+        }
 
         private readonly IServiceProvider _serviceProvider;
         protected readonly IMediator _mediator;

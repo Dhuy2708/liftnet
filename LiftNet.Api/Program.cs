@@ -3,6 +3,7 @@ using dotenv.net;
 using LiftNet.Api.Extensions;
 using LiftNet.Api.Middlewares;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.JsonWebTokens;
 using NSwag;
 using NSwag.Generation.Processors.Security;
 
@@ -12,6 +13,8 @@ public class Program
 {
     public static void Main(string[] args)
     {
+        JsonWebTokenHandler.DefaultMapInboundClaims = false;
+
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.RegisterAuth();

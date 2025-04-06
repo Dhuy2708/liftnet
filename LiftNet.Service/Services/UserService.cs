@@ -1,5 +1,7 @@
-﻿using LiftNet.Contract.Interfaces.IRepos;
+﻿using LiftNet.Contract.Constants;
+using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Interfaces.IServices;
+using LiftNet.Domain.Constants;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Enums;
 using LiftNet.Domain.Interfaces;
@@ -30,16 +32,20 @@ namespace LiftNet.Service.Services
             var result = new Dictionary<string, LiftNetRoleEnum>();
             var roleDict = await _roleService.GetAllRoleDictAsync();
             var users = await _userRepo.GetQueryable()
-                                       .Include(x => x.UserRoles)
-                                       .Where(x => userIds.Contains(x.Id))
-                                       .Select(x => new { x.Id, x.UserRoles })
-                                       .ToListAsync();
+                                     .Include(x => x.UserRoles)
+                                     .Where(x => userIds.Contains(x.Id))
+                                     .ToListAsync();
 
             foreach (var user in users)
             {
-                if (roleDict.TryGetValue(user.UserRoles.FirstOrDefault()?.RoleId!, out var roleEnum))
+                var userRole = user.UserRoles.FirstOrDefault();
+                if (userRole != null && roleDict.TryGetValue(userRole.RoleId, out var roleEnum))
                 {
-                    result.Add(user.Id, roleEnum);
+                    result[user.Id] = roleEnum;
+                }
+                else
+                {
+                    result[user.Id] = LiftNetRoleEnum.None;
                 }
             }
             return result;
@@ -47,9 +53,53 @@ namespace LiftNet.Service.Services
 
         public async Task<List<User>> GetByIdsAsync(List<string> userIds)
         {
-            var queryable = _userRepo.GetQueryable();
-            var result = await queryable.Where(x => userIds.Contains(x.Id)).ToListAsync();
-            return result;
+            return await _userRepo.GetQueryable()
+                .Include(x => x.UserRoles)
+                .Where(x => userIds.Contains(x.Id))
+                .ToListAsync();
+        }
+
+        public async Task<BasicUserInfo?> GetBasicUserInfoAsync(string userId)
+        {
+            try
+            {
+                var user = await _userRepo.GetQueryable()
+                    .Include(x => x.UserRoles)
+                    .FirstOrDefaultAsync(x => x.Id == userId && !x.IsDeleted && !x.IsSuspended);
+
+                if (user == null)
+                {
+                    _logger.Warn($"User not found or inactive with ID: {userId}");
+                    return null;
+                }
+
+                var roleDict = await _roleService.GetAllRoleDictAsync();
+                var userRole = user.UserRoles.FirstOrDefault();
+                var role = LiftNetRoleEnum.None;
+
+                if (userRole != null && roleDict.TryGetValue(userRole.RoleId, out var roleEnum))
+                {
+                    role = roleEnum;
+                }
+
+                var basicInfo = new BasicUserInfo
+                {
+                    Id = user.Id,
+                    Username = user.UserName ?? "",
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Avatar = user.Avatar ?? CoreConstant.DEFAULT_USER_AVATAR,
+                    Role = role
+                };
+
+                _logger.Info($"Successfully retrieved basic info for user: {userId}");
+                return basicInfo;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error getting basic info for user: {userId}");
+                return null;
+            }
         }
     }
 }
