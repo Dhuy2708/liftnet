@@ -37,6 +37,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LiftNet.AzureBlob\LiftNet.AzureBlob.csproj" />
+    <ProjectReference Include="..\LiftNet.Cloudinary\LiftNet.Cloudinary.csproj" />
     <ProjectReference Include="..\LiftNet.Contract\LiftNet.Contract.csproj" />
     <ProjectReference Include="..\LiftNet.CosmosDb\LiftNet.CosmosDb.csproj" />
     <ProjectReference Include="..\LiftNet.Domain\LiftNet.Domain.csproj" />

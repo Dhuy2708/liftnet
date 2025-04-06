@@ -8,6 +8,9 @@ using LiftNet.Domain.Response;
 using LiftNet.Domain.Indexes;
 using LiftNet.Handler.Feeds.Commands.Requests;
 using LiftNet.Domain.Constants;
+using Microsoft.AspNetCore.Http;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace LiftNet.Api.Controllers
 {
@@ -20,19 +23,24 @@ namespace LiftNet.Api.Controllers
         {
         }
 
-        [HttpPost]
+        [HttpPost("post")]
         [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
         [ProducesResponseType(typeof(LiftNetRes<FeedIndexData>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> PostFeed([FromBody] PostFeedRequest req)
+        public async Task<IActionResult> PostFeed([FromForm] PostFeedRequest req)
         {
             if (string.IsNullOrEmpty(UserId))
                 return Unauthorized();
+
+            if (req.MediaFiles == null && string.IsNullOrEmpty(req.Content))
+            {
+                return BadRequest(LiftNetRes.ErrorResponse("Either content or media files must be provided"));
+            }
 
             var command = new PostFeedCommand
             {
                 UserId = UserId,
                 Content = req.Content,
-                Medias = req.Medias
+                MediaFiles = req.MediaFiles ?? new List<IFormFile>()
             };
 
             var result = await _mediator.Send(command);
@@ -42,20 +50,25 @@ namespace LiftNet.Api.Controllers
             return StatusCode(500, result);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("update/{id}")]
         [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
         [ProducesResponseType(typeof(LiftNetRes<FeedIndexData>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> UpdateFeed([FromRoute] string id, [FromBody] UpdateFeedRequest req)
+        public async Task<IActionResult> UpdateFeed([FromRoute] string id, [FromForm] UpdateFeedRequest req)
         {
             if (string.IsNullOrEmpty(UserId))
                 return Unauthorized();
+
+            if (req.MediaFiles != null && req.MediaFiles.Any(f => !f.ContentType.StartsWith("image/")))
+            {
+                return BadRequest(LiftNetRes.ErrorResponse("Only image files are allowed"));
+            }
 
             var command = new UpdateFeedCommand
             {
                 Id = id,
                 UserId = UserId,
                 Content = req.Content,
-                Medias = req.Medias
+                MediaFiles = req.MediaFiles
             };
 
             var result = await _mediator.Send(command);
@@ -65,7 +78,7 @@ namespace LiftNet.Api.Controllers
             return StatusCode(500, result);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id}")]
         [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> DeleteFeed([FromRoute] string id)
