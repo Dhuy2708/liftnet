@@ -10,5 +10,8 @@ namespace LiftNet.Contract.Interfaces.IServices.Indexes
 {
     public interface IFeedIndexService : IIndexBaseService<FeedIndexData>, IDependency
     {
+        Task<FeedIndexData?> PostFeedAsync(string userId, string content, List<string> medias);
+        Task<FeedIndexData?> UpdateFeedAsync(string id, string userId, string content, List<string> medias);
+        Task<bool> DeleteFeedAsync(string id, string userId);
     }
 }

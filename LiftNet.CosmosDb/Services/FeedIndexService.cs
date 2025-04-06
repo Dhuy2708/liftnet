@@ -14,11 +14,69 @@ namespace LiftNet.CosmosDb.Services
     public class FeedIndexService : IndexBaseService<FeedIndexData>, IFeedIndexService
     {
         private readonly ILiftLogger<FeedIndexService> _logger;
-        public FeedIndexService(CosmosCredential cred, 
-                                ILiftLogger<FeedIndexService> logger) 
+        
+        public FeedIndexService(CosmosCredential cred, ILiftLogger<FeedIndexService> logger) 
             : base(cred, CosmosContainerId.Feed)
         {
             _logger = logger;
+        }
+
+        public async Task<FeedIndexData?> PostFeedAsync(string userId, string content, List<string> medias)
+        {
+            try
+            {
+                var feed = new FeedIndexData
+                {
+                    UserId = userId,
+                    Content = content,
+                    Medias = medias ?? new List<string>(),
+                    Likes = 0,
+                    Schema = DataSchema.Feed,
+                    CreatedAt = DateTime.UtcNow,
+                    ModifiedAt = DateTime.UtcNow
+                };
+
+                return await UpsertAsync(feed);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error posting feed");
+                return null;
+            }
+        }
+
+        public async Task<FeedIndexData?> UpdateFeedAsync(string id, string userId, string content, List<string> medias)
+        {
+            try
+            {
+                var existingFeed = await GetAsync(id, userId);
+                if (existingFeed == null || existingFeed.UserId != userId)
+                    return null;
+
+                existingFeed.Content = content;
+                existingFeed.Medias = medias ?? new List<string>();
+                existingFeed.ModifiedAt = DateTime.UtcNow;
+
+                return await UpsertAsync(existingFeed);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error updating feed {id}");
+                return null;
+            }
+        }
+
+        public async Task<bool> DeleteFeedAsync(string id, string userId)
+        {
+            try
+            {
+                return await DeleteAsync(id, userId);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error deleting feed {id}");
+                return false;
+            }
         }
     }
 }
