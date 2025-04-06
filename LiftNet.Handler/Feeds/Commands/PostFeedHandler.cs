@@ -9,17 +9,23 @@ using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Feeds.Commands.Requests;
 using LiftNet.Domain.Indexes;
+using LiftNet.Cloudinary.Services;
 
 namespace LiftNet.Handler.Feeds.Commands
 {
     public class PostFeedHandler : IRequestHandler<PostFeedCommand, LiftNetRes<FeedIndexData>>
     {
         private readonly IFeedIndexService _feedService;
+        private readonly ICloudinaryService _cloudinaryService;
         private readonly ILiftLogger<PostFeedHandler> _logger;
 
-        public PostFeedHandler(IFeedIndexService feedService, ILiftLogger<PostFeedHandler> logger)
+        public PostFeedHandler(
+            IFeedIndexService feedService,
+            ICloudinaryService cloudinaryService,
+            ILiftLogger<PostFeedHandler> logger)
         {
             _feedService = feedService;
+            _cloudinaryService = cloudinaryService;
             _logger = logger;
         }
 
@@ -27,9 +33,32 @@ namespace LiftNet.Handler.Feeds.Commands
         {
             try
             {
-                var feed = await _feedService.PostFeedAsync(request.UserId, request.Content, request.Medias);
+                var mediaUrls = new List<string>();
+
+                // Upload each media file
+                foreach (var mediaFile in request.MediaFiles)
+                {
+                    var imageUrl = await _cloudinaryService.HostImageAsync(mediaFile);
+                    if (!string.IsNullOrEmpty(imageUrl))
+                    {
+                        mediaUrls.Add(imageUrl);
+                    }
+                    else
+                    {
+                        _logger.Warn($"Failed to upload media file: {mediaFile.FileName}");
+                    }
+                }
+
+                var feed = await _feedService.PostFeedAsync(request.UserId, request.Content, mediaUrls);
                 if (feed == null)
+                {
+                    // If feed creation fails, try to cleanup uploaded images
+                    if (mediaUrls.Any())
+                    {
+                        await _cloudinaryService.DeleteImageAsync(mediaUrls);
+                    }
                     return LiftNetRes<FeedIndexData>.ErrorResponse("Failed to post feed");
+                }
 
                 return LiftNetRes<FeedIndexData>.SuccessResponse(feed);
             }

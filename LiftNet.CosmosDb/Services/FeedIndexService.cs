@@ -45,7 +45,7 @@ namespace LiftNet.CosmosDb.Services
             }
         }
 
-        public async Task<FeedIndexData?> UpdateFeedAsync(string id, string userId, string content, List<string> medias)
+        public async Task<FeedIndexData?> UpdateFeedAsync(string id, string userId, string? content = null, List<string>? medias = null)
         {
             try
             {
@@ -53,8 +53,17 @@ namespace LiftNet.CosmosDb.Services
                 if (existingFeed == null || existingFeed.UserId != userId)
                     return null;
 
-                existingFeed.Content = content;
-                existingFeed.Medias = medias ?? new List<string>();
+                // Only update fields that are provided
+                if (content != null)
+                {
+                    existingFeed.Content = content;
+                }
+
+                if (medias != null)
+                {
+                    existingFeed.Medias = medias;
+                }
+
                 existingFeed.ModifiedAt = DateTime.UtcNow;
 
                 return await UpsertAsync(existingFeed);

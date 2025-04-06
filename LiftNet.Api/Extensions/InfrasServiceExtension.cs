@@ -2,6 +2,9 @@
 using dotenv.net;
 using LiftNet.Api.Utils;
 using LiftNet.AzureBlob.Services;
+using LiftNet.Cloudinary.Contracts;
+using LiftNet.Cloudinary.Services;
+using LiftNet.Cloudinary.Services.Impl;
 using LiftNet.Contract.Constants;
 using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Interfaces.IServices.Indexes;
@@ -55,6 +58,22 @@ namespace LiftNet.Api.Extensions
             });
             
             services.AddDependencies(typeof(MapSDK.MapSdkAssemblyRef).Assembly);
+
+            // cloudinary
+            var cloudinaryKeyName = Environment.GetEnvironmentVariable(EnvKeys.CLOUDINARY_CLOUD_NAME);
+            var cloudinaryApiKey = Environment.GetEnvironmentVariable(EnvKeys.CLOUDINARY_API_KEY);
+            var cloudinaryApiSecret = Environment.GetEnvironmentVariable(EnvKeys.CLOUDINARY_API_SECRET);
+            if (string.IsNullOrEmpty(cloudinaryKeyName) || string.IsNullOrEmpty(cloudinaryApiKey) || string.IsNullOrEmpty(cloudinaryApiSecret))
+            {
+                throw new ArgumentNullException("Cloudinary credentials not found.");
+            }
+            services.AddSingleton(x => new CloudinaryAppSetting
+            {
+                CloudName = cloudinaryKeyName,
+                ApiKey = cloudinaryApiKey,
+                ApiSecret = cloudinaryApiSecret
+            });
+            services.AddScoped<ICloudinaryService, CloudinaryService>();
             #endregion
 
             #region quartz
