@@ -11,6 +11,7 @@ using LiftNet.Domain.Constants;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Collections.Generic;
+using LiftNet.Contract.Enums.Feed;
 
 namespace LiftNet.Api.Controllers
 {
@@ -99,39 +100,24 @@ namespace LiftNet.Api.Controllers
             return StatusCode(500, result);
         }
 
-        [HttpPost("like/{feedId}")]
+        [HttpPost("react")]
         [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> LikeFeed([FromRoute] string feedId)
+        public async Task<IActionResult> ReactFeed([FromBody] ReactFeedRequest req)
         {
             if (string.IsNullOrEmpty(UserId))
                 return Unauthorized();
 
-            var command = new LikeFeedCommand
+            if (req.Type != ReactType.Like && req.Type != ReactType.UnLike)
             {
-                FeedId = feedId,
-                UserId = UserId
-            };
+                return BadRequest(LiftNetRes.ErrorResponse("Invalid reaction type."));
+            }
 
-            var result = await _mediator.Send(command);
-            if (result.Success)
-                return Ok(result);
-
-            return StatusCode(500, result);
-        }
-
-        [HttpPost("unlike/{feedId}")]
-        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
-        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> UnlikeFeed([FromRoute] string feedId)
-        {
-            if (string.IsNullOrEmpty(UserId))
-                return Unauthorized();
-
-            var command = new UnlikeFeedCommand
+            var command = new ReactFeedCommand
             {
-                FeedId = feedId,
-                UserId = UserId
+                FeedId = req.FeedId,
+                UserId = UserId,
+                Type = req.Type
             };
 
             var result = await _mediator.Send(command);

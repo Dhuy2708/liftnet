@@ -36,11 +36,11 @@ namespace LiftNet.ServiceBus.Core.Impl
         {
             var factory = new ConnectionFactory
             {
-                HostName = _credentials.Hostname,
+                //HostName = _credentials.Hostname,
                 UserName = _credentials.Username,
                 Password = _credentials.Password,
                 Uri = new Uri(_credentials.Url),
-                Port = _credentials.Port,
+                //Port = _credentials.Port,
                 AutomaticRecoveryEnabled = false,
             };
 

@@ -47,5 +47,18 @@ namespace LiftNet.Contract.Constants
         public const string CLOUDINARY_CLOUD_NAME = "CLOUDINARY_CLOUD_NAME";
         public const string CLOUDINARY_API_KEY = "CLOUDINARY_API_KEY";
         public const string CLOUDINARY_API_SECRET = "CLOUDINARY_API_SECRET";
+
+        // rabbitmq
+        public const string DEV_RABBITMQ_HOST_NAME = "DEV_RABBITMQ_HOST_NAME";
+        public const string DEV_RABBITMQ_USERNAME = "DEV_RABBITMQ_USERNAME";
+        public const string DEV_RABBITMQ_PASSWORD = "DEV_RABBITMQ_PASSWORD";
+        public const string DEV_RABBITMQ_URL = "DEV_RABBITMQ_URL";
+        public const string DEV_RABBITMQ_PORT = "DEV_RABBITMQ_PORT";
+
+        public const string TEST_RABBITMQ_HOST_NAME = "TEST_RABBITMQ_HOST_NAME";
+        public const string TEST_RABBITMQ_USERNAME = "TEST_RABBITMQ_USERNAME";
+        public const string TEST_RABBITMQ_PASSWORD = "TEST_RABBITMQ_PASSWORD";
+        public const string TEST_RABBITMQ_URL = "TEST_RABBITMQ_URL";
+        public const string TEST_RABBITMQ_PORT = "TEST_RABBITMQ_PORT";
     }
 }

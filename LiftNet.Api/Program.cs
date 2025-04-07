@@ -22,6 +22,7 @@ public class Program
         builder.Services.RegisterAppContext();
         builder.Services.RegisterCommon();
         builder.Services.RegisterInfras();
+        builder.Services.RegisterHostedService();
 
         builder.Services.AddControllers();
         builder.Services.AddSwagger();

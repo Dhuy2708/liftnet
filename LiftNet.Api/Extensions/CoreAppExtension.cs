@@ -10,6 +10,7 @@ using NSwag;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.JsonWebTokens;
+using LiftNet.WorkerService.Worker;
 
 namespace LiftNet.Api.Extensions
 {
@@ -106,6 +107,11 @@ namespace LiftNet.Api.Extensions
 
                 options.OperationProcessors.Add(new AspNetCoreOperationSecurityScopeProcessor("Bearer"));
             });
+            return services;
+        }
+        public static IServiceCollection RegisterHostedService(this IServiceCollection services)
+        {
+            services.AddHostedService<MessageProcessingWorker>();
             return services;
         }
     }

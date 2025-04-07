@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.WorkerService.Service
+namespace LiftNet.WorkerService.Worker
 {
     public class LogStoringWorker : BackgroundService
     {

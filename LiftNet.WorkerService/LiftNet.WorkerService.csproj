@@ -19,6 +19,7 @@
     <ProjectReference Include="..\LiftNet.Domain\LiftNet.Domain.csproj" />
     <ProjectReference Include="..\LiftNet.Logger\LiftNet.Logger.csproj" />
     <ProjectReference Include="..\LiftNet.MapSDK\LiftNet.MapSDK.csproj" />
+    <ProjectReference Include="..\LiftNet.ServiceBus\LiftNet.ServiceBus.csproj" />
   </ItemGroup>
 
 </Project>
