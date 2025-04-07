@@ -20,11 +20,5 @@ namespace LiftNet.Domain.Indexes
         {
             get; set;
         }
-
-        [JsonProperty("likes")]
-        public int Likes
-        {
-            get; set;
-        }
     }
 }

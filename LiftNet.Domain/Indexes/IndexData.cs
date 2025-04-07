@@ -47,6 +47,7 @@ namespace LiftNet.Domain.Indexes
         // feed
         Feed = 1,
         Comment = 2,
+        Like = 3,
 
         // schedule
         Schedule = 10,
