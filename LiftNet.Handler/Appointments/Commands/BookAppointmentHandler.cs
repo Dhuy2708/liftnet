@@ -1,4 +1,5 @@
-﻿using LiftNet.Contract.Interfaces.IRepos;
+﻿using LiftNet.Contract.Enums.Appointment;
+using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Interfaces.IServices.Indexes;
 using LiftNet.Domain.Entities;
@@ -43,7 +44,7 @@ namespace LiftNet.Handler.Appointments.Commands
         public async Task<LiftNetRes> Handle(BookAppointmentCommand request, CancellationToken cancellationToken)
         {
             _logger.Info("begin create a appointment");
-            request.Appointment.Status = Contract.Enums.AppointmentStatus.Pending;
+            request.Appointment.Status = AppointmentStatus.Pending;
             var entity = request.Appointment.ToEntity();
             entity.Created = DateTime.UtcNow;
             entity.Modified = DateTime.UtcNow;

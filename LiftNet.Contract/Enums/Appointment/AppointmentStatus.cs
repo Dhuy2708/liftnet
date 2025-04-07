@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Contract.Enums
+namespace LiftNet.Contract.Enums.Appointment
 {
     public enum AppointmentStatus
     {
         None = 0,
         Pending = 1,
         Accepted = 2,
-        Rejected = 3, 
+        Rejected = 3,
         Canceled = 4, // reject after accepted -> canceled
     }
 

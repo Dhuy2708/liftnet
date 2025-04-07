@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Contract.Enums
+namespace LiftNet.Contract.Enums.Feed
 {
-    public enum SocialConnectionStatus
+    public enum ReactType
     {
         None = 0,
-        Following = 1,
-        Unfollowing = 2,
-        Blocked = 3,
+        Like = 1,
+        UnLike = 2,
     }
 }

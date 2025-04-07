@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using LiftNet.Contract.Enums;
+using LiftNet.Contract.Enums.Appointment;
 using LiftNet.Handler.Appointments.Commands.Requests;
 using System;
 using System.Collections.Generic;
