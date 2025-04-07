@@ -1,4 +1,4 @@
-﻿using LiftNet.Contract.Enums;
+﻿using LiftNet.Contract.Enums.Social;
 using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Views.Users;
 using LiftNet.Domain.Entities;

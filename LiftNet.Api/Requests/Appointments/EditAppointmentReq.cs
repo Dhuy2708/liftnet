@@ -1,4 +1,4 @@
-﻿using LiftNet.Contract.Enums;
+﻿using LiftNet.Contract.Enums.Appointment;
 using System.Diagnostics.CodeAnalysis;
 
 namespace LiftNet.Api.Requests.Appointments

@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Contract.Enums
+namespace LiftNet.Contract.Enums.Social
 {
-    public enum AppointmentActionRequestType
+    public enum SocialConnectionStatus
     {
         None = 0,
-        Accept = 1,
-        Reject = 2,
-        Cancel = 3,
+        Following = 1,
+        Unfollowing = 2,
+        Blocked = 3,
     }
 }

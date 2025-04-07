@@ -1,4 +1,4 @@
-﻿using LiftNet.Contract.Enums;
+﻿using LiftNet.Contract.Enums.Appointment;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,6 +1,6 @@
 ﻿using LiftNet.Api.Requests.Appointments;
 using LiftNet.Contract.Dtos;
-using LiftNet.Contract.Enums;
+using LiftNet.Contract.Enums.Appointment;
 using LiftNet.Utility.Mappers;
 
 namespace LiftNet.Api.ToDto

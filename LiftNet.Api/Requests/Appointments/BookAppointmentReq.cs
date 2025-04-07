@@ -1,4 +1,4 @@
-﻿using LiftNet.Contract.Enums;
+﻿using LiftNet.Contract.Enums.Appointment;
 using LiftNet.Contract.Views;
 using System.Diagnostics.CodeAnalysis;
 
