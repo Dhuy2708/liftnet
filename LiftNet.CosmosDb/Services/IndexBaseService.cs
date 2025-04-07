@@ -27,7 +27,7 @@ namespace LiftNet.CosmosDb.Services
             _container = client.GetContainer(cred.DatabaseId, containerId);
         }
 
-        public async Task<T?> GetAsync(string id, string? partitionKey = null)
+        public async Task<T?> GetAsync(string id, string partitionKey)
         {
             try
             {
@@ -42,7 +42,7 @@ namespace LiftNet.CosmosDb.Services
 
         public async Task<(List<T> Items, string? NextPageToken)> QueryAsync(QueryCondition condition)
         {
-            var queryParam = QueryUtil.BuildSqlQuery("c", condition);
+            var queryParam = QueryIndexUtil.BuildIndexQuery(condition);
             var pageSize = condition.PageSize;
             var continuationToken = condition.NextPageToken;
 
@@ -149,6 +149,29 @@ namespace LiftNet.CosmosDb.Services
             }
 
             await Task.WhenAll(tasks);
+        }
+
+        public async Task<int> CountAsync(QueryCondition condition)
+        {
+            var queryParam = QueryIndexUtil.BuildIndexQuery(condition);
+            var countQuery = $"select value count(1) from c where exists(select value 1 from c where {queryParam.Query.Substring(queryParam.Query.IndexOf("where") + 6)})";
+            
+            var queryDefinition = new QueryDefinition(countQuery);
+            foreach (var param in queryParam.Params)
+            {
+                queryDefinition.WithParameter(param.Key, Convert.ChangeType(param.Value.value, param.Value.type));
+            }
+
+            var iterator = _container.GetItemQueryIterator<int>(queryDefinition);
+            var response = await iterator.ReadNextAsync();
+            return response.FirstOrDefault();
+        }
+
+        public async Task<bool> AnyAsync(QueryCondition condition)
+        {
+            condition.PageSize = 1;  // We only need one record to determine existence
+            var (items, _) = await QueryAsync(condition);
+            return items.Any();
         }
     }
 }

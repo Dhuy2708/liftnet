@@ -98,5 +98,47 @@ namespace LiftNet.Api.Controllers
 
             return StatusCode(500, result);
         }
+
+        [HttpPost("like/{feedId}")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> LikeFeed([FromRoute] string feedId)
+        {
+            if (string.IsNullOrEmpty(UserId))
+                return Unauthorized();
+
+            var command = new LikeFeedCommand
+            {
+                FeedId = feedId,
+                UserId = UserId
+            };
+
+            var result = await _mediator.Send(command);
+            if (result.Success)
+                return Ok(result);
+
+            return StatusCode(500, result);
+        }
+
+        [HttpPost("unlike/{feedId}")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> UnlikeFeed([FromRoute] string feedId)
+        {
+            if (string.IsNullOrEmpty(UserId))
+                return Unauthorized();
+
+            var command = new UnlikeFeedCommand
+            {
+                FeedId = feedId,
+                UserId = UserId
+            };
+
+            var result = await _mediator.Send(command);
+            if (result.Success)
+                return Ok(result);
+
+            return StatusCode(500, result);
+        }
     }
 } 

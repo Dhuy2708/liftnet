@@ -40,10 +40,16 @@ public static class QueryUtil
             int paramIndex = -1;
             for (int i = 0; i < conditions.ConditionItems.Count; i++)
             {
-                paramIndex++;
                 var condItem = conditions.ConditionItems[i];
                 var op = condItem.Operator;
 
+                // Add logic operator before condition (except for first item)
+                if (i > 0)
+                {
+                    AppendLogic(sb, condItem.Logic);
+                }
+
+                paramIndex++;
                 // condition item
                 if (IsCommonOperator(op))
                 {
@@ -83,15 +89,9 @@ public static class QueryUtil
                             {
                                 sb.Append($"{condItem.Property} like '{condItem.Values[0]}%' ");
                                 AddParam(result, $"@param{paramIndex}", condItem.Type, condItem.Values[0]);
-
                             }
                             break;
                     }
-                }
-
-                if (i < conditions.ConditionItems.Count() - 1)
-                {
-                    AppendLogic(sb, condItem.Logic);
                 }
             }
             AppendSortAndPagingCondition(sb, conditions);
@@ -128,7 +128,7 @@ public static class QueryUtil
         }
     }
 
-    private static void AppendQueryConditionItem(StringBuilder sb, ConditionItem condItem, int paramIndex) // for common condition
+    private static void AppendQueryConditionItem(StringBuilder sb, ConditionItem condItem, int paramIndex)
     {
         sb.Append($"{condItem.Property} {GetCommonOperator(condItem.Operator)} @param{paramIndex} ");
     }
@@ -194,7 +194,11 @@ public static class QueryUtil
 
     private static void AppendLogic(StringBuilder sb, QueryLogic logic)
     {
-        sb.Append(GetSqlLogic(logic) + " ");
+        var logicStr = GetSqlLogic(logic);
+        if (!string.IsNullOrEmpty(logicStr))
+        {
+            sb.Append($"{logicStr} ");
+        }
     }
 
     private static bool IsCommonOperator(QueryOperator op)
