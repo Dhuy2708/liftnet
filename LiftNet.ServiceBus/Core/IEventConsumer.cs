@@ -8,6 +8,6 @@ namespace LiftNet.ServiceBus.Interfaces
 {
     public interface IEventConsumer : IAsyncDisposable
     {
-        Task StartConsumingAsync(string queueName);
+        Task StartConsumingAsync(string queueName, CancellationToken cts);
     }
 }

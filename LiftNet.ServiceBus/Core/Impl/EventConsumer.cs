@@ -18,21 +18,57 @@ namespace LiftNet.ServiceBus.Core.Impl
 {
     public class EventConsumer : IEventConsumer, IAsyncDisposable
     {
-        private readonly IConnection _connection;
-        private readonly IChannel _channel;
+        private IConnection _connection;
+        private IChannel _channel;
         private readonly IServiceProvider _serviceProvider;
+        private readonly RabbitMqCredentials _credentials;
 
         private ILiftLogger<EventConsumer> _logger => _serviceProvider.GetRequiredService<ILiftLogger<EventConsumer>>();
 
-        public EventConsumer(IConnection connection, IServiceProvider serviceProvider)
+        public EventConsumer(RabbitMqCredentials credentials, IServiceProvider serviceProvider)
         {
-            _connection = connection;
+            _credentials = credentials;
             _serviceProvider = serviceProvider;
-            _channel = _connection.CreateChannelAsync().GetAwaiter().GetResult(); // Khởi tạo đồng bộ
+            InitializeConnectionAsync().GetAwaiter().GetResult();
         }
 
-        public async Task StartConsumingAsync(string queueName)
+        private async Task InitializeConnectionAsync()
         {
+            var factory = new ConnectionFactory
+            {
+                //HostName = _credentials.Hostname,
+                UserName = _credentials.Username,
+                Password = _credentials.Password,
+                Uri = new Uri(_credentials.Url),
+                //Port = _credentials.Port,
+                AutomaticRecoveryEnabled = false,
+            };
+
+            _connection = await factory.CreateConnectionAsync();
+            _channel = await _connection.CreateChannelAsync();
+        }
+
+        private async Task ReconnectAsync()
+        {
+            if (_connection != null)
+            {
+                await _connection.CloseAsync();
+            }
+            await InitializeConnectionAsync();
+        }
+
+        private async Task EnsureConnectionAsync()
+        {
+            if (_connection == null || !_connection.IsOpen)
+            {
+                await ReconnectAsync();
+            }
+        }
+
+        public async Task StartConsumingAsync(string queueName, CancellationToken cts)
+        {
+            await EnsureConnectionAsync();
+
             await _channel.QueueDeclareAsync(
                 queue: queueName,
                 durable: true,
@@ -44,6 +80,12 @@ namespace LiftNet.ServiceBus.Core.Impl
 
             consumer.ReceivedAsync += async (model, ea) =>
             {
+                if (cts.IsCancellationRequested)
+                {
+                    _logger.Info("Cancellation requested. Ignoring incoming message.");
+                    return;
+                }
+
                 _logger.Info("Received message!");
                 var body = ea.Body.ToArray();
                 var message = Encoding.UTF8.GetString(body);
@@ -74,12 +116,29 @@ namespace LiftNet.ServiceBus.Core.Impl
                 }
             };
 
-            await _channel.BasicConsumeAsync(
+            var consumerTag = await _channel.BasicConsumeAsync(
                 queue: queueName,
                 autoAck: false,
                 consumer: consumer);
 
             _logger.Info($"Consumer started for queue: {queueName}");
+
+            // Block until cancellation is requested
+            try
+            {
+                while (!cts.IsCancellationRequested)
+                {
+                    await Task.Delay(500, cts); // polling interval
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                _logger.Info($"Cancellation token triggered for queue: {queueName}");
+            }
+
+            // Cancel the consumer when token is triggered
+            await _channel.BasicCancelAsync(consumerTag);
+            _logger.Info($"Consumer stopped for queue: {queueName}");
         }
 
         private async Task HandleEvent(EventMessage eventMessage)

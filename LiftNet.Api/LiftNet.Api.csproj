@@ -47,6 +47,7 @@
     <ProjectReference Include="..\LiftNet.MapSDK\LiftNet.MapSDK.csproj" />
     <ProjectReference Include="..\LiftNet.Persistence\LiftNet.Persistence.csproj" />
     <ProjectReference Include="..\LiftNet.Repositories\LiftNet.Repositories.csproj" />
+    <ProjectReference Include="..\LiftNet.ServiceBus\LiftNet.ServiceBus.csproj" />
     <ProjectReference Include="..\LiftNet.Service\LiftNet.Service.csproj" />
     <ProjectReference Include="..\LiftNet.SharedKenel\LiftNet.SharedKenel.csproj" />
     <ProjectReference Include="..\LiftNet.Timer\LiftNet.Timer.csproj" />

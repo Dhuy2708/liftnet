@@ -1,8 +1,10 @@
 ﻿using LiftNet.Contract.Enums.Feed;
+using LiftNet.Contract.Interfaces.IServices.Indexes;
 using LiftNet.Domain.Interfaces;
 using LiftNet.ServiceBus.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,18 +15,62 @@ namespace LiftNet.ServiceBus.Processor
 {
     public class ReactFeedProcessor : EventBaseProcessor
     {
+        private IFeedIndexService feedService;
         private readonly ReactType _type;
         private ILiftLogger<ReactFeedProcessor> logger => _serviceProvider.GetRequiredService<ILiftLogger<ReactFeedProcessor>>();
 
         public ReactFeedProcessor(EventMessage eventMessage, IServiceProvider serviceProvider, ReactType type)
             : base(eventMessage, serviceProvider)
         {
-            _type = type;
+            this._type = type;
         }
 
-        protected override Task HandleAsync(IServiceScope scope)
+        protected override async Task HandleAsync(IServiceScope scope)
         {
-            throw new NotImplementedException();
+            try
+            {
+                feedService = scope.ServiceProvider.GetRequiredService<IFeedIndexService>();
+                if (string.IsNullOrEmpty(_eventMessage.Context))
+                {
+                    logger.Error("Context is null or empty");
+                    return;
+                }
+
+                var context = JsonConvert.DeserializeObject<dynamic>(_eventMessage.Context);
+                if (context == null)
+                {
+                    logger.Error("Failed to deserialize context");
+                    return;
+                }
+
+                string? feedId = context.FeedId?.ToString();
+                string? userId = context.UserId?.ToString();
+
+                if (string.IsNullOrEmpty(feedId) || string.IsNullOrEmpty(userId))
+                {
+                    logger.Error("FeedId or UserId is null or empty");
+                    return;
+                }
+
+                bool result;
+                if (_type == ReactType.Like)
+                {
+                    result = await feedService.LikeFeedAsync(feedId, userId);
+                }
+                else
+                {
+                    result = await feedService.UnlikeFeedAsync(feedId, userId);
+                }
+
+                if (!result)
+                {
+                    logger.Error($"Failed to {_type.ToString().ToLower()} feed {feedId} for user {userId}");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Error processing feed reaction");
+            }
         }
     }
 }
