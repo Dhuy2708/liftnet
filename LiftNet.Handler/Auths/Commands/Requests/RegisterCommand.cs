@@ -56,7 +56,7 @@ namespace LiftNet.Handler.Auths.Commands.Requests
         {
             get; set;
         }
-        public string PlaceId
+        public string Location
         {
             get; set;
         }
