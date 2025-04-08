@@ -11,7 +11,7 @@ namespace LiftNet.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
-                name: "Address",
+                name: "Location",
                 table: "Users",
                 newName: "Location");
 
@@ -112,7 +112,7 @@ namespace LiftNet.Persistence.Migrations
             migrationBuilder.RenameColumn(
               name: "Location", 
               table: "Users",
-              newName: "Address");
+              newName: "Location");
         }
     }
 }

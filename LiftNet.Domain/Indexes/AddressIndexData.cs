@@ -4,6 +4,12 @@ namespace LiftNet.Domain.Indexes
 {
     public class AddressIndexData : IndexData
     {
+        [JsonProperty(PropertyName = "location")]
+        public LocationIndexData Location { get; set; }
+    }
+
+    public class LocationIndexData
+    {
         [JsonProperty(PropertyName = "placename")]
         public string PlaceName { get; set; }
 

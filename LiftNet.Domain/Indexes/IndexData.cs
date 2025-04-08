@@ -57,6 +57,6 @@ namespace LiftNet.Domain.Indexes
         Chat = 20,
 
         // address
-        Address = 30 // Added schema for Address
+        Address = 30 // Added schema for Location
     }
 }

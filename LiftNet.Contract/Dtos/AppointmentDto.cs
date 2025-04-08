@@ -29,7 +29,7 @@ namespace LiftNet.Contract.Dtos
         {
             get; set;
         }
-        public AddressDto Address
+        public PlaceDetailDto? PlaceDetail
         {
             get; set;
         }

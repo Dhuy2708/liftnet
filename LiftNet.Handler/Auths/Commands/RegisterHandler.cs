@@ -61,7 +61,7 @@ namespace LiftNet.Handler.Auths.Commands
                 
                 if (provinceCode == 0 || districtCode == 0 || wardCode == 0)
                 {
-                    throw new BadRequestException(["Address codes are fully required"], "Address codes are fully required.");
+                    throw new BadRequestException(["Location codes are fully required"], "Location codes are fully required.");
                 }
            
                 // Get administrative division names
@@ -177,11 +177,14 @@ namespace LiftNet.Handler.Auths.Commands
             {
                 Id = userId,
                 UserId = userId,
-                PlaceId = placeDetail.PlaceId,
-                PlaceName = placeDetail.PlaceName,
-                FormattedAddress = placeDetail.FormattedAddress,
-                Latitude = placeDetail.Latitude,
-                Longitude = placeDetail.Longitude,
+                Location = new LocationIndexData
+                {
+                    PlaceId = placeDetail.PlaceId,
+                    PlaceName = placeDetail.PlaceName,
+                    FormattedAddress = placeDetail.FormattedAddress,
+                    Latitude = placeDetail.Latitude,
+                    Longitude = placeDetail.Longitude,
+                },
                 Schema = DataSchema.Address,
                 CreatedAt = DateTime.UtcNow,
                 ModifiedAt = DateTime.UtcNow
