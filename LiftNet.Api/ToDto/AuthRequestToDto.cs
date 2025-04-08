@@ -20,7 +20,7 @@ namespace LiftNet.Api.ToDto
                     ProvinceCode = request.Address!.ProvinceCode,
                     DistrictCode = request.Address!.DistrictCode,
                     WardCode = request.Address!.WardCode,
-                    PlaceId = request.Address!.PlaceId,
+                    Location = request.Address!.Location,
                 } : null,
             };
         }

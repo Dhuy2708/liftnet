@@ -14,6 +14,8 @@ COPY ["LiftNet.Api/LiftNet.Api.csproj", "LiftNet.Api/"]
 COPY ["LiftNet.Handler/LiftNet.Handler.csproj", "LiftNet.Handler/"]
 COPY ["LiftNet.Service/LiftNet.Service.csproj", "LiftNet.Service/"]
 COPY ["LiftNet.SharedKenel/LiftNet.SharedKenel.csproj", "LiftNet.SharedKenel/"]
+COPY ["LiftNet.ServiceBus/LiftNet.ServiceBus.csproj", "LiftNet.ServiceBus/"]
+COPY ["LiftNet.MailService/LiftNet.MailService.csproj", "LiftNet.MailService/"]
 
 # common
 COPY ["LiftNet.Contract/LiftNet.Contract.csproj", "LiftNet.Contract/"]
@@ -31,6 +33,7 @@ COPY ["LiftNet.Ioc/LiftNet.Ioc.csproj", "LiftNet.Ioc/"]
 COPY ["LiftNet.ProvinceSDK/LiftNet.ProvinceSDK.csproj", "LiftNet.ProvinceSDK/"]
 COPY ["LiftNet.Repositories/LiftNet.Repositories.csproj", "LiftNet.Repositories/"]
 COPY ["LiftNet.MapSDK/LiftNet.MapSDK.csproj", "LiftNet.MapSDK/"]
+COPY ["LiftNet.Cloudinary/LiftNet.Cloudinary.csproj", "LiftNet.Cloudinary/"]
 
 # job
 COPY ["LiftNet.Job/LiftNet.Job.csproj", "LiftNet.Job/"]
@@ -39,7 +42,6 @@ COPY ["LiftNet.JobService/LiftNet.JobService.csproj", "LiftNet.JobService/"]
 # worker
 COPY ["LiftNet.Timer/LiftNet.Timer.csproj", "LiftNet.Timer/"]
 COPY ["LiftNet.WorkerService/LiftNet.WorkerService.csproj", "LiftNet.WorkerService/"]
-
 
 # Restore dependencies
 RUN dotnet restore "./LiftNet.Api/./LiftNet.Api.csproj"

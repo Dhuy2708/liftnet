@@ -57,21 +57,56 @@ namespace LiftNet.Handler.Auths.Commands
                 var provinceCode = request.Address!.ProvinceCode;
                 var districtCode = request.Address!.DistrictCode;
                 var wardCode = request.Address!.WardCode;
-                var placeId = request.Address.PlaceId;
-                if (provinceCode == 0 || districtCode == 0 || wardCode == 0 || placeId.IsNullOrEmpty())
+                var rawLocation = request.Address.Location;
+                
+                if (provinceCode == 0 || districtCode == 0 || wardCode == 0)
                 {
-                    throw new BadRequestException(["Address codes are not valid"], "Address codes are not valid.");
+                    throw new BadRequestException(["Address codes are fully required"], "Address codes are fully required.");
                 }
            
-                var isAddressValid = await _uow.WardRepo.GetQueryable()
-                                               .AnyAsync(w => w.Code == wardCode &&
-                                                              w.DistrictCode == districtCode &&
-                                                              w.District.ProvinceCode == provinceCode);
-                if (!isAddressValid)
+                // Get administrative division names
+                var province = await _uow.ProvinceRepo.GetQueryable()
+                    .Where(p => p.Code == provinceCode)
+                    .Select(p => p.Name)
+                    .FirstOrDefaultAsync();
+
+                var district = await _uow.DistrictRepo.GetQueryable()
+                    .Where(d => d.Code == districtCode && d.ProvinceCode == provinceCode)
+                    .Select(d => d.Name)
+                    .FirstOrDefaultAsync();
+
+                var ward = await _uow.WardRepo.GetQueryable()
+                    .Where(w => w.Code == wardCode && w.DistrictCode == districtCode)
+                    .Select(w => w.Name)
+                    .FirstOrDefaultAsync();
+
+                if (province == null || district == null || ward == null)
                 {
-                    throw new BadRequestException(["Address codes are not valid"], "Address codes are not valid.");
+                    throw new BadRequestException(["Invalid administrative division codes"], "Invalid administrative division codes.");
                 }
-                placeDetail = await _geoService.GetPlaceDetailAsync(placeId);
+
+                var fullAddress = string.Join(", ", ward, district, province);
+                if (rawLocation.IsNotNullOrEmpty())
+                {
+                    fullAddress = string.Join(", ", rawLocation, fullAddress);
+                }
+                var coordinates = await _geoService.GetCoordinatesByProvinceCodeAsync(provinceCode);
+                
+                var (lat, lng) = await _geoService.FowardGeoCodeAsync(fullAddress);
+                
+                if (lat == 0 && lng == 0)
+                {
+                    throw new BadRequestException(["Location not found"], "Could not find the specified location.");
+                }
+
+                var predictions = await _geoService.AutocompleteSearchAsync(rawLocation, lat, lng);
+                
+                if (predictions == null || !predictions.Any())
+                {
+                    throw new BadRequestException(["Location not found"], "Could not find the specified location.");
+                }
+
+                placeDetail = await _geoService.GetPlaceDetailAsync(predictions.First().PlaceId);
             }
 
           
