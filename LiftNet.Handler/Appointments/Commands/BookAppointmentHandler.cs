@@ -74,18 +74,21 @@ namespace LiftNet.Handler.Appointments.Commands
                     Rule = (RepeatRule)(int)request.Appointment.RepeatingType,
                     CreatedAt = DateTime.UtcNow,
                     ModifiedAt = DateTime.UtcNow,
+                    Location = request.Appointment.PlaceDetail?.ToLocationIndexData(),
                 };
-                events.Add(eventItem);
+                try
+                {
+                    await _indexService.InsertEvent(eventItem);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, $"Error creating event for user {item}");
+                    await _appointmentRepo.HardDelete(entity);
+                    return LiftNetRes.ErrorResponse($"Create appointment {request.Appointment.Name} failed");
+                }
             }
-            try
-            {
-                await _indexService.BulkUpsertAsync(events);
-            }
-            catch
-            {
-                await _appointmentRepo.HardDelete(entity);
-            }
-            return LiftNetRes.ErrorResponse($"Create appointment {request.Appointment.Name} failed");
+            _logger.Info("create appointment successfully");
+            return LiftNetRes.SuccessResponse($"Create appointment {request.Appointment.Name} successfully");
         }
     }
 }

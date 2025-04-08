@@ -26,7 +26,7 @@ namespace LiftNet.Contract.Views.Appointments
         {
             get; set;
         }
-        public AddressView Address
+        public PlaceDetailDto? Location
         {
             get; set;
         }

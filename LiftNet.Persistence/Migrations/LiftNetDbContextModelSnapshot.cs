@@ -62,10 +62,6 @@ namespace LiftNet.Persistence.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("BookerId")
                         .HasColumnType("nvarchar(450)");
 
@@ -83,6 +79,10 @@ namespace LiftNet.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PlaceDetail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

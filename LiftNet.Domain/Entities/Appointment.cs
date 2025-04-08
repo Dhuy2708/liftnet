@@ -34,7 +34,7 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
-        public string Address
+        public string PlaceDetail
         {
             get; set;
         }

@@ -7,7 +7,7 @@ namespace LiftNet.Api.ToDto
 {
     public static class AppointmentReqToDto
     {
-        public static AppointmentDto ToDto(this BookAppointmentReq req, string bookerId)
+        public static AppointmentDto ToDto(this BookAppointmentReq req, string bookerId, PlaceDetailDto? placeDetail = null)
         {
             return new AppointmentDto
             {
@@ -27,7 +27,7 @@ namespace LiftNet.Api.ToDto
                 Description = req.Description,
                 StartTime = req.StartTime,
                 EndTime = req.EndTime,
-                Address = req.Address.ToDto(),
+                PlaceDetail = placeDetail,
                 Status = AppointmentStatus.Pending,
                 RepeatingType = req.RepeatingType
             };

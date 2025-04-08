@@ -1,6 +1,7 @@
 ﻿using LiftNet.Contract.Dtos;
 using LiftNet.Contract.Views;
 using LiftNet.Domain.Entities;
+using LiftNet.Domain.Indexes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,32 +12,6 @@ namespace LiftNet.Utility.Mappers
 {
     public static class AddressMapper
     {
-        public static AddressDto ToDto(this AddressView addressView)
-        {
-            if (addressView == null) return null;
-
-            return new AddressDto
-            {
-                Province = addressView.Province?.ToDto(),
-                District = addressView.District?.ToDto(),
-                Ward = addressView.Ward?.ToDto(),
-                Location = addressView.Address
-            };
-        }
-
-        public static AddressView ToView(this AddressDto addressDto)
-        {
-            if (addressDto == null) return null;
-
-            return new AddressView
-            {
-                Province = addressDto.Province?.ToView(),
-                District = addressDto.District?.ToView(),
-                Ward = addressDto.Ward?.ToView(),
-                Address = addressDto.Location
-            };
-        }
-
         #region province
         public static Province ToEntity(this ProvinceDto dto)
         {
@@ -189,5 +164,20 @@ namespace LiftNet.Utility.Mappers
         }
 
         #endregion
+
+        #region index
+        public static LocationIndexData? ToLocationIndexData(this PlaceDetailDto placeDetail)
+        {
+            if (placeDetail == null) return null;
+            return new LocationIndexData
+            {
+                PlaceId = placeDetail.PlaceId,
+                PlaceName = placeDetail.PlaceName,
+                Latitude = placeDetail.Latitude,
+                Longitude = placeDetail.Longitude,
+                FormattedAddress = placeDetail.FormattedAddress
+            };
+            #endregion
+        }
     }
 }

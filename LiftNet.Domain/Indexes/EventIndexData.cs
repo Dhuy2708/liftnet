@@ -41,7 +41,7 @@ namespace LiftNet.Domain.Indexes
             get; set;
         }
 
-        [JsonProperty(PropertyName = "appointmentid", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(PropertyName = "appointmentid")]
         public string AppointmentId
         {
             get; set;
@@ -49,6 +49,12 @@ namespace LiftNet.Domain.Indexes
 
         [JsonProperty(PropertyName = "rule", NullValueHandling = NullValueHandling.Ignore)]
         public RepeatRule Rule
+        {
+            get; set;
+        }
+
+        [JsonProperty(PropertyName = "location")]
+        public LocationIndexData? Location
         {
             get; set;
         }

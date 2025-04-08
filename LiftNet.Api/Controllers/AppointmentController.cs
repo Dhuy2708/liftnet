@@ -1,6 +1,8 @@
 ﻿using LiftNet.Api.Requests.Appointments;
 using LiftNet.Api.ToDto;
+using LiftNet.Contract.Dtos;
 using LiftNet.Contract.Dtos.Query;
+using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Views.Appointments;
 using LiftNet.Domain.Constants;
 using LiftNet.Domain.Exceptions;
@@ -18,6 +20,7 @@ namespace LiftNet.Api.Controllers
 {
     public class AppointmentController : LiftNetControllerBase
     {
+        private IGeoService geoService => _serviceProvider.GetRequiredService<IGeoService>();
         public AppointmentController(IMediator mediator, IServiceProvider serviceProvider) : base(mediator, serviceProvider)
         {
         }
@@ -33,9 +36,15 @@ namespace LiftNet.Api.Controllers
             }
             req.ParticipantIds = req.ParticipantIds.Distinct().ToList();
             req.ParticipantIds.Remove(UserId);
+
+            PlaceDetailDto? placeDetail = null;
+            if (req.PlaceId.IsNotNullOrEmpty())
+            {
+                placeDetail = await geoService.GetPlaceDetailAsync(req.PlaceId);
+            }
             var request = new BookAppointmentCommand()
             {
-                Appointment = req.ToDto(UserId),
+                Appointment = req.ToDto(UserId, placeDetail),
             };
             var result = await _mediator.Send(request);
             if (result.Success)

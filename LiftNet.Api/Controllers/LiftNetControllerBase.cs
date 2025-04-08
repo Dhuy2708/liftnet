@@ -40,7 +40,7 @@ namespace LiftNet.Api.Controllers
             }
         }
 
-        private readonly IServiceProvider _serviceProvider;
+        protected readonly IServiceProvider _serviceProvider;
         protected readonly IMediator _mediator;
 
         private ILiftLogger<LiftNetControllerBase> Logger => _serviceProvider.GetService<ILiftLogger<LiftNetControllerBase>>()!;

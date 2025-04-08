@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LiftNet.Persistence.Migrations
 {
     [DbContext(typeof(LiftNetDbContext))]
-    [Migration("20250402190631_RepairAddressOfUser")]
-    partial class RepairAddressOfUser
+    [Migration("20250408221727_ChangePlaceDetailColName")]
+    partial class ChangePlaceDetailColName
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,10 +65,6 @@ namespace LiftNet.Persistence.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("BookerId")
                         .HasColumnType("nvarchar(450)");
 
@@ -86,6 +82,10 @@ namespace LiftNet.Persistence.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PlaceDetail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -257,6 +257,12 @@ namespace LiftNet.Persistence.Migrations
                     b.Property<string>("DivisionType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
 
                     b.Property<string>("Name")
                         .IsRequired()

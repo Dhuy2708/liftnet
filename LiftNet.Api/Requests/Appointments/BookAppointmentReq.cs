@@ -20,7 +20,7 @@ namespace LiftNet.Api.Requests.Appointments
         {
             get; set;
         }
-        public AddressView Address
+        public string PlaceId
         {
             get; set;
         }

@@ -1,4 +1,5 @@
-﻿using LiftNet.Contract.Enums.Appointment;
+﻿using LiftNet.Contract.Dtos;
+using LiftNet.Contract.Enums.Appointment;
 using LiftNet.Contract.Views.Users;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace LiftNet.Contract.Views.Appointments
         {
             get; set;
         }
-        public AddressView Address
+        public PlaceDetailDto? Location
         {
             get; set;
         }
