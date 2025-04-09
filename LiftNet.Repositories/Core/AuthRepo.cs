@@ -41,7 +41,7 @@ namespace LiftNet.Repositories.Core
                 LastName = model.LastName,
                 Email = model.Email,
                 UserName = model.Username,
-                CreatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow,
                 ProvinceCode = model.ProvinceCode,
                 DistrictCode = model.DistrictCode,
                 WardCode = model.WardCode,

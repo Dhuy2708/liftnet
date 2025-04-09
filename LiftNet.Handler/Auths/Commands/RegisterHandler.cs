@@ -99,7 +99,7 @@ namespace LiftNet.Handler.Auths.Commands
                     throw new BadRequestException(["Location not found"], "Could not find the specified location.");
                 }
 
-                var predictions = await _geoService.AutocompleteSearchAsync(rawLocation, lat, lng);
+                var predictions = await _geoService.AutocompleteSearchAsync(fullAddress, lat, lng);
                 
                 if (predictions == null || !predictions.Any())
                 {
