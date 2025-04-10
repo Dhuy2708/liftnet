@@ -18,11 +18,13 @@ namespace LiftNet.Timer.Service.Common
         private ILiftLogger<BaseSystemJob> _logger => _provider.GetRequiredService<ILiftLogger<BaseSystemJob>>();
 
         protected readonly JobType _jobType;
+        protected readonly TimeSpan _intervalTime;
         protected DateTime _scanTime => DateTime.UtcNow;
 
-        protected BaseSystemJob(JobType jobType, IServiceProvider provider) : base(provider)
+        protected BaseSystemJob(JobType jobType, IServiceProvider provider, TimeSpan intervalTime) : base(provider)
         {
             _jobType = jobType;
+            _intervalTime = intervalTime;
         }
 
         // this should be for main job, timer job already config interval time 
@@ -51,7 +53,12 @@ namespace LiftNet.Timer.Service.Common
             {
                 return false;
             }
-            return true;
+            if (job.Status == (int)JobStatus.Finished)
+            {
+                return _scanTime.Subtract(job.EndTime.Value) > _intervalTime;
+            }
+        
+            return _scanTime.Subtract(job.StartTime) > _intervalTime;
         }
 
         public override async Task Execute(IJobExecutionContext context)

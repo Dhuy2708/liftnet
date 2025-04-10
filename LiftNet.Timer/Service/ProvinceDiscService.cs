@@ -2,6 +2,7 @@
 using LiftNet.Contract.Enums.Job;
 using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Interfaces.IServices;
+using LiftNet.Domain.Constants;
 using LiftNet.Domain.Interfaces;
 using LiftNet.ProvinceSDK.Apis;
 using LiftNet.Timer.Service.Common;
@@ -23,7 +24,7 @@ namespace LiftNet.Timer.Service
         private IUnitOfWork _uow => _provider.GetRequiredService<IUnitOfWork>();
         private IGeoService _geoService => _provider.GetRequiredService<IGeoService>();
 
-        public ProvinceDiscService(IServiceProvider provider) : base(JobType.ProvinceDiscovery, provider)
+        public ProvinceDiscService(IServiceProvider provider) : base(JobType.ProvinceDiscovery, provider, TimeSpan.FromHours(JobIntervalHour.PROVINCE_DISC - 1))
         {  
         }
 
