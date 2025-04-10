@@ -10,6 +10,7 @@ using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Interfaces.IServices.Indexes;
 using LiftNet.CosmosDb.Contracts;
 using LiftNet.CosmosDb.Services;
+using LiftNet.Domain.Constants;
 using LiftNet.MapSDK.Apis;
 using LiftNet.MapSDK.Contracts;
 using LiftNet.ProvinceSDK.Apis;
@@ -120,7 +121,7 @@ namespace LiftNet.Api.Extensions
             return services;
         }
 
-        public static IServiceCollection RegisterQuartzService(this IServiceCollection services)
+        private static IServiceCollection RegisterQuartzService(this IServiceCollection services)
         {
             services.AddQuartz(q =>
             {
@@ -131,7 +132,7 @@ namespace LiftNet.Api.Extensions
                     .WithIdentity("ProvinceDiscTrigger", "DiscTriggers")
                     .StartNow() 
                     .WithSimpleSchedule(schedule => schedule
-                        .WithIntervalInHours(24 * 7)
+                        .WithIntervalInHours(JobIntervalHour.PROVINCE_DISC)
                         .RepeatForever()
                     )
                 );
