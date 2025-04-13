@@ -60,5 +60,11 @@ namespace LiftNet.Contract.Constants
         public const string TEST_RABBITMQ_PASSWORD = "TEST_RABBITMQ_PASSWORD";
         public const string TEST_RABBITMQ_URL = "TEST_RABBITMQ_URL";
         public const string TEST_RABBITMQ_PORT = "TEST_RABBITMQ_PORT";
+
+        // redis cache
+        public const string REDIS_HOST_NAME = "REDIS_HOST_NAME";
+        public const string REDIS_PORT = "REDIS_PORT";
+        public const string REDIS_USER = "REDIS_USER";
+        public const string REDIS_PASSWORD = "REDIS_PASSWORD";
     }
 }

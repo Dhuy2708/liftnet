@@ -14,6 +14,8 @@ using LiftNet.Domain.Constants;
 using LiftNet.MapSDK.Apis;
 using LiftNet.MapSDK.Contracts;
 using LiftNet.ProvinceSDK.Apis;
+using LiftNet.RedisCache.Interface;
+using LiftNet.RedisCache.Service;
 using LiftNet.ServiceBus.Contracts;
 using LiftNet.ServiceBus.Core.Impl;
 using LiftNet.ServiceBus.Interfaces;
@@ -21,6 +23,7 @@ using LiftNet.Timer.Service;
 using LiftNet.Utility.Extensions;
 using Microsoft.Azure.Cosmos;
 using Quartz;
+using StackExchange.Redis;
 
 namespace LiftNet.Api.Extensions
 {
@@ -116,6 +119,35 @@ namespace LiftNet.Api.Extensions
             });
             services.AddSingleton<IEventBusService, EventBusService>();
             services.AddSingleton<IEventConsumer, EventConsumer>();
+            #endregion
+
+            #region redis cache
+            var redisDbHostName = Environment.GetEnvironmentVariable(EnvKeys.REDIS_HOST_NAME)!;
+            var redisDbPort = Environment.GetEnvironmentVariable(EnvKeys.REDIS_PORT)!;
+            var redisDbUser = Environment.GetEnvironmentVariable(EnvKeys.REDIS_USER)!;
+            var redisDbPassword = Environment.GetEnvironmentVariable(EnvKeys.REDIS_PASSWORD)!;
+
+            if (string.IsNullOrEmpty(redisDbHostName) || 
+                string.IsNullOrEmpty(redisDbPort) || 
+                string.IsNullOrEmpty(redisDbUser) || 
+                string.IsNullOrEmpty(redisDbPassword))
+            {
+                throw new ArgumentNullException("Redis credentials not found or lacks info.");
+            }
+
+            var configurationOptions = new ConfigurationOptions
+            {
+                EndPoints = { { redisDbHostName, int.Parse(redisDbPort) } },
+                User = redisDbUser,
+                Password = redisDbPassword,
+            };
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.ConfigurationOptions = configurationOptions;
+            });
+
+            services.AddSingleton<IRedisCacheService, RedisCacheService>();
             #endregion
 
             return services;
