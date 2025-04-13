@@ -34,6 +34,7 @@ COPY ["LiftNet.ProvinceSDK/LiftNet.ProvinceSDK.csproj", "LiftNet.ProvinceSDK/"]
 COPY ["LiftNet.Repositories/LiftNet.Repositories.csproj", "LiftNet.Repositories/"]
 COPY ["LiftNet.MapSDK/LiftNet.MapSDK.csproj", "LiftNet.MapSDK/"]
 COPY ["LiftNet.Cloudinary/LiftNet.Cloudinary.csproj", "LiftNet.Cloudinary/"]
+COPY ["LiftNet.RedisCache/LiftNet.RedisCache.csproj", "LiftNet.RedisCache/"]
 
 # job
 COPY ["LiftNet.Job/LiftNet.Job.csproj", "LiftNet.Job/"]

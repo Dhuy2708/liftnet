@@ -11,7 +11,7 @@ namespace LiftNet.Api.ToDto
             {
                 Role = request.Role,
                 Email = request.Email,
-                Username = request.Username,
+                Username = request.Email,
                 Password = request.Password,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
@@ -29,7 +29,7 @@ namespace LiftNet.Api.ToDto
         {
             return new LoginCommand
             {
-                Username = request.Username,
+                Username = request.Email,
                 Password = request.Password
             };
         }
