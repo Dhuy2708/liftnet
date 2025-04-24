@@ -11,6 +11,9 @@ using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.JsonWebTokens;
 using LiftNet.WorkerService.Worker;
+using LiftNet.Persistence.Context;
+using Microsoft.AspNetCore.Identity;
+using LiftNet.Domain.Entities;
 
 namespace LiftNet.Api.Extensions
 {
@@ -18,6 +21,17 @@ namespace LiftNet.Api.Extensions
     {
         public static IServiceCollection RegisterAuth(this IServiceCollection services)
         {
+            services.AddIdentity<User, Role>(opt =>
+            {
+                opt.User.RequireUniqueEmail = true;
+                opt.Password.RequireDigit = true;
+                opt.Password.RequireLowercase = true;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireUppercase = false;
+                opt.Password.RequiredLength = 6;
+            }).AddRoles<Role>()
+            .AddEntityFrameworkStores<LiftNetDbContext>()
+            .AddDefaultTokenProviders();
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddAuthentication(options =>
             {
