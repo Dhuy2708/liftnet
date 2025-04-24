@@ -13,25 +13,15 @@ namespace LiftNet.Api.Extensions
         public static IServiceCollection RegisterDbConfig(this IServiceCollection services)
         {
             DotEnv.Load();
-            var connectionString = Environment.GetEnvironmentVariable(EnvKeys.SQL_CONNECTION_STRING)!;
+            var connectionString = string.Empty;
 
+            connectionString = Environment.GetEnvironmentVariable(EnvKeys.SQL_CONNECTION_STRING)!;
             services.AddDbContext<LiftNetDbContext>(opt =>
             {
                 opt.UseSqlServer(connectionString);
                 opt.UseQueryTrackingBehavior(QueryTrackingBehavior.TrackAll);
             });
 
-            services.AddIdentity<User, Role>(opt =>
-            {
-                opt.User.RequireUniqueEmail = true;
-                opt.Password.RequireDigit = true;
-                opt.Password.RequireLowercase = true;
-                opt.Password.RequireNonAlphanumeric = false;
-                opt.Password.RequireUppercase = false;
-                opt.Password.RequiredLength = 6;
-            }).AddRoles<Role>()
-              .AddEntityFrameworkStores<LiftNetDbContext>()
-              .AddDefaultTokenProviders();
             services.RegisterPolicy();
 
             return services;
