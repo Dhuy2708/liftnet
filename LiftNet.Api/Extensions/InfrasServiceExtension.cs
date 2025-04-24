@@ -90,35 +90,7 @@ namespace LiftNet.Api.Extensions
             #endregion
 
             #region rabbitmq
-            string rabbitmqHostName, rabbitmqUsername, rabbitmqPassword, rabbitmqUrl, rabbitmqPort;
-
-#if DEBUG
-            rabbitmqHostName = Environment.GetEnvironmentVariable(EnvKeys.DEV_RABBITMQ_HOST_NAME)!;
-            rabbitmqUsername = Environment.GetEnvironmentVariable(EnvKeys.DEV_RABBITMQ_USERNAME)!;
-            rabbitmqPassword = Environment.GetEnvironmentVariable(EnvKeys.DEV_RABBITMQ_PASSWORD)!;
-            rabbitmqUrl = Environment.GetEnvironmentVariable(EnvKeys.DEV_RABBITMQ_URL)!;
-            rabbitmqPort = Environment.GetEnvironmentVariable(EnvKeys.DEV_RABBITMQ_PORT)!;
-#else
-            rabbitmqHostName = Environment.GetEnvironmentVariable(EnvKeys.TEST_RABBITMQ_HOST_NAME)!;
-            rabbitmqUsername = Environment.GetEnvironmentVariable(EnvKeys.TEST_RABBITMQ_USERNAME)!;
-            rabbitmqPassword = Environment.GetEnvironmentVariable(EnvKeys.TEST_RABBITMQ_PASSWORD)!;
-            rabbitmqUrl = Environment.GetEnvironmentVariable(EnvKeys.TEST_RABBITMQ_URL)!;
-            rabbitmqPort = Environment.GetEnvironmentVariable(EnvKeys.TEST_RABBITMQ_PORT)!;
-#endif
-            if (string.IsNullOrEmpty(rabbitmqHostName) || string.IsNullOrEmpty(rabbitmqUsername) || string.IsNullOrEmpty(rabbitmqPassword))
-            {
-                throw new ArgumentNullException("RabbitMQ credentials not found.");
-            }
-            services.AddSingleton(new RabbitMqCredentials
-            {
-                Hostname = rabbitmqHostName,
-                Username = rabbitmqUsername,
-                Password = rabbitmqPassword,
-                Url = rabbitmqUrl,
-                Port = int.Parse(rabbitmqPort)
-            });
-            services.AddSingleton<IEventBusService, EventBusService>();
-            services.AddSingleton<IEventConsumer, EventConsumer>();
+            services.RegisterRabbitMq();
             #endregion
 
             #region redis cache
@@ -152,6 +124,41 @@ namespace LiftNet.Api.Extensions
 
             return services;
         }
+
+        private static IServiceCollection RegisterRabbitMq(this IServiceCollection services)
+        {
+            string rabbitmqHostName, rabbitmqUsername, rabbitmqPassword, rabbitmqUrl, rabbitmqPort;
+
+#if DEBUG
+            rabbitmqHostName = Environment.GetEnvironmentVariable(EnvKeys.DEV_RABBITMQ_HOST_NAME)!;
+            rabbitmqUsername = Environment.GetEnvironmentVariable(EnvKeys.DEV_RABBITMQ_USERNAME)!;
+            rabbitmqPassword = Environment.GetEnvironmentVariable(EnvKeys.DEV_RABBITMQ_PASSWORD)!;
+            rabbitmqUrl = Environment.GetEnvironmentVariable(EnvKeys.DEV_RABBITMQ_URL)!;
+            rabbitmqPort = Environment.GetEnvironmentVariable(EnvKeys.DEV_RABBITMQ_PORT)!;
+#else
+            rabbitmqHostName = Environment.GetEnvironmentVariable(EnvKeys.TEST_RABBITMQ_HOST_NAME)!;
+            rabbitmqUsername = Environment.GetEnvironmentVariable(EnvKeys.TEST_RABBITMQ_USERNAME)!;
+            rabbitmqPassword = Environment.GetEnvironmentVariable(EnvKeys.TEST_RABBITMQ_PASSWORD)!;
+            rabbitmqUrl = Environment.GetEnvironmentVariable(EnvKeys.TEST_RABBITMQ_URL)!;
+            rabbitmqPort = Environment.GetEnvironmentVariable(EnvKeys.TEST_RABBITMQ_PORT)!;
+#endif
+            if (string.IsNullOrEmpty(rabbitmqHostName) || string.IsNullOrEmpty(rabbitmqUsername) || string.IsNullOrEmpty(rabbitmqPassword))
+            {
+                throw new ArgumentNullException("RabbitMQ credentials not found.");
+            }
+            services.AddSingleton(new RabbitMqCredentials
+            {
+                Hostname = rabbitmqHostName,
+                Username = rabbitmqUsername,
+                Password = rabbitmqPassword,
+                Url = rabbitmqUrl,
+                Port = int.Parse(rabbitmqPort)
+            });
+            services.AddSingleton<IEventBusService, EventBusService>();
+            services.AddSingleton<IEventConsumer, EventConsumer>();
+            return services;
+        }
+
 
         private static IServiceCollection RegisterQuartzService(this IServiceCollection services)
         {

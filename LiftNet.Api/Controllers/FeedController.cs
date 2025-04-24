@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Collections.Generic;
 using LiftNet.Contract.Enums.Feed;
+using LiftNet.Contract.Dtos.Query;
 
 namespace LiftNet.Api.Controllers
 {
@@ -118,6 +119,27 @@ namespace LiftNet.Api.Controllers
                 FeedId = req.FeedId,
                 UserId = UserId,
                 Type = req.Type
+            };
+
+            var result = await _mediator.Send(command);
+            if (result.Success)
+                return Ok(result);
+
+            return StatusCode(500, result);
+        }
+
+        [HttpPost("list/{userId}")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
+        [ProducesResponseType(typeof(LiftNetRes<List<FeedIndexData>>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ListFeeds([FromRoute] string userId, [FromBody] QueryCondition queryCondition)
+        {
+            if (string.IsNullOrEmpty(userId))
+                return BadRequest(LiftNetRes.ErrorResponse("User ID is required"));
+
+            var command = new ListFeedCommand
+            {
+                UserId = userId,
+                QueryCondition = queryCondition
             };
 
             var result = await _mediator.Send(command);

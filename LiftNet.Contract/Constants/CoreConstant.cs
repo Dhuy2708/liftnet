@@ -40,6 +40,7 @@ namespace LiftNet.Contract.Constants
         public const string JWT_ISSUER = "JWT_ISSUER";
         public const string JWT_AUDIENCE = "JWT_AUDIENCE";
         public const string SQL_CONNECTION_STRING = "SQL_CONNECTION_STRING";
+        public const string LOCAL_SQL_CONNECTION = "LOCAL_SQL_CONNECTION";
         public const string BLOB_CONNECTION_STRING = "BLOB_CONNECTION_STRING";
         public const string COSMOS_CONNECTION_STRING = "COSMOS_CONNECTION_STRING";
         public const string COSMOS_DATABASE_ID = "COSMOS_DATABASE_ID";
