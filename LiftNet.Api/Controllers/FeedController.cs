@@ -13,6 +13,7 @@ using System.Linq;
 using System.Collections.Generic;
 using LiftNet.Contract.Enums.Feed;
 using LiftNet.Contract.Dtos.Query;
+using LiftNet.Domain.ViewModels;
 
 namespace LiftNet.Api.Controllers
 {
@@ -130,7 +131,7 @@ namespace LiftNet.Api.Controllers
 
         [HttpPost("list/{userId}")]
         [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
-        [ProducesResponseType(typeof(LiftNetRes<List<FeedIndexData>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(LiftNetRes<List<FeedViewModel>>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> ListFeeds([FromRoute] string userId, [FromBody] QueryCondition queryCondition)
         {
             if (string.IsNullOrEmpty(userId))
