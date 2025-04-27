@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using LiftNet.Contract.Interfaces.IServices.Indexes;
@@ -11,10 +12,11 @@ using LiftNet.Handler.Feeds.Commands.Requests;
 using LiftNet.Domain.Indexes;
 using LiftNet.Contract.Dtos.Query;
 using LiftNet.Contract.Enums;
+using LiftNet.Domain.ViewModels;
 
 namespace LiftNet.Handler.Feeds.Commands
 {
-    public class ListFeedHandler : IRequestHandler<ListFeedCommand, LiftNetRes<List<FeedIndexData>>>
+    public class ListFeedHandler : IRequestHandler<ListFeedCommand, LiftNetRes<FeedViewModel>>
     {
         private readonly IFeedIndexService _feedService;
         private readonly ILiftLogger<ListFeedHandler> _logger;
@@ -27,7 +29,7 @@ namespace LiftNet.Handler.Feeds.Commands
             _logger = logger;
         }
 
-        public async Task<LiftNetRes<List<FeedIndexData>>> Handle(ListFeedCommand request, CancellationToken cancellationToken)
+        public async Task<LiftNetRes<FeedViewModel>> Handle(ListFeedCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -45,12 +47,25 @@ namespace LiftNet.Handler.Feeds.Commands
                 }
 
                 var (feeds, nextPageToken) = await _feedService.QueryAsync(condition);
-                return LiftNetRes<List<FeedIndexData>>.SuccessResponse(feeds, nextPageToken);
+                
+                var viewModels = feeds.Select(feed => new FeedViewModel
+                {
+                    Id = feed.Id,
+                    UserId = feed.UserId,
+                    Content = feed.Content,
+                    Medias = feed.Medias,
+                    CreatedAt = feed.CreatedAt,
+                    ModifiedAt = feed.ModifiedAt,
+                    LikeCount = 0, // TODO: Get like count from like service
+                    IsLiked = false // TODO: Check if current user liked this feed
+                }).ToList();
+
+                return LiftNetRes<FeedViewModel>.SuccessResponse(viewModels, nextPageToken);
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, "Error in ListFeedHandler");
-                return LiftNetRes<List<FeedIndexData>>.ErrorResponse("Internal server error");
+                return LiftNetRes<FeedViewModel>.ErrorResponse("Internal server error");
             }
         }
     }
