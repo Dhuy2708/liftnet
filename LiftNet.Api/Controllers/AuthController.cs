@@ -11,6 +11,7 @@ using System.Linq;
 using System.Security.Claims;
 using LiftNet.Domain.Constants;
 using LiftNet.Handler.Auths.Queries.Requests;
+using LiftNet.Utility.Extensions;
 
 namespace LiftNet.Api.Controllers
 {
@@ -80,6 +81,14 @@ namespace LiftNet.Api.Controllers
             }
 
             return Ok(result);
+        }
+
+        [HttpGet("check")]
+        [Authorize]
+        [ProducesResponseType(typeof(bool), (int)HttpStatusCode.OK)]
+        public IActionResult Check()
+        {
+            return Ok(UserId.IsNotNullOrEmpty());
         }
     }
 }
