@@ -171,5 +171,23 @@ namespace LiftNet.CosmosDb.Services
                 return false;
             }
         }
+
+        public async Task<int> GetFeedLikeCountAsync(string feedId)
+        {
+            try
+            {
+                var condition = new QueryCondition();
+                condition.AddCondition(new ConditionItem("feedid", new List<string> { feedId }, FilterType.String));
+                condition.AddCondition(new ConditionItem("schema", new List<string> { $"{(int)DataSchema.Like}" }, FilterType.Integer, QueryOperator.Equal, QueryLogic.And));
+                
+                var (likes, _) = await _likeIndexService.QueryAsync(condition);
+                return likes.Count;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error getting like count for feed {feedId}");
+                return 0;
+            }
+        }
     }
 }
