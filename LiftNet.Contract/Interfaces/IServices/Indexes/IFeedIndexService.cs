@@ -16,5 +16,6 @@ namespace LiftNet.Contract.Interfaces.IServices.Indexes
         Task<bool> LikeFeedAsync(string feedId, string userId);
         Task<bool> UnlikeFeedAsync(string feedId, string userId);
         Task<bool> HasUserLikedFeedAsync(string feedId, string userId);
+        Task<int> GetFeedLikeCountAsync(string feedId);
     }
 }

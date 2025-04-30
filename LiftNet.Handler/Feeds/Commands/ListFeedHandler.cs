@@ -48,17 +48,24 @@ namespace LiftNet.Handler.Feeds.Commands
 
                 var (feeds, nextPageToken) = await _feedService.QueryAsync(condition);
                 
-                var viewModels = feeds.Select(feed => new FeedViewModel
+                var viewModels = new List<FeedViewModel>();
+                foreach (var feed in feeds)
                 {
-                    Id = feed.Id,
-                    UserId = feed.UserId,
-                    Content = feed.Content,
-                    Medias = feed.Medias,
-                    CreatedAt = feed.CreatedAt,
-                    ModifiedAt = feed.ModifiedAt,
-                    LikeCount = 0, // TODO: Get like count from like service
-                    IsLiked = false // TODO: Check if current user liked this feed
-                }).ToList();
+                    var likeCount = await _feedService.GetFeedLikeCountAsync(feed.Id);
+                    var isLiked = await _feedService.HasUserLikedFeedAsync(feed.Id, request.UserId);
+                    
+                    viewModels.Add(new FeedViewModel
+                    {
+                        Id = feed.Id,
+                        UserId = feed.UserId,
+                        Content = feed.Content,
+                        Medias = feed.Medias,
+                        CreatedAt = feed.CreatedAt,
+                        ModifiedAt = feed.ModifiedAt,
+                        LikeCount = likeCount,
+                        IsLiked = isLiked
+                    });
+                }
 
                 return LiftNetRes<FeedViewModel>.SuccessResponse(viewModels, nextPageToken);
             }
