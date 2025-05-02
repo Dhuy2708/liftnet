@@ -131,7 +131,7 @@ namespace LiftNet.Api.Controllers
 
         [HttpPost("list/{userId}")]
         [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
-        [ProducesResponseType(typeof(LiftNetRes<List<FeedViewModel>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(PaginatedLiftNetRes<List<FeedViewModel>>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> ListFeeds([FromRoute] string userId, [FromBody] QueryCondition queryCondition)
         {
             if (string.IsNullOrEmpty(userId))

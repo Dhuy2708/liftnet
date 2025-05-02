@@ -16,7 +16,7 @@ using LiftNet.Domain.ViewModels;
 
 namespace LiftNet.Handler.Feeds.Commands
 {
-    public class ListFeedHandler : IRequestHandler<ListFeedCommand, LiftNetRes<FeedViewModel>>
+    public class ListFeedHandler : IRequestHandler<ListFeedCommand, PaginatedLiftNetRes<FeedViewModel>>
     {
         private readonly IFeedIndexService _feedService;
         private readonly ILiftLogger<ListFeedHandler> _logger;
@@ -29,10 +29,11 @@ namespace LiftNet.Handler.Feeds.Commands
             _logger = logger;
         }
 
-        public async Task<LiftNetRes<FeedViewModel>> Handle(ListFeedCommand request, CancellationToken cancellationToken)
+        public async Task<PaginatedLiftNetRes<FeedViewModel>> Handle(ListFeedCommand request, CancellationToken cancellationToken)
         {
             try
             {
+                _logger.Info($"list feeds in profile, userId: {request.UserId}");
                 var condition = request.QueryCondition;
                 condition.AddCondition(new ConditionItem("userid", new List<string> { request.UserId }, FilterType.String));
                 condition.AddCondition(new ConditionItem("schema", new List<string> { $"{(int)DataSchema.Feed}" }, FilterType.Integer, QueryOperator.Equal, QueryLogic.And));
@@ -48,12 +49,13 @@ namespace LiftNet.Handler.Feeds.Commands
 
                 var (feeds, nextPageToken) = await _feedService.QueryAsync(condition);
                 
+                var feedIds = feeds.Select(f => f.Id).ToList();
+                var likeCounts = await _feedService.GetFeedLikeCountsAsync(feedIds);
+                var likeStatuses = await _feedService.GetFeedLikeStatusesAsync(feedIds, request.UserId);
+                
                 var viewModels = new List<FeedViewModel>();
                 foreach (var feed in feeds)
                 {
-                    var likeCount = await _feedService.GetFeedLikeCountAsync(feed.Id);
-                    var isLiked = await _feedService.HasUserLikedFeedAsync(feed.Id, request.UserId);
-                    
                     viewModels.Add(new FeedViewModel
                     {
                         Id = feed.Id,
@@ -62,17 +64,17 @@ namespace LiftNet.Handler.Feeds.Commands
                         Medias = feed.Medias,
                         CreatedAt = feed.CreatedAt,
                         ModifiedAt = feed.ModifiedAt,
-                        LikeCount = likeCount,
-                        IsLiked = isLiked
+                        LikeCount = likeCounts[feed.Id],
+                        IsLiked = likeStatuses[feed.Id]
                     });
                 }
 
-                return LiftNetRes<FeedViewModel>.SuccessResponse(viewModels, nextPageToken);
+                return PaginatedLiftNetRes<FeedViewModel>.SuccessResponse(viewModels, nextPageToken: nextPageToken);
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, "Error in ListFeedHandler");
-                return LiftNetRes<FeedViewModel>.ErrorResponse("Internal server error");
+                return PaginatedLiftNetRes<FeedViewModel>.ErrorResponse("Internal server error");
             }
         }
     }
