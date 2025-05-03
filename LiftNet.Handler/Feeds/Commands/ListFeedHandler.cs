@@ -1,18 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Linq;
-using MediatR;
-using Microsoft.Extensions.Logging;
-using LiftNet.Contract.Interfaces.IServices.Indexes;
-using LiftNet.Domain.Interfaces;
-using LiftNet.Domain.Response;
-using LiftNet.Handler.Feeds.Commands.Requests;
-using LiftNet.Domain.Indexes;
 using LiftNet.Contract.Dtos.Query;
 using LiftNet.Contract.Enums;
+using LiftNet.Contract.Interfaces.IServices.Indexes;
+using LiftNet.Domain.Indexes;
+using LiftNet.Domain.Interfaces;
+using LiftNet.Domain.Response;
 using LiftNet.Domain.ViewModels;
+using LiftNet.Handler.Feeds.Commands.Requests;
+using MediatR;
 
 namespace LiftNet.Handler.Feeds.Commands
 {
@@ -48,11 +42,11 @@ namespace LiftNet.Handler.Feeds.Commands
                 }
 
                 var (feeds, nextPageToken) = await _feedService.QueryAsync(condition);
-                
+
                 var feedIds = feeds.Select(f => f.Id).ToList();
                 var likeCounts = await _feedService.GetFeedLikeCountsAsync(feedIds);
                 var likeStatuses = await _feedService.GetFeedLikeStatusesAsync(feedIds, request.UserId);
-                
+
                 var viewModels = new List<FeedViewModel>();
                 foreach (var feed in feeds)
                 {
@@ -78,4 +72,4 @@ namespace LiftNet.Handler.Feeds.Commands
             }
         }
     }
-} 
+}
