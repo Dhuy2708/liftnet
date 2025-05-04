@@ -6,9 +6,17 @@ namespace LiftNet.Handler.Geos.Queries.Requests
 {
     public class SearchLocationsRequest : IRequest<LiftNetRes<List<PlacePredictionView>>>
     {
-        public int ProvinceCode { get; set; }
-        public int DistrictCode { get; set; }
-        public int WardCode { get; set; }
-        public string Input { get; set; }
+        public String UserId
+        {
+            get; set;
+        }
+        public string Input
+        {
+            get; set;
+        }
+        public bool SearchRelated
+        {
+            get; set;
+        }
     }
 }

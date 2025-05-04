@@ -3,6 +3,7 @@ using LiftNet.Contract.Views;
 using LiftNet.Handler.Geos.Queries;
 using LiftNet.Handler.Geos.Queries.Requests;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -66,18 +67,15 @@ namespace LiftNet.Api.Controllers
         }
 
         [HttpGet("location/search")]
+        [Authorize]
         [ProducesResponseType(typeof(List<PlacePredictionView>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> SearchLocations([FromQuery] int provinceCode, 
-                                                         [FromQuery] int districtCode, 
-                                                         [FromQuery] int wardCode, 
-                                                         [FromQuery] string q)
+        public async Task<IActionResult> SearchLocations([FromQuery] string q, [FromQuery] bool searchRelated = false)
         {
             var req = new SearchLocationsRequest()
             {
-                ProvinceCode = provinceCode,
-                DistrictCode = districtCode,
-                WardCode = wardCode,
-                Input = q
+                UserId = UserId,
+                Input = q,
+                SearchRelated = searchRelated
             };
             var result = await _mediator.Send(req);
             if (result.Success)
