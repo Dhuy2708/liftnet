@@ -4,7 +4,7 @@ using LiftNet.Contract.Views;
 
 namespace LiftNet.Handler.Geos.Queries.Requests
 {
-    public class SearchLocationsRequest : IRequest<LiftNetRes<List<PlacePredictionView>>>
+    public class SearchLocationsRequest : IRequest<LiftNetRes<PlacePredictionView>>
     {
         public String UserId
         {

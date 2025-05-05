@@ -7,7 +7,7 @@ using MediatR;
 
 namespace LiftNet.Handler.Geos.Queries
 {
-    public class SearchLocationsHandler : IRequestHandler<SearchLocationsRequest, LiftNetRes<List<PlacePredictionView>>>
+    public class SearchLocationsHandler : IRequestHandler<SearchLocationsRequest, LiftNetRes<PlacePredictionView>>
     {
         private readonly IGeoService _geoService;
         private readonly IAddressIndexService _addressService;
@@ -18,7 +18,7 @@ namespace LiftNet.Handler.Geos.Queries
             _addressService = addressService;
         }
 
-        public async Task<LiftNetRes<List<PlacePredictionView>>> Handle(SearchLocationsRequest request, CancellationToken cancellationToken)
+        public async Task<LiftNetRes<PlacePredictionView>> Handle(SearchLocationsRequest request, CancellationToken cancellationToken)
         {
             double? latitude = null;
             double? longitude = null;
@@ -35,7 +35,7 @@ namespace LiftNet.Handler.Geos.Queries
 
             var predictions = await _geoService.AutocompleteSearchAsync(request.Input, latitude, longitude);
 
-            return LiftNetRes<List<PlacePredictionView>>.SuccessResponse(predictions);
+            return LiftNetRes<PlacePredictionView>.SuccessResponse(predictions);
         }
     }
 }

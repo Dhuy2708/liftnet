@@ -14,7 +14,7 @@ namespace LiftNet.Handler.Appointments.Commands.Validators
         public AppointmentActionValidator()
         {
             RuleFor(x => x.UserId)
-                .NotEmpty().WithMessage("UserId is required.");
+                .NotEmpty().WithMessage("ProfileId is required.");
 
             RuleFor(x => x.AppointmentId)
                 .NotEmpty().WithMessage("AppointmentId is required.");

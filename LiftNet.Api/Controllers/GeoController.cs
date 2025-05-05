@@ -1,5 +1,6 @@
 ﻿using LiftNet.Contract.Dtos;
 using LiftNet.Contract.Views;
+using LiftNet.Domain.Response;
 using LiftNet.Handler.Geos.Queries;
 using LiftNet.Handler.Geos.Queries.Requests;
 using MediatR;
@@ -16,7 +17,7 @@ namespace LiftNet.Api.Controllers
         }
 
         [HttpGet("provinces/search")]
-        [ProducesResponseType(typeof(List<ProvinceView>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(LiftNetRes<ProvinceView>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> SearchProvinces([FromQuery] string q)
         {
             var req = new SearchProvincesRequest()
@@ -32,7 +33,7 @@ namespace LiftNet.Api.Controllers
         }
 
         [HttpGet("districts/search")]
-        [ProducesResponseType(typeof(List<DistrictView>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(LiftNetRes<DistrictView>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> SearchProvinces([FromQuery] int provinceCode, [FromQuery] string q)
         {
             var req = new SearchDistrictsRequest()
@@ -68,7 +69,7 @@ namespace LiftNet.Api.Controllers
 
         [HttpGet("location/search")]
         [Authorize]
-        [ProducesResponseType(typeof(List<PlacePredictionView>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(LiftNetRes<PlacePredictionView>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> SearchLocations([FromQuery] string q, [FromQuery] bool searchRelated = false)
         {
             var req = new SearchLocationsRequest()

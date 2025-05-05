@@ -9,7 +9,17 @@ namespace LiftNet.Handler.Feeds.Commands.Requests
 {
     public class ReactFeedRequest
     {
-        public string FeedId { get; set; } = string.Empty;
-        public ReactType Type { get; set; }
+        public string FeedOwnerId
+        {
+            get; set;
+        }
+        public string FeedId 
+        { 
+            get; set; 
+        } = string.Empty;
+        public ReactType Type 
+        { 
+            get; set; 
+        }
     }
 } 

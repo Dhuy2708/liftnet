@@ -32,6 +32,7 @@ namespace LiftNet.Handler.Feeds.Commands
                 var context = new
                 {
                     FeedId = request.FeedId,
+                    FeedOwnerId = request.FeedOwnerId,
                     UserId = request.UserId,
                 };
 
