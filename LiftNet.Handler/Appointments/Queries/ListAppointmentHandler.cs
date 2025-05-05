@@ -70,6 +70,11 @@ namespace LiftNet.Handler.Appointments.Queries
             {
                 queryable = queryable.Where(x => x.Name.Contains(nameCond.Values.FirstOrDefault() ?? string.Empty));
             }
+            var statusCond = conditions.FindCondition("status");
+            if (statusCond != null && int.TryParse(statusCond.Values.First(), out var statusInt))
+            {
+                queryable = queryable.Where(x => x.Status == statusInt);
+            }
             return queryable;
         }
 
