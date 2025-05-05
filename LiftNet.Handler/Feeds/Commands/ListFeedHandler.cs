@@ -27,9 +27,9 @@ namespace LiftNet.Handler.Feeds.Commands
         {
             try
             {
-                _logger.Info($"list feeds in profile, userId: {request.UserId}");
+                _logger.Info($"list feeds in profile, userId: {request.ProfileId}");
                 var condition = request.QueryCondition;
-                condition.AddCondition(new ConditionItem("userid", new List<string> { request.UserId }, FilterType.String));
+                condition.AddCondition(new ConditionItem("userid", new List<string> { request.ProfileId }, FilterType.String));
                 condition.AddCondition(new ConditionItem("schema", new List<string> { $"{(int)DataSchema.Feed}" }, FilterType.Integer, QueryOperator.Equal, QueryLogic.And));
 
                 if (condition.Sort == null)

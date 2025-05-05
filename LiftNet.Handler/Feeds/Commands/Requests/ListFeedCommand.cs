@@ -7,7 +7,18 @@ namespace LiftNet.Handler.Feeds.Commands.Requests
 {
     public class ListFeedCommand : IRequest<PaginatedLiftNetRes<FeedViewModel>>
     {
-        public string UserId { get; set; }
-        public QueryCondition QueryCondition { get; set; }
+
+        public string UserId
+        {
+            get; set;
+        }
+        public string ProfileId 
+        {
+            get; set; 
+        }
+        public QueryCondition QueryCondition 
+        { 
+            get; set; 
+        }
     }
 } 

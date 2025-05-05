@@ -91,12 +91,12 @@ namespace LiftNet.CosmosDb.Services
             }
         }
 
-        public async Task<bool> LikeFeedAsync(string feedId, string userId)
+        public async Task<bool> LikeFeedAsync(string feedId, string feedOwnerId, string userId)
         {
             try
             {
                 // Check if feed exists
-                var feed = await GetAsync(feedId, userId);
+                var feed = await GetAsync(feedId, feedOwnerId);
                 if (feed == null)
                     return false;
 
@@ -124,12 +124,12 @@ namespace LiftNet.CosmosDb.Services
             }
         }
 
-        public async Task<bool> UnlikeFeedAsync(string feedId, string userId)
+        public async Task<bool> UnlikeFeedAsync(string feedId, string feedOwnerId, string userId)
         {
             try
             {
                 // Check if feed exists
-                var feed = await GetAsync(feedId, userId);
+                var feed = await GetAsync(feedId, feedOwnerId);
                 if (feed == null)
                     return false;
 
@@ -180,8 +180,7 @@ namespace LiftNet.CosmosDb.Services
                 condition.AddCondition(new ConditionItem("feedid", new List<string> { feedId }, FilterType.String));
                 condition.AddCondition(new ConditionItem("schema", new List<string> { $"{(int)DataSchema.Like}" }, FilterType.Integer, QueryOperator.Equal, QueryLogic.And));
                 
-                var (likes, _) = await _likeIndexService.QueryAsync(condition);
-                return likes.Count;
+                return await _likeIndexService.CountAsync(condition);
             }
             catch (Exception ex)
             {

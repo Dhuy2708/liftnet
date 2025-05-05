@@ -2,6 +2,7 @@
 using LiftNet.Contract.Interfaces.IServices.Indexes;
 using LiftNet.Domain.Interfaces;
 using LiftNet.ServiceBus.Contracts;
+using LiftNet.Utility.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -45,8 +46,9 @@ namespace LiftNet.ServiceBus.Processor
 
                 string? feedId = context.FeedId?.ToString();
                 string? userId = context.UserId?.ToString();
+                string? feedOwnerId = context.FeedOwnerId?.ToString();
 
-                if (string.IsNullOrEmpty(feedId) || string.IsNullOrEmpty(userId))
+                if (feedId.IsNullOrEmpty() || userId.IsNullOrEmpty() || feedOwnerId.IsNullOrEmpty())
                 {
                     logger.Error("FeedId or UserId is null or empty");
                     return;
@@ -55,11 +57,11 @@ namespace LiftNet.ServiceBus.Processor
                 bool result;
                 if (_type == ReactType.Like)
                 {
-                    result = await feedService.LikeFeedAsync(feedId, userId);
+                    result = await feedService.LikeFeedAsync(feedId!, feedOwnerId!, userId!);
                 }
                 else
                 {
-                    result = await feedService.UnlikeFeedAsync(feedId, userId);
+                    result = await feedService.UnlikeFeedAsync(feedId!, feedOwnerId!, userId!);
                 }
 
                 if (!result)

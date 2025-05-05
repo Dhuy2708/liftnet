@@ -118,6 +118,7 @@ namespace LiftNet.Api.Controllers
             var command = new ReactFeedCommand
             {
                 FeedId = req.FeedId,
+                FeedOwnerId = req.FeedOwnerId,
                 UserId = UserId,
                 Type = req.Type
             };
@@ -139,7 +140,8 @@ namespace LiftNet.Api.Controllers
 
             var command = new ListFeedCommand
             {
-                UserId = userId,
+                UserId = UserId,
+                ProfileId = userId,
                 QueryCondition = queryCondition
             };
 
