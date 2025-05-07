@@ -1,6 +1,7 @@
 ﻿using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Views.Appointments;
 using LiftNet.Domain.Exceptions;
+using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Appointments.Queries.Requests;
 using LiftNet.Ioc;
@@ -18,15 +19,18 @@ namespace LiftNet.Handler.Appointments.Queries
 {
     public class GetAppointmentHandler : IRequestHandler<GetAppointmentQuery, LiftNetRes<AppointmentDetailView>>
     {
+        private readonly ILiftLogger<GetAppointmentHandler> _logger;
         private readonly IAppointmentRepo _appointmentRepo;
 
-        public GetAppointmentHandler(IAppointmentRepo appointmentRepo)
+        public GetAppointmentHandler(IAppointmentRepo appointmentRepo, ILiftLogger<GetAppointmentHandler> logger)
         {
             _appointmentRepo = appointmentRepo;
+            _logger = logger;
         }
 
         public async Task<LiftNetRes<AppointmentDetailView>> Handle(GetAppointmentQuery request, CancellationToken cancellationToken)
         {
+            _logger.Info($"get appointment detail, appointmentId: {request.Id}");
             var queryable = _appointmentRepo.GetQueryable();
             queryable = queryable.Include(x => x.Booker)
                                  .Include(x => x.Participants)

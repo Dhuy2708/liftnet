@@ -7,111 +7,116 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Contract.Dtos.Query
 {
-        public class QueryCondition
+    public class QueryCondition
+    {
+        public List<ConditionItem> ConditionItems
         {
-            public List<ConditionItem> ConditionItems
-            {
-                get; set;
-            } = [];
+            get; set;
+        } = [];
+            
+        public string? Search
+        {
+            get; set;
+        }
 
-            public int PageNumber
-            {
-                get; set;
-            } = 1;
+        public int PageNumber
+        {
+            get; set;
+        } = 1;
 
-            public int PageSize
+        public int PageSize
+        {
+            get; set;
+        } = 20;
+        public string? NextPageToken
+        {
+            get; set;
+        } = null;
+        public SortCondition? Sort
+        {
+            get; set;
+        }
+
+        public QueryCondition(List<ConditionItem> conditionItems)
+        {
+            ConditionItems = conditionItems;
+        }
+
+        public QueryCondition() { }
+
+        public void AddCondition(ConditionItem conditionItem)
+        {
+            ConditionItems.Add(conditionItem);
+        }
+
+        public void UpdateCondition(ConditionItem condToUpdate, bool addIfExist = false)
+        {
+            var cond = ConditionItems.Find(x => x.Property.Equals(condToUpdate.Property));
+            if (cond != null)
             {
-                get; set;
-            } = 20;
-            public string? NextPageToken
-            {
-                get; set;
-            } = null;
-            public SortCondition? Sort
-            {
-                get; set;
+                ConditionItems.Remove(cond);
+                ConditionItems.Add(condToUpdate);
             }
-
-            public QueryCondition(List<ConditionItem> conditionItems)
+            else if (addIfExist)
             {
-                ConditionItems = conditionItems;
-            }
-
-            public QueryCondition() { }
-
-            public void AddCondition(ConditionItem conditionItem)
-            {
-                ConditionItems.Add(conditionItem);
-            }
-
-            public void UpdateCondition(ConditionItem condToUpdate, bool addIfExist = false)
-            {
-                var cond = ConditionItems.Find(x => x.Property.Equals(condToUpdate.Property));
-                if (cond != null)
-                {
-                    ConditionItems.Remove(cond);
-                    ConditionItems.Add(condToUpdate);
-                }
-                else if (addIfExist)
-                {
-                    AddCondition(condToUpdate);
-                }
-            }
-
-            public List<ConditionItem>? FindConditions(string propName)
-            {
-                var result = ConditionItems.Where(x => x.Property.Equals(propName)).ToList();
-                if (result != null)
-                {
-                    return result.ToList();
-                }
-                return null;
-            }
-
-            public ConditionItem? FindCondition(string propName)
-            {
-                return ConditionItems.Find(x => x.Property.Equals(propName));
+                AddCondition(condToUpdate);
             }
         }
 
-        public class ConditionItem
+        public List<ConditionItem>? FindConditions(string propName)
         {
-            public string Property { get; set; }
-            public QueryOperator Operator { get; set; }
-            public List<string> Values { get; set; } = [];
-            public FilterType Type { get; set; }
-            public QueryLogic Logic { get; set; } // And, Or, None
-
-            public ConditionItem()
+            var result = ConditionItems.Where(x => x.Property.Equals(propName)).ToList();
+            if (result != null)
             {
-
+                return result.ToList();
             }
-
-            public ConditionItem(string property, List<string> values, FilterType filterType = FilterType.String, QueryOperator queryOperator = QueryOperator.Equal, QueryLogic logic = QueryLogic.None)
-            {
-                Property = property;
-                Values = values;
-                Operator = queryOperator;
-                Logic = logic;
-                Type = filterType;
-            }
+            return null;
         }
 
-        public class SortCondition
+        public ConditionItem? FindCondition(string propName)
         {
-            public string? Name
-            {
-                get; set;
-            }
-
-            public SortType Type
-            {
-                get; set;
-            }
-            public void Clear()
-            {
-                Name = null;
-                Type = SortType.None;
-            }
+            return ConditionItems.Find(x => x.Property.Equals(propName));
         }
+    }
+
+    public class ConditionItem
+    {
+        public string Property { get; set; }
+        public QueryOperator Operator { get; set; }
+        public List<string> Values { get; set; } = [];
+        public FilterType Type { get; set; }
+        public QueryLogic Logic { get; set; } // And, Or, None
+
+        public ConditionItem()
+        {
+
+        }
+
+        public ConditionItem(string property, List<string> values, FilterType filterType = FilterType.String, QueryOperator queryOperator = QueryOperator.Equal, QueryLogic logic = QueryLogic.None)
+        {
+            Property = property;
+            Values = values;
+            Operator = queryOperator;
+            Logic = logic;
+            Type = filterType;
+        }
+    }
+
+    public class SortCondition
+    {
+        public string? Name
+        {
+            get; set;
+        }
+
+        public SortType Type
+        {
+            get; set;
+        }
+        public void Clear()
+        {
+            Name = null;
+            Type = SortType.None;
+        }
+    }
 }

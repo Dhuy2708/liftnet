@@ -47,7 +47,7 @@ namespace LiftNet.Handler.Socials.Queries
             queryable = queryable.Where(x => notAdminRoles.Contains(x.UserRoles.First().RoleId));
 
             // search text
-            var searchTxt = cond.FindCondition("search")?.Values.FirstOrDefault();
+            var searchTxt = cond.Search;
             if (searchTxt.IsNotNullOrEmpty())
             {
                 queryable = queryable.Where(x => x.UserName!.Contains(searchTxt!) ||
