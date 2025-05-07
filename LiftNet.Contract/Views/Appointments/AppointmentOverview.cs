@@ -30,11 +30,11 @@ namespace LiftNet.Contract.Views.Appointments
         {
             get; set;
         }
-        public DateTime StartTime
+        public DateTimeOffset StartTime
         {
             get; set;
         }
-        public DateTime EndTime
+        public DateTimeOffset EndTime
         {
             get; set;
         }
@@ -46,11 +46,11 @@ namespace LiftNet.Contract.Views.Appointments
         {
             get; set;
         }
-        public DateTime Created
+        public DateTimeOffset Created
         {
             get; set;
         }
-        public DateTime Modified
+        public DateTimeOffset Modified
         {
             get; set;
         }

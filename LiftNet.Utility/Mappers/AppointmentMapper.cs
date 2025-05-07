@@ -30,12 +30,12 @@ namespace LiftNet.Utility.Mappers
                 Editable = editable,
                 Description = entity.Description,
                 Location = JsonConvert.DeserializeObject<PlaceDetailDto>(entity.PlaceDetail),
-                StartTime = entity.StartTime,
-                EndTime = entity.EndTime,
+                StartTime = new DateTimeOffset(entity.StartTime, TimeSpan.Zero),
+                EndTime = new DateTimeOffset(entity.EndTime, TimeSpan.Zero),
                 Status = (AppointmentStatus)entity.Status,
                 RepeatingType = (RepeatingType)entity.RepeatingType,
-                Created = entity.Created,
-                Modified = entity.Modified,
+                Created = new DateTimeOffset(entity.Created, TimeSpan.Zero),
+                Modified = new DateTimeOffset(entity.Modified, TimeSpan.Zero),
             };
         }
 
@@ -95,12 +95,12 @@ namespace LiftNet.Utility.Mappers
                 Name = dto.Name,
                 Description = dto.Description,
                 Location = dto.PlaceDetail,
-                StartTime = dto.StartTime,
-                EndTime = dto.EndTime,
+                StartTime = new DateTimeOffset(dto.StartTime, TimeSpan.Zero),
+                EndTime = new DateTimeOffset(dto.EndTime, TimeSpan.Zero),
                 Status = dto.Status,
                 RepeatingType = dto.RepeatingType,
-                Created = dto.Created,
-                Modified = dto.Modified,
+                Created = new DateTimeOffset(dto.Created, TimeSpan.Zero),
+                Modified = new DateTimeOffset(dto.Modified, TimeSpan.Zero),
             };
         }
 

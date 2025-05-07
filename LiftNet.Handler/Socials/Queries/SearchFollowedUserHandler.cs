@@ -52,10 +52,17 @@ namespace LiftNet.Handler.Socials.Queries
                                            .Where(x => x.UserId == userId && x.Status == (int)SocialConnectionStatus.Following)
                                            .Select(x => x.TargetId)
                                            .ToListAsync();
-            queryable = queryable.Where(x => followedUserIds.Contains(x.Id));
+            var bothFollowedUserIds = await _uow.SocialConnectionRepo.GetQueryable()
+                                           .Where(x => x.TargetId == userId &&
+                                                       followedUserIds.Contains(x.UserId) &&
+                                                       x.Status == (int)SocialConnectionStatus.Following)
+                                           .Select(x => x.UserId)
+                                           .ToListAsync();
+
+            queryable = queryable.Where(x => bothFollowedUserIds.Contains(x.Id));
 
             // search text
-            var searchTxt = cond.FindCondition("search")?.Values.FirstOrDefault();
+            var searchTxt = cond.Search;
             if (searchTxt.IsNotNullOrEmpty())
             {
                 queryable = queryable.Where(x => x.UserName!.Contains(searchTxt!) ||
