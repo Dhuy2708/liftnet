@@ -46,13 +46,14 @@ namespace LiftNet.Handler.Appointments.Queries
                                  .ThenInclude(x => x.User);
             var query = queryable.Where(x => x.BookerId == request.UserId || (x.Participants.Select(p => p.UserId).Contains(request.UserId)));
             query = BuildQuery(query, conditions);
-            query.Take(conditions.PageSize);
-            query.Skip((conditions.PageNumber - 1) * conditions.PageSize);
+
+            var count = await query.CountAsync();
             query = BuildSort(query, conditions.Sort);
+            query = query.Skip((conditions.PageNumber - 1) * conditions.PageSize)
+                         .Take(conditions.PageSize);
 
             var appointments = await query.ToListAsync();
 
-            var count = await _appointmentRepo.GetCount();
             var appointmentDtos = appointments.Select(x => x.ToOverview()).ToList();
 
             _logger.Info("list appointment overviews successfully");
