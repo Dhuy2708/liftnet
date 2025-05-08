@@ -113,5 +113,23 @@ namespace LiftNet.Api.Controllers
             }
             return StatusCode(500, result);
         }
+
+        [HttpPost("followings")]
+        [Authorize]
+        [ProducesResponseType(typeof(PaginatedLiftNetRes<UserOverview>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ListFollowings(QueryCondition condition)
+        {
+            var req = new ListFollowingRequest()
+            {
+                CallerId = UserId,
+                Conditions = condition,
+            };
+            var result = await _mediator.Send(req);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
     }
 }
