@@ -35,6 +35,11 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        public int Status
+        {
+            get; set;
+        }
+
         // mapping
         public Appointment Appointment
         {

@@ -39,6 +39,17 @@ namespace LiftNet.Repositories.Core
             }
         }
 
+        private IAppointmentParticipantRepo? _appointmentParticipantRepo = null;
+        public IAppointmentParticipantRepo AppointmentParticipantRepo
+        {
+            get
+            {
+                _appointmentParticipantRepo ??= _serviceProvider.GetRequiredService<IAppointmentParticipantRepo>();
+                _appointmentParticipantRepo.AutoSave = false;
+                return _appointmentParticipantRepo;
+            }
+        }
+
         private ISocialConnectionRepo? _socialConnectionRepo = null;
         public ISocialConnectionRepo SocialConnectionRepo
         {

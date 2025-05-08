@@ -44,8 +44,18 @@ namespace LiftNet.Handler.Appointments.Commands
         public async Task<LiftNetRes> Handle(BookAppointmentCommand request, CancellationToken cancellationToken)
         {
             _logger.Info("begin create a appointment");
-            request.Appointment.Status = AppointmentStatus.Pending;
             var entity = request.Appointment.ToEntity();
+            foreach (var part in entity.Participants)
+            {
+                if (part.IsBooker)
+                {
+                    part.Status = (int)AppointmentStatus.Accepted;
+                }
+                else
+                {
+                    part.Status = (int)AppointmentStatus.Pending;
+                }
+            }
             entity.Created = DateTime.UtcNow;
             entity.Modified = DateTime.UtcNow;
             var result = await _appointmentRepo.Create(entity);

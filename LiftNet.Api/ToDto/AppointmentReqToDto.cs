@@ -28,7 +28,6 @@ namespace LiftNet.Api.ToDto
                 StartTime = req.StartTime,
                 EndTime = req.EndTime,
                 PlaceDetail = placeDetail,
-                Status = AppointmentStatus.Pending,
                 RepeatingType = req.RepeatingType
             };
         }

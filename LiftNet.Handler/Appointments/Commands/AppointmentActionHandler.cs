@@ -8,9 +8,7 @@ using LiftNet.SharedKenel.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Appointments.Commands
@@ -32,56 +30,66 @@ namespace LiftNet.Handler.Appointments.Commands
             
             _logger.Info("begin to handle appointment action command");
             var appointmentRepo = _uow.AppointmentRepo;
-            appointmentRepo.AutoSave = true;
+            var participantRepo = _uow.AppointmentParticipantRepo;
+            
             var appointment = await appointmentRepo.GetQueryable()
-                                                   .FirstOrDefaultAsync(x => x.Id == request.AppointmentId &&
-                                                                            x.Participants.Select(x => x.UserId).Contains(request.UserId));
+                .Include(x => x.Participants)
+                .FirstOrDefaultAsync(x => x.Id == request.AppointmentId);
+
             if (appointment == null)
             {
                 _logger.Error("appointment not found");
                 return LiftNetRes.ErrorResponse("Appointment not found");
             }
+
+            var participant = appointment.Participants.FirstOrDefault(p => p.UserId == request.UserId);
+            if (participant == null)
+            {
+                _logger.Error("user is not a participant of this appointment");
+                return LiftNetRes.ErrorResponse("You are not a participant of this appointment");
+            }
+
             appointment.Modified = DateTime.UtcNow;
+
             if (request.Action is AppointmentActionRequestType.Accept)
             {
-                if (appointment.BookerId == request.UserId)
+                if (participant.IsBooker)
                 {
                     _logger.Error("booker cannot accept appointment");
                     return LiftNetRes.ErrorResponse("Booker cannot accept appointment");
                 }
-                if (appointment.Status != (int)AppointmentStatus.Pending)
+                if (participant.Status != (int)AppointmentStatus.Pending)
                 {
-                    _logger.Error("appointment status is not pending");
-                    return LiftNetRes.ErrorResponse("Appointment status is not pending to accept");
+                    _logger.Error("participant status is not pending");
+                    return LiftNetRes.ErrorResponse("Your status is not pending to accept");
                 }
-                appointment.Status = (int)AppointmentStatus.Accepted;
-                await appointmentRepo.SaveChangesAsync();
+                participant.Status = (int)AppointmentStatus.Accepted;
             }
             else if (request.Action is AppointmentActionRequestType.Reject)
             {
-                if (appointment.Status != (int)AppointmentStatus.Pending)
+                if (participant.Status != (int)AppointmentStatus.Pending)
                 {
-                    _logger.Error("appointment status is not pending");
-                    return LiftNetRes.ErrorResponse("Appointment status is not pending to reject");
+                    _logger.Error("participant status is not pending");
+                    return LiftNetRes.ErrorResponse("Your status is not pending to reject");
                 }
-                appointment.Status = (int)AppointmentStatus.Rejected;
-                await appointmentRepo.SaveChangesAsync();
+                participant.Status = (int)AppointmentStatus.Rejected;
             }
             else if(request.Action is AppointmentActionRequestType.Cancel)
             {
-                if (appointment.Status != (int)AppointmentStatus.Accepted)
+                if (participant.Status != (int)AppointmentStatus.Accepted)
                 {
-                    _logger.Error("appointment status is not accepted");
-                    return LiftNetRes.ErrorResponse("Appointment status is not accepted to cancel");
+                    _logger.Error("participant status is not accepted");
+                    return LiftNetRes.ErrorResponse("Your status is not accepted to cancel");
                 }
-                appointment.Status = (int)AppointmentStatus.Canceled;
-                await appointmentRepo.SaveChangesAsync();
+                participant.Status = (int)AppointmentStatus.Canceled;
             }
             else
             {
                 _logger.Error("invalid action");
                 return LiftNetRes.ErrorResponse("Invalid action");
             }
+
+            await appointmentRepo.SaveChangesAsync();
             _logger.Info("appointment action handled successfully");
             return LiftNetRes.SuccessResponse("Appointment action handled successfully");
         }

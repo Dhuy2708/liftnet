@@ -20,5 +20,6 @@ namespace LiftNet.Contract.Interfaces.IServices.Indexes
         Task BulkDeleteAsync(IEnumerable<(string id, string partitionKey)> items);
         Task<int> CountAsync(QueryCondition condition);
         Task<bool> AnyAsync(QueryCondition condition);
+        Task DeleteByConditionAsync(QueryCondition condition);
     }
 }

@@ -14,7 +14,7 @@ namespace LiftNet.Utility.Mappers
 {
     public static class AppointmentMapper
     {
-        public static AppointmentDetailView ToDetailView(this Appointment entity, bool editable = false)
+        public static AppointmentDetailView ToDetailView(this Appointment entity, bool editable = false, AppointmentStatus status = AppointmentStatus.None)
         {
             var booker = entity.Participants.FirstOrDefault(x => x.IsBooker);
             if (booker != null)
@@ -25,14 +25,32 @@ namespace LiftNet.Utility.Mappers
             {
                 Id = entity.Id,
                 Booker = entity.Booker.ToDto().ToView(),
-                OtherParticipants = entity.Participants?.Select(x => x.User!.ToDto().ToView())?.ToList() ?? [],
+                OtherParticipants = entity.Participants?
+                        .Select(x =>
+                        {
+                            var overViewUser = x.User!.ToDto().ToView();
+                            return new UserViewInAppointmentDetail
+                            {
+                                Id = overViewUser.Id,
+                                Email = overViewUser.Email,
+                                Username = overViewUser.Username,
+                                Role = overViewUser.Role,
+                                IsDeleted = overViewUser.IsDeleted,
+                                IsSuspended = overViewUser.IsSuspended,
+                                Avatar = overViewUser.Avatar,
+                                FirstName = overViewUser.FirstName,
+                                LastName = overViewUser.LastName,
+                                Status = (AppointmentStatus)x.Status
+                            };
+                        })
+                        .ToList() ?? [],
                 Name = entity.Name,
                 Editable = editable,
                 Description = entity.Description,
                 Location = JsonConvert.DeserializeObject<PlaceDetailDto>(entity.PlaceDetail),
                 StartTime = new DateTimeOffset(entity.StartTime, TimeSpan.Zero),
                 EndTime = new DateTimeOffset(entity.EndTime, TimeSpan.Zero),
-                Status = (AppointmentStatus)entity.Status,
+                Status = status,
                 RepeatingType = (RepeatingType)entity.RepeatingType,
                 Created = new DateTimeOffset(entity.Created, TimeSpan.Zero),
                 Modified = new DateTimeOffset(entity.Modified, TimeSpan.Zero),
@@ -51,7 +69,6 @@ namespace LiftNet.Utility.Mappers
                 PlaceDetail = JsonConvert.DeserializeObject<PlaceDetailDto>(entity.PlaceDetail),
                 StartTime = entity.StartTime,
                 EndTime = entity.EndTime,
-                Status = (AppointmentStatus)entity.Status,
                 RepeatingType = (RepeatingType)entity.RepeatingType,
                 Created = entity.Created,
                 Modified = entity.Modified,
@@ -80,12 +97,11 @@ namespace LiftNet.Utility.Mappers
                 PlaceDetail = JsonConvert.SerializeObject(dto.PlaceDetail),
                 StartTime = dto.StartTime,
                 EndTime = dto.EndTime,
-                Status = (int)dto.Status,
                 RepeatingType = (int)dto.RepeatingType,
             };
         }
 
-        public static AppointmentOverview ToOverview(this AppointmentDto dto)
+        public static AppointmentOverview ToOverview(this AppointmentDto dto, AppointmentStatus status = AppointmentStatus.None)
         {
             return new AppointmentOverview
             {
@@ -97,16 +113,16 @@ namespace LiftNet.Utility.Mappers
                 Location = dto.PlaceDetail,
                 StartTime = new DateTimeOffset(dto.StartTime, TimeSpan.Zero),
                 EndTime = new DateTimeOffset(dto.EndTime, TimeSpan.Zero),
-                Status = dto.Status,
+                Status = status,
                 RepeatingType = dto.RepeatingType,
                 Created = new DateTimeOffset(dto.Created, TimeSpan.Zero),
                 Modified = new DateTimeOffset(dto.Modified, TimeSpan.Zero),
             };
         }
 
-        public static AppointmentOverview ToOverview(this Appointment entity)
+        public static AppointmentOverview ToOverview(this Appointment entity, AppointmentStatus status = AppointmentStatus.None)
         {
-            var view = entity.ToDto().ToOverview();
+            var view = entity.ToDto().ToOverview(status);
             return view;
         }
     }
