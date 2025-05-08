@@ -49,11 +49,6 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
-        public int Status
-        {
-            get; set;
-        }
-
         public int RepeatingType
         {
             get; set;

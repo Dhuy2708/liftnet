@@ -1,5 +1,7 @@
-﻿using LiftNet.Contract.Interfaces.IRepos;
+﻿using LiftNet.Contract.Enums.Appointment;
+using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Views.Appointments;
+using LiftNet.Domain.Entities;
 using LiftNet.Domain.Exceptions;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
@@ -41,7 +43,18 @@ namespace LiftNet.Handler.Appointments.Queries
             {
                 throw new NotFoundException("Appointment not found");
             }
-            return LiftNetRes<AppointmentDetailView>.SuccessResponse(appointment.ToDetailView(request.UserId.Eq(appointment.BookerId!)));
+            var status = GetCurrentUserStatusFromAppointment(appointment, request.UserId);
+            return LiftNetRes<AppointmentDetailView>.SuccessResponse(appointment.ToDetailView(request.UserId.Eq(appointment.BookerId!), status: status));
+        }
+
+        private AppointmentStatus GetCurrentUserStatusFromAppointment(Appointment appointment, string userId)
+        {
+            var participant = appointment?.Participants?.FirstOrDefault(x => x.UserId == userId);
+            if (participant != null)
+            {
+                return (AppointmentStatus)participant.Status;
+            }
+            return AppointmentStatus.None;
         }
     }
 }

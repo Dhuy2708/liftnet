@@ -1,6 +1,7 @@
 ﻿using LiftNet.Contract.Dtos;
 using LiftNet.Contract.Dtos.Query;
 using LiftNet.Contract.Enums;
+using LiftNet.Contract.Enums.Appointment;
 using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Views.Appointments;
 using LiftNet.Domain.Entities;
@@ -45,7 +46,7 @@ namespace LiftNet.Handler.Appointments.Queries
                                  .Include(x => x.Participants)
                                  .ThenInclude(x => x.User);
             var query = queryable.Where(x => x.BookerId == request.UserId || (x.Participants.Select(p => p.UserId).Contains(request.UserId)));
-            query = BuildQuery(query, conditions);
+            query = BuildQuery(query, conditions, request.UserId);
 
             var count = await query.CountAsync();
             query = BuildSort(query, conditions.Sort);
@@ -54,28 +55,41 @@ namespace LiftNet.Handler.Appointments.Queries
 
             var appointments = await query.ToListAsync();
 
-            var appointmentDtos = appointments.Select(x => x.ToOverview()).ToList();
+            var appointmentDtos = appointments.Select(x => x.ToOverview(GetCurrentUserStatusFromAppointment(x, request.UserId))).ToList();
 
             _logger.Info("list appointment overviews successfully");
             return PaginatedLiftNetRes<AppointmentOverview>.SuccessResponse(appointmentDtos, conditions.PageNumber, conditions.PageSize, count);
         }
 
-        public IQueryable<Appointment> BuildQuery(IQueryable<Appointment> queryable, QueryCondition conditions)
+        private AppointmentStatus GetCurrentUserStatusFromAppointment(Appointment appointment, string userId)
+        {
+            var participant = appointment?.Participants?.FirstOrDefault(x => x.UserId == userId);
+            if (participant != null)
+            {
+                return (AppointmentStatus)participant.Status;
+            }
+            return AppointmentStatus.None;
+        }
+
+        private IQueryable<Appointment> BuildQuery(IQueryable<Appointment> queryable, QueryCondition conditions, string userId)
         {
             if (conditions == null)
             {
                 return queryable;
             }
+
             var nameCond = conditions.FindCondition("name");
             if (nameCond != null)
             {
                 queryable = queryable.Where(x => x.Name.Contains(nameCond.Values.FirstOrDefault() ?? string.Empty));
             }
+
             var statusCond = conditions.FindCondition("status");
             if (statusCond != null && int.TryParse(statusCond.Values.First(), out var statusInt))
             {
-                queryable = queryable.Where(x => x.Status == statusInt);
+                queryable = queryable.Where(x => x.Participants.Any(p => p.UserId == userId && p.Status == statusInt));
             }
+
             return queryable;
         }
 

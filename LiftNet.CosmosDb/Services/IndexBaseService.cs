@@ -173,5 +173,33 @@ namespace LiftNet.CosmosDb.Services
             var (items, _) = await QueryAsync(condition);
             return items.Any();
         }
+
+        public async Task DeleteByConditionAsync(QueryCondition condition)
+        {
+            var queryParam = QueryIndexUtil.BuildIndexQuery(condition);
+            var queryDefinition = new QueryDefinition(queryParam.Query);
+
+            foreach (var param in queryParam.Params)
+            {
+                queryDefinition.WithParameter(param.Key, Convert.ChangeType(param.Value.value, param.Value.type));
+            }
+
+            var iterator = _container.GetItemQueryIterator<T>(queryDefinition);
+            var deleteTasks = new List<Task>();
+
+            while (iterator.HasMoreResults)
+            {
+                var response = await iterator.ReadNextAsync();
+                foreach (var item in response)
+                {
+                    deleteTasks.Add(_container.DeleteItemAsync<T>(item.Id, new PartitionKey(item.UserId)));
+                }
+            }
+
+            if (deleteTasks.Any())
+            {
+                await Task.WhenAll(deleteTasks);
+            }
+        }
     }
 }

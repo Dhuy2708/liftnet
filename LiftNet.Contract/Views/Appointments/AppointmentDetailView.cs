@@ -23,7 +23,7 @@ namespace LiftNet.Contract.Views.Appointments
         {
             get; set;
         }
-        public List<UserOverview> OtherParticipants
+        public List<UserViewInAppointmentDetail> OtherParticipants
         {
             get; set;
         }
@@ -60,6 +60,14 @@ namespace LiftNet.Contract.Views.Appointments
             get; set;
         }
         public DateTimeOffset Modified
+        {
+            get; set;
+        }
+    }
+
+    public class UserViewInAppointmentDetail : UserOverview
+    {
+        public AppointmentStatus Status
         {
             get; set;
         }

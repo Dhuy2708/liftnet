@@ -41,10 +41,6 @@ namespace LiftNet.Contract.Dtos
         {
             get; set;
         }
-        public AppointmentStatus Status
-        {
-            get; set;
-        }
         public RepeatingType RepeatingType
         {
             get; set;
