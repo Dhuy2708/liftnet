@@ -53,16 +53,6 @@ namespace LiftNet.Handler.Appointments.Commands
 
             if (request.Action is AppointmentActionRequestType.Accept)
             {
-                if (participant.IsBooker)
-                {
-                    _logger.Error("booker cannot accept appointment");
-                    return LiftNetRes.ErrorResponse("Booker cannot accept appointment");
-                }
-                if (participant.Status != (int)AppointmentStatus.Pending)
-                {
-                    _logger.Error("participant status is not pending");
-                    return LiftNetRes.ErrorResponse("Your status is not pending to accept");
-                }
                 participant.Status = (int)AppointmentStatus.Accepted;
             }
             else if (request.Action is AppointmentActionRequestType.Reject)
@@ -89,7 +79,7 @@ namespace LiftNet.Handler.Appointments.Commands
                 return LiftNetRes.ErrorResponse("Invalid action");
             }
 
-            await appointmentRepo.SaveChangesAsync();
+            await _uow.CommitAsync();
             _logger.Info("appointment action handled successfully");
             return LiftNetRes.SuccessResponse("Appointment action handled successfully");
         }

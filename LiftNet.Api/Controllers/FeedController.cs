@@ -17,8 +17,6 @@ using LiftNet.Domain.ViewModels;
 
 namespace LiftNet.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class FeedController : LiftNetControllerBase
     {
         public FeedController(IMediator mediator, IServiceProvider serviceProvider) 

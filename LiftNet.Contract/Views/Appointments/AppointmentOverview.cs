@@ -14,6 +14,10 @@ namespace LiftNet.Contract.Views.Appointments
         {
             get; set;
         }
+        public int AcceptedCount
+        {
+            get; set;
+        }
         public int ParticipantCount
         {
             get; set;

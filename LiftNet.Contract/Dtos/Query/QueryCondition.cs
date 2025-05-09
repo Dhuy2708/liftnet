@@ -77,6 +77,26 @@ namespace LiftNet.Contract.Dtos.Query
         {
             return ConditionItems.Find(x => x.Property.Equals(propName));
         }
+
+        public T? GetValue<T>(string propName) where T : struct
+        {
+            var cond = ConditionItems.Find(x => x.Property.Equals(propName));
+            if (cond != null && cond.Values.Count > 0)
+            {
+                return (T)Convert.ChangeType(cond.Values[0], typeof(T));
+            }
+            return null;
+        }
+
+        public List<T>? GetValues<T>(string propName) where T : struct
+        {
+            var cond = ConditionItems.Find(x => x.Property.Equals(propName));
+            if (cond != null && cond.Values.Count > 0)
+            {
+                return cond.Values.Select(x => (T)Convert.ChangeType(x, typeof(T))).ToList();
+            }
+            return null;
+        }
     }
 
     public class ConditionItem
