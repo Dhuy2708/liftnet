@@ -42,7 +42,7 @@ namespace LiftNet.Contract.Views.Schedules
         {
             get; set;
         }
-        public PlaceDetailDto Location
+        public PlaceDetailDto? Location
         {
             get; set;
         }
