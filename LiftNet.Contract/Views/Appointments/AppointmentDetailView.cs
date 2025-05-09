@@ -19,7 +19,7 @@ namespace LiftNet.Contract.Views.Appointments
         {
             get; set;
         }
-        public UserOverview Booker
+        public UserViewInAppointmentDetail Booker
         {
             get; set;
         }

@@ -56,4 +56,8 @@
     <ProjectReference Include="..\LiftNet.WorkerService\LiftNet.WorkerService.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Requests\Schedules\" />
+  </ItemGroup>
+
 </Project>

@@ -8,7 +8,7 @@ namespace LiftNet.Contract.Views.Schedules
 {
     public class ScheduleView
     {
-        public string UserId
+        public Dictionary<DateOnly, List<EventView>> Events
         {
             get; set;
         }

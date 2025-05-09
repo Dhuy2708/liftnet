@@ -84,10 +84,22 @@ namespace LiftNet.Handler.Appointments.Queries
                 queryable = queryable.Where(x => x.Name.Contains(nameCond.Values.FirstOrDefault() ?? string.Empty));
             }
 
-            var statusCond = conditions.FindCondition("status");
-            if (statusCond != null && int.TryParse(statusCond.Values.First(), out var statusInt))
+            var statusInt = conditions.GetValue<int>("status");
+            if (statusInt.HasValue)
             {
                 queryable = queryable.Where(x => x.Participants.Any(p => p.UserId == userId && p.Status == statusInt));
+            }
+
+            var startTime = conditions.GetValue<DateTime>("starttime");
+            if (startTime.HasValue)
+            {
+                queryable = queryable.Where(x => x.StartTime > startTime || x.RepeatingType != (int)RepeatingType.None);
+            }
+
+            var endTime = conditions.GetValue<DateTime>("endtime");
+            if (endTime.HasValue)
+            {
+                queryable = queryable.Where(x => x.EndTime < endTime || x.RepeatingType != (int)RepeatingType.None);
             }
 
             return queryable;
