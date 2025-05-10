@@ -18,7 +18,7 @@ namespace LiftNet.Api.Controllers
 
         [HttpGet("events")]
         [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
-        [ProducesResponseType(typeof(LiftNetRes<ScheduleView>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(LiftNetRes<EventView>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> ListEvents([FromQuery] ListEventRequest req)
         {
             var queryReq = new ListEventQueryRequest()

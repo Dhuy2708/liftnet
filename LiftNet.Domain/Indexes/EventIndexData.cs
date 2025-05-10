@@ -27,7 +27,7 @@ namespace LiftNet.Domain.Indexes
         public string Color
         {
             get; set;
-        } = LiftNetColor.DEFAULT;
+        } = LiftNetColor.PRIMARY;
 
         [JsonProperty(PropertyName = "starttime")]
         public DateTime StartTime

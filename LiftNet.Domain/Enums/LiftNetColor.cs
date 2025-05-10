@@ -8,6 +8,7 @@ namespace LiftNet.Domain.Enums
 {
     public class LiftNetColor
     {
-        public const string DEFAULT = "#2196F3";
+        public const string BLUE = "#2196F3";
+        public const string PRIMARY = "#E19B62";
     }
 }
