@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Schedules.Queries.Requests
 {
-    public class ListEventQueryRequest : IRequest<LiftNetRes<ScheduleView>>
+    public class ListEventQueryRequest : IRequest<LiftNetRes<EventView>>
     {
         public string UserId
         {
