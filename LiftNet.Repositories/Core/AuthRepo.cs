@@ -46,6 +46,7 @@ namespace LiftNet.Repositories.Core
                 DistrictCode = model.DistrictCode,
                 WardCode = model.WardCode,
                 Location = model.Location,
+                AddressId = model.AddressId,
                 IsDeleted = false,
                 IsSuspended = false,
             };

@@ -33,7 +33,7 @@ namespace LiftNet.Handler.Auths.Commands
                                IUnitOfWork uow,
                                ILiftLogger<RegisterHandler> logger,
                                IGeoService geoService,
-                               IAddressIndexService addressIndexService) // Inject AddressIndexService
+                               IAddressIndexService addressIndexService)
         {
             _userManager = userManager;
             _authRepo = authRepo;
@@ -52,6 +52,7 @@ namespace LiftNet.Handler.Auths.Commands
                 throw new BadRequestException(["Email is already registered with account."], "Email is already registered with account.");
             }
             PlaceDetailDto? placeDetail = null;
+            Address? address = null;
             if (request.Address != null)
             {
                 var provinceCode = request.Address!.ProvinceCode;
@@ -64,7 +65,6 @@ namespace LiftNet.Handler.Auths.Commands
                     throw new BadRequestException(["Location codes are fully required"], "Location codes are fully required.");
                 }
            
-                // Get administrative division names
                 var province = await _uow.ProvinceRepo.GetQueryable()
                     .Where(p => p.Code == provinceCode)
                     .Select(p => p.Name)
@@ -107,9 +107,22 @@ namespace LiftNet.Handler.Auths.Commands
                 }
 
                 placeDetail = await _geoService.GetPlaceDetailAsync(predictions.First().PlaceId);
+                
+                if (placeDetail != null)
+                {
+                    address = new Address
+                    {
+                        PlaceName = placeDetail.PlaceName,
+                        FormattedAddress = placeDetail.FormattedAddress,
+                        Lat = placeDetail.Latitude,
+                        Lng = placeDetail.Longitude,
+                        PlaceId = placeDetail.PlaceId
+                    };
+                    await _uow.AddressRepo.Create(address);
+                    await _uow.CommitAsync();
+                }
             }
 
-          
             user = await _userManager.FindByNameAsync(request.Username);
             if (user != null)
             {
@@ -127,7 +140,8 @@ namespace LiftNet.Handler.Auths.Commands
                 ProvinceCode = request.Address?.ProvinceCode,
                 DistrictCode = request.Address?.DistrictCode,
                 WardCode = request.Address?.WardCode,
-                Location = placeDetail?.PlaceName ?? string.Empty, 
+                Location = placeDetail?.FormattedAddress ?? string.Empty,
+                AddressId = address?.Id
             };
             _logger.Info($"attempt to register, username: {request.Username}");
             var result = await _authRepo.RegisterAsync(registerModel);

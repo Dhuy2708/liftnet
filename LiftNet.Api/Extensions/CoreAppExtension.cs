@@ -14,6 +14,7 @@ using LiftNet.WorkerService.Worker;
 using LiftNet.Persistence.Context;
 using Microsoft.AspNetCore.Identity;
 using LiftNet.Domain.Entities;
+using LiftNet.Engine;
 
 namespace LiftNet.Api.Extensions
 {
@@ -126,6 +127,11 @@ namespace LiftNet.Api.Extensions
         public static IServiceCollection RegisterHostedService(this IServiceCollection services)
         {
             services.AddHostedService<MessageProcessingWorker>();
+            return services;
+        }
+        public static IServiceCollection RegisterEngines(this IServiceCollection services)
+        {
+            services.AddDependencies(typeof(EngineAssemblyRef).Assembly);
             return services;
         }
     }

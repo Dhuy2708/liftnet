@@ -115,6 +115,17 @@ namespace LiftNet.Repositories.Core
                 return _versionRepo;
             }
         }
+
+        private IAddressRepo? _addressRepo = null;
+        public IAddressRepo AddressRepo
+        {
+            get
+            {
+                _addressRepo ??= _serviceProvider.GetRequiredService<IAddressRepo>();
+                _addressRepo.AutoSave = false;
+                return _addressRepo;
+            }
+        }
         #endregion
 
         public async Task BeginTransactionAsync()

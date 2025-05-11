@@ -28,4 +28,8 @@
     <ProjectReference Include="..\LiftNet.Ioc\LiftNet.Ioc.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ML\" />
+  </ItemGroup>
+
 </Project>

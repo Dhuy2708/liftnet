@@ -17,6 +17,7 @@ namespace LiftNet.Contract.Interfaces.IRepos
         IDistrictRepo DistrictRepo { get;}
         IWardRepo WardRepo { get;}
         IVersionRepo VersionRepo { get;}
+        IAddressRepo AddressRepo { get; }
         Task BeginTransactionAsync();
         Task<int> CommitAsync();
         Task RollbackAsync();
