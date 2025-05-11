@@ -34,6 +34,11 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        public string? Location
+        {
+            get; set;
+        }
+
         [ForeignKey(nameof(Province))]
         public int? ProvinceCode
         {
@@ -52,7 +57,8 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
-        public string? Location
+        [ForeignKey(nameof(Address))]
+        public string? AddressId
         {
             get; set;
         }
@@ -75,6 +81,11 @@ namespace LiftNet.Domain.Entities
         }
 
         // mapping
+        public Address? Address
+        {
+            get; set;
+        }
+
         public Province? Province
         {
             get; set;

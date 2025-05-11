@@ -24,6 +24,7 @@ namespace LiftNet.Persistence.Context
 
         public DbSet<Domain.Entities.LiftNetVersion> Versions { get; set; }
 
+        public DbSet<Address> Addresses { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<AppointmentParticipant> AppointmentParticipants { get; set; }
         public DbSet<SocialConnection> SocialConnections { get; set; }

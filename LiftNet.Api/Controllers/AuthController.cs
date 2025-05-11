@@ -49,7 +49,6 @@ namespace LiftNet.Api.Controllers
         }
 
         [HttpPost("logout")]
-        [Authorize]
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> Logout()
         {

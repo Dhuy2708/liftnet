@@ -23,6 +23,7 @@ public class Program
         builder.Services.RegisterCommon();
         builder.Services.RegisterInfras();
         builder.Services.RegisterHostedService();
+        builder.Services.RegisterEngines();
 
         builder.Services.AddControllers();
         builder.Services.AddSwagger();
