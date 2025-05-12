@@ -39,6 +39,16 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        public int Age
+        {
+            get; set;
+        }
+
+        public int Gender
+        {
+            get; set;
+        }
+
         [ForeignKey(nameof(Province))]
         public int? ProvinceCode
         {

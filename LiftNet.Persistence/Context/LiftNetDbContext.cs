@@ -39,5 +39,8 @@ namespace LiftNet.Persistence.Context
         public DbSet<SystemJob> SystemJobs { get; set; }
         public DbSet<CustomerJob> CustomerJobs { get; set; }
         public DbSet<ActionJob> ActionJobs { get; set; }
+
+        // ml 
+        public DbSet<SocialSimilarityScore> SocialSimilarityScores { get; set; }
     }
 }

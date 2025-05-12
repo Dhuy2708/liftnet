@@ -126,6 +126,17 @@ namespace LiftNet.Repositories.Core
                 return _addressRepo;
             }
         }
+
+        private ISocialSimilarityScoreRepo? _socialSimilarityScoreRepo = null;
+        public ISocialSimilarityScoreRepo SocialSimilarityScoreRepo
+        {
+            get
+            {
+                _socialSimilarityScoreRepo ??= _serviceProvider.GetRequiredService<ISocialSimilarityScoreRepo>();
+                _socialSimilarityScoreRepo.AutoSave = false;
+                return _socialSimilarityScoreRepo;
+            }
+        }
         #endregion
 
         public async Task BeginTransactionAsync()

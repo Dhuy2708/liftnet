@@ -4,6 +4,7 @@ using LiftNet.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LiftNet.Persistence.Migrations
 {
     [DbContext(typeof(LiftNetDbContext))]
-    partial class LiftNetDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250512111341_AddSocialScoreTable")]
+    partial class AddSocialScoreTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -423,9 +426,6 @@ namespace LiftNet.Persistence.Migrations
                     b.Property<string>("AddressId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Age")
-                        .HasColumnType("int");
-
                     b.Property<string>("Avatar")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -452,9 +452,6 @@ namespace LiftNet.Persistence.Migrations
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Gender")
-                        .HasColumnType("int");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");

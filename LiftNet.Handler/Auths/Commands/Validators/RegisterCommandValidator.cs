@@ -38,8 +38,16 @@ namespace LiftNet.Handler.Auths.Commands.Validators
             RuleFor(x => x.Password)
                 .NotEmpty().WithMessage("Password is required.")
                 .MinimumLength(6).WithMessage("Password must be at least 6 characters long.")
+                .MaximumLength(100).WithMessage("Password must be at most 100 characters long.")
                 .Matches(@"^(?=.*\d)(?=.*[a-z]).{6,}$")
                 .WithMessage("Password must contain at least one digit and one lowercase letter.");
+
+            RuleFor(x => x.Age)
+                .NotEmpty().WithMessage("Age is required.")
+                .InclusiveBetween(1, 120).WithMessage("Age must be between 1 and 120.");
+
+            RuleFor(x => x.Gender)
+                .IsInEnum().WithMessage("Invalid gender.");
         }
     }
 }

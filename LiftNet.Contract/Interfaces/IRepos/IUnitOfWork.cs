@@ -18,6 +18,7 @@ namespace LiftNet.Contract.Interfaces.IRepos
         IWardRepo WardRepo { get;}
         IVersionRepo VersionRepo { get;}
         IAddressRepo AddressRepo { get; }
+        ISocialSimilarityScoreRepo SocialSimilarityScoreRepo { get; }
         Task BeginTransactionAsync();
         Task<int> CommitAsync();
         Task RollbackAsync();
