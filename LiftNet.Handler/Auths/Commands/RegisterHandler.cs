@@ -46,11 +46,18 @@ namespace LiftNet.Handler.Auths.Commands
         public async Task<LiftNetRes> Handle(RegisterCommand request, CancellationToken cancellationToken)
         {
             await new RegisterCommandValidator().ValidateAndThrowAsync(request);
+            
+            if (request.Age < 1 || request.Age > 120)
+            {
+                throw new BadRequestException(["Age must be between 1 and 120"], "Invalid age range.");
+            }
+
             var user = await _userManager.FindByEmailAsync(request.Email);
             if (user != null)
             {
                 throw new BadRequestException(["Email is already registered with account."], "Email is already registered with account.");
             }
+
             PlaceDetailDto? placeDetail = null;
             Address? address = null;
             if (request.Address != null)
@@ -137,6 +144,8 @@ namespace LiftNet.Handler.Auths.Commands
                 Password = request.Password,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
+                Age = request.Age,
+                Gender = request.Gender,
                 ProvinceCode = request.Address?.ProvinceCode,
                 DistrictCode = request.Address?.DistrictCode,
                 WardCode = request.Address?.WardCode,

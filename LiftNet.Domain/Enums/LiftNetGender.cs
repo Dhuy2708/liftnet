@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Engine.Engine
+namespace LiftNet.Domain.Enums
 {
-    public class SocialEngine
+    public enum LiftNetGender
     {
+        None = 0,
+        Male = 1,
+        Female = 2,
+        Other = 3
     }
 }

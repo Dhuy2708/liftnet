@@ -33,6 +33,8 @@ namespace LiftNet.Contract.Dtos.Auth
         {
             get; set;
         }
+        public int Age { get; set; }
+        public LiftNetGender Gender { get; set; }
         public int? ProvinceCode
         {
             get; set;

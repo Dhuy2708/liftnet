@@ -5,6 +5,7 @@ using LiftNet.Domain.Constants;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Enums;
 using LiftNet.Domain.Interfaces;
+using LiftNet.Utility.Extensions;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -27,10 +28,13 @@ namespace LiftNet.Service.Services
             _roleService = roleService;
         }
 
-        public async Task<Dictionary<string, LiftNetRoleEnum>> GetUserIdRoleDict(List<string> userIds)
+        public async Task<Dictionary<string, LiftNetRoleEnum>> GetUserIdRoleDict(List<string> userIds, Dictionary<string, LiftNetRoleEnum>? roleDict = null)
         {
             var result = new Dictionary<string, LiftNetRoleEnum>();
-            var roleDict = await _roleService.GetAllRoleDictAsync();
+            if (roleDict.IsNullOrEmpty())
+            {
+                roleDict = await _roleService.GetAllRoleDictAsync();
+            }
             var users = await _userRepo.GetQueryable()
                                      .Include(x => x.UserRoles)
                                      .Where(x => userIds.Contains(x.Id))
@@ -39,7 +43,7 @@ namespace LiftNet.Service.Services
             foreach (var user in users)
             {
                 var userRole = user.UserRoles.FirstOrDefault();
-                if (userRole != null && roleDict.TryGetValue(userRole.RoleId, out var roleEnum))
+                if (userRole != null && roleDict!.TryGetValue(userRole.RoleId, out var roleEnum))
                 {
                     result[user.Id] = roleEnum;
                 }

@@ -11,7 +11,7 @@ namespace LiftNet.Contract.Interfaces.IServices
 {
     public interface IUserService : IDependency
     {
-        Task<Dictionary<string, LiftNetRoleEnum>> GetUserIdRoleDict(List<string> userIds);
+        Task<Dictionary<string, LiftNetRoleEnum>> GetUserIdRoleDict(List<string> userIds, Dictionary<string, LiftNetRoleEnum>? roleDict = null);
         Task<List<User>> GetByIdsAsync(List<string> userIds);
         Task<BasicUserInfo?> GetBasicUserInfoAsync(string userId);
     }

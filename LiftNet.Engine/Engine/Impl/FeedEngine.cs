@@ -6,11 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Engine.Engine
+namespace LiftNet.Engine.Engine.Impl
 {
     public class FeedEngine : IDependency
     {
         private readonly IUnitOfWork _uow;
+
 
 
     }
