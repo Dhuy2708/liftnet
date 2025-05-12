@@ -66,11 +66,13 @@ namespace LiftNet.Timer.Service.Common
             try
             {
                 _logger.Info($"begin job, type: {_jobType}");
+#if DEBUG
                 if (!await CheckJobCanRun())
                 {
                     _logger.Info($"job has been run before, skip");
                     return;
                 }
+#endif
 
                 var job = await _systemJobRepo.InsertJob(_jobType);
 

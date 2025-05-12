@@ -10,6 +10,7 @@ namespace LiftNet.Contract.Enums.Job
     {
         None = 0,
         ProvinceDiscovery = 1,
+        AllSocialScoreUp = 2,
     }
 
     public enum JobKind
@@ -45,6 +46,7 @@ namespace LiftNet.Contract.Enums.Job
         private static readonly HashSet<JobType> types =
         [
             JobType.ProvinceDiscovery,
+            JobType.AllSocialScoreUp,
         ];
         public static bool Contains(JobType type)
         {

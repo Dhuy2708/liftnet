@@ -21,6 +21,7 @@ using LiftNet.ServiceBus.Core.Impl;
 using LiftNet.ServiceBus.Interfaces;
 using LiftNet.Timer.Service;
 using LiftNet.Utility.Extensions;
+using LiftNet.WorkerService.Worker;
 using Microsoft.Azure.Cosmos;
 using Quartz;
 using StackExchange.Redis;
@@ -169,7 +170,7 @@ namespace LiftNet.Api.Extensions
                 q.AddTrigger(opts => opts
                     .ForJob("ProvinceDiscJob", "DiscJobs")
                     .WithIdentity("ProvinceDiscTrigger", "DiscTriggers")
-                    .StartNow() 
+                    .StartNow()
                     .WithSimpleSchedule(schedule => schedule
                         .WithIntervalInHours(JobIntervalHour.PROVINCE_DISC)
                         .RepeatForever()
@@ -177,9 +178,24 @@ namespace LiftNet.Api.Extensions
                 );
             });
 
+            services.AddQuartz(q =>
+            {
+                q.AddJob<SocialScoreService>(opts => opts.WithIdentity("SocialScoreJob", "MLJobs"));
+
+                q.AddTrigger(opts => opts
+                    .ForJob("SocialScoreJob", "MLJobs")
+                    .WithIdentity("SocialScoreJobTrigger", "MLTriggers")
+                    .StartNow()
+                    .WithSimpleSchedule(schedule => schedule
+                        .WithIntervalInHours(JobIntervalHour.UPDATE_SOCIAL_SCORE)
+                        .RepeatForever()
+                    )
+                );
+            });
+
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
             services.AddTransient<ProvinceDiscService>();
-
+            services.AddTransient<SocialScoreService>();
 
             return services;
         }

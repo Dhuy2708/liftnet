@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Engine.ML
 {
-    public class FeedFactorizationMatrixModel
+    internal class FeedFactorizationMatrixModel
     {
     }
 }

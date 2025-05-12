@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Repositories.Core
 {
-    public class SocialSimilarityScoreRepo : CrudBaseRepo<SocialSimilarityScore>, ICrudBaseRepo<SocialSimilarityScore>
+    public class SocialSimilarityScoreRepo : CrudBaseRepo<SocialSimilarityScore>, ISocialSimilarityScoreRepo
     {
         public SocialSimilarityScoreRepo(LiftNetDbContext dbContext, ILiftLogger<CrudBaseRepo<SocialSimilarityScore>> logger) : base(dbContext, logger)
         {

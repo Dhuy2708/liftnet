@@ -74,7 +74,7 @@ namespace LiftNet.Repositories.Core
             }
         }
 
-        public async Task<SystemJob?> InsertJob(JobType type)
+        public async Task<SystemJob?> InsertJob(JobType type, bool overwrite = true)
         {
             if (!SystemJobFamily.Contains(type))
             {
@@ -83,6 +83,17 @@ namespace LiftNet.Repositories.Core
 
             try
             {
+                if (overwrite)
+                {
+                    var lastJobs = await _dbContext.SystemJobs
+                                                   .Where(x => x.Type == (int)type)
+                                                   .ToListAsync();
+                    if (lastJobs != null && lastJobs.Count > 0)
+                    {
+                        _dbContext.SystemJobs.RemoveRange(lastJobs);
+                    }
+                }
+
                 var systemJob = await GetLastJob(type);
                 if (systemJob == null)
                 {

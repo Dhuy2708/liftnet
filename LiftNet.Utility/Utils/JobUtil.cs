@@ -24,7 +24,8 @@ namespace LiftNet.Utility.Utils
             return type switch
             {
                 JobType.ProvinceDiscovery => "ProvinceDisc",
-                _ => string.Empty,
+                JobType.AllSocialScoreUp => "AllSocialScoreUp",
+                _ => type.ToString(),
             };
         }
     }

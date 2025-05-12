@@ -9,7 +9,7 @@ namespace LiftNet.Engine.Engine
 {
     public interface ISocialEngine : IDependency
     {
-        //Task CalculateAndUpdateAllUserSimilarities();
-        //Task CalculateAndUpdateUserSimilarities(string userId);
+        Task ComputeAllUserScores();
+        Task ComputeUserScore(string userId);
     }
 }
