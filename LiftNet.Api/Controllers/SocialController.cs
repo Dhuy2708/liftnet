@@ -131,5 +131,23 @@ namespace LiftNet.Api.Controllers
             }
             return StatusCode(500, result);
         }
+
+        [HttpPost("search/prioritized")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
+        [ProducesResponseType(typeof(PaginatedLiftNetRes<UserOverview>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> SearchPrioritizedUser(QueryCondition cond)
+        {
+            var req = new SearchPrioritizedUserQuery()
+            {
+                UserId = UserId,
+                Conditions = cond,
+            };
+            var result = await _mediator.Send(req);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
     }
 }

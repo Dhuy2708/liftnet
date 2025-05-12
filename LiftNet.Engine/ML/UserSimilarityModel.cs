@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Engine.ML
 {
-    public class UserSimilarityModel
+    internal class UserSimilarityModel
     {
         private const double AGE_WEIGHT = 0.2;
         private const double ROLE_WEIGHT = 0.3;
@@ -59,12 +59,24 @@ namespace LiftNet.Engine.ML
 
         private double CalculateFollowingSimilarity(List<string> following1, List<string> following2)
         {
-            if (!following1.Any() || !following2.Any()) return 0;
+            if (!following1.Any() && !following2.Any()) return 0;
             
             var intersection = following1.Intersect(following2).Count();
             var union = following1.Union(following2).Count();
             
-            return (double)intersection / union;
+            var baseScore = (double)intersection / union;
+            
+            // Check if either user follows the other
+            var user1FollowsUser2 = following1.Any() && following2.Any() && following1.Contains(following2.First());
+            var user2FollowsUser1 = following1.Any() && following2.Any() && following2.Contains(following1.First());
+            
+            // Add bonus for direct following
+            if (user1FollowsUser2 || user2FollowsUser1)
+            {
+                baseScore += 0.2; // Add 20% bonus for direct following
+            }
+            
+            return Math.Min(baseScore, 1.0); // Ensure score doesn't exceed 1.0
         }
 
         private double ToRadians(double degrees)

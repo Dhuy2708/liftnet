@@ -45,5 +45,9 @@ namespace LiftNet.Contract.Views.Users
         {
             get; set;
         }
+        public bool IsFollowing
+        {
+            get; set;
+        }
     }
 }

@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LiftNet.Contract\LiftNet.Contract.csproj" />
+    <ProjectReference Include="..\LiftNet.Engine\LiftNet.Engine.csproj" />
     <ProjectReference Include="..\LiftNet.Job\LiftNet.Job.csproj" />
     <ProjectReference Include="..\LiftNet.ProvinceSDK\LiftNet.ProvinceSDK.csproj" />
     <ProjectReference Include="..\LiftNet.Utility\LiftNet.Utility.csproj" />
