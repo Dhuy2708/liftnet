@@ -1,5 +1,5 @@
 ﻿using LiftNet.Domain.Enums;
-using LiftNet.Engine.Contract;
+using LiftNet.Engine.Feature;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +15,12 @@ namespace LiftNet.Engine.ML
         private const double LOCATION_WEIGHT = 0.2;
         private const double FOLLOWING_WEIGHT = 0.3;
 
-        public float ComputeScore(UserSimilarityFeature user1, UserSimilarityFeature user2)
+        public float ComputeScore(UserScoreFeature user1, UserScoreFeature user2)
         {
             var ageSimilarity = CalculateAgeSimilarity(user1.Age, user2.Age);
             var roleSimilarity = CalculateRoleSimilarity(user1.Role, user2.Role);
             var locationSimilarity = CalculateLocationSimilarity(user1.Lat, user1.Lng, user2.Lat, user2.Lng);
-            var followingSimilarity = CalculateFollowingSimilarity(user1.FollowingIds, user2.FollowingIds);
+            var followingSimilarity = CalculateFollowingSimilarity(user1.FollowingIds, user2.FollowingIds, user2.Id);
 
             return (float)(
                 AGE_WEIGHT * ageSimilarity +
@@ -57,7 +57,7 @@ namespace LiftNet.Engine.ML
             return Math.Exp(-distance / 50.0);
         }
 
-        private double CalculateFollowingSimilarity(List<string> following1, List<string> following2)
+        private double CalculateFollowingSimilarity(List<string> following1, List<string> following2, string user2Id)
         {
             if (!following1.Any() && !following2.Any()) return 0;
             
@@ -66,12 +66,11 @@ namespace LiftNet.Engine.ML
             
             var baseScore = (double)intersection / union;
             
-            // Check if either user follows the other
-            var user1FollowsUser2 = following1.Any() && following2.Any() && following1.Contains(following2.First());
-            var user2FollowsUser1 = following1.Any() && following2.Any() && following2.Contains(following1.First());
+            // Check if user1 follows user2
+            var user1FollowsUser2 = following1.Contains(user2Id);
             
             // Add bonus for direct following
-            if (user1FollowsUser2 || user2FollowsUser1)
+            if (user1FollowsUser2)
             {
                 baseScore += 0.2; // Add 20% bonus for direct following
             }
