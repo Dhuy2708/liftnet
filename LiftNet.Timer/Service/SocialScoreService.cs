@@ -15,7 +15,7 @@ namespace LiftNet.Timer.Service
     {
         private ILiftLogger<SocialScoreService> _logger => _provider.GetRequiredService<ILiftLogger<SocialScoreService>>();
         private ISocialEngine _socialEngine => _provider.GetRequiredService<ISocialEngine>();
-        public SocialScoreService(IServiceProvider provider) : base(JobType.AllSocialScoreUp, provider, TimeSpan.FromHours(2))
+        public SocialScoreService(IServiceProvider provider) : base(JobType.AllSocialScoreUp, provider)
         {
         }
 
