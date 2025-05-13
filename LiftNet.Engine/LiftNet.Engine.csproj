@@ -7,13 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LiftNet.Contract\LiftNet.Contract.csproj" />
-    <ProjectReference Include="..\LiftNet.Domain\LiftNet.Domain.csproj" />
-    <ProjectReference Include="..\LiftNet.Utility\LiftNet.Utility.csproj" />
+    <PackageReference Include="Microsoft.ML" Version="4.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Util\" />
+    <ProjectReference Include="..\LiftNet.Contract\LiftNet.Contract.csproj" />
+    <ProjectReference Include="..\LiftNet.Domain\LiftNet.Domain.csproj" />
+    <ProjectReference Include="..\LiftNet.Utility\LiftNet.Utility.csproj" />
   </ItemGroup>
 
 </Project>

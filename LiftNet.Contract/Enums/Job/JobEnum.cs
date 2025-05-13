@@ -11,6 +11,7 @@ namespace LiftNet.Contract.Enums.Job
         None = 0,
         ProvinceDiscovery = 1,
         AllSocialScoreUp = 2,
+        TrainFFMModel = 3,
     }
 
     public enum JobKind
@@ -47,6 +48,7 @@ namespace LiftNet.Contract.Enums.Job
         [
             JobType.ProvinceDiscovery,
             JobType.AllSocialScoreUp,
+            JobType.TrainFFMModel,
         ];
         public static bool Contains(JobType type)
         {

@@ -3,7 +3,7 @@ using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Enums;
-using LiftNet.Engine.Contract;
+using LiftNet.Engine.Data.Feat;
 using LiftNet.Engine.ML;
 using LiftNet.Utility.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -35,65 +35,67 @@ namespace LiftNet.Engine.Engine.Impl
             _similarityModel = new UserSimilarityModel();
         }
 
-        public async Task ComputeAllUserScores()
+        public List<SocialSimilarityScore> ComputeUserScores(
+                        List<UserSimilarityFeature> sourceUsers,
+                        List<UserSimilarityFeature> targetUsers)
         {
-            isBatchProcessing = true;
-            try
+            var scores = new List<SocialSimilarityScore>();
+
+            foreach (var user1 in sourceUsers)
             {
-                var roleDict = await _roleService.GetAllRoleDictAsync();
-                var adminRoleId = roleDict.FirstOrDefault(x => x.Value is LiftNetRoleEnum.Admin).Key;
-                var queryable = _uow.UserRepo.GetQueryable();
-                queryable = queryable.Include(u => u.Address);
-
-                if (adminRoleId.IsNotNullOrEmpty())
+                foreach (var user2 in targetUsers.Where(u => u.Id != user1.Id))
                 {
-                    queryable = queryable.Where(x => !x.UserRoles.Any(x => x.RoleId.Eq(adminRoleId)));
-                }
-                var activeUsers = await queryable.Where(u => !u.IsDeleted && !u.IsSuspended)
-                                                 .ToListAsync();
-
-                var userIds = activeUsers.Select(u => u.Id).ToList();
-                UserRoleDict = await _userService.GetUserIdRoleDict(userIds, roleDict);
-
-                // Cache all social connections
-                var connections = await _uow.SocialConnectionRepo.GetAll();
-                FollowingCache = connections
-                    .Where(c => c.Status == (int)SocialConnectionStatus.Following)
-                    .GroupBy(c => c.UserId)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => g.Select(c => c.TargetId).ToList()
-                    );
-
-                for (int i = 0; i < activeUsers.Count; i += BATCH_SIZE)
-                {
-                    var batch = activeUsers.Skip(i).Take(BATCH_SIZE).ToList();
-                    await ProcessUserBatch(batch, activeUsers);
+                    var score = _similarityModel.ComputeScore(user1, user2);
+                    scores.Add(new SocialSimilarityScore
+                    {
+                        UserId1 = user1.Id,
+                        UserId2 = user2.Id,
+                        Score = score
+                    });
                 }
             }
-            finally
-            {
-                isBatchProcessing = false;
-                FollowingCache.Clear();
-            }
+
+            return scores;
         }
 
-        public async Task ComputeUserScore(string userId)
+        public List<SocialSimilarityScore> UpdateExistingScores(List<SocialSimilarityScore> existingScores,
+                                                                List<UserSimilarityFeature> sourceUsers,
+                                                                List<UserSimilarityFeature> targetUsers)
         {
-            isBatchProcessing = false;
-            FollowingCache.Clear();
+            var scoresToUpdate = new List<SocialSimilarityScore>();
+            var existingScoreKeys = new HashSet<string>();
 
-            var queryable = _uow.UserRepo.GetQueryable()
-                                         .Include(x => x.Address);
-            var user1 = await queryable.FirstOrDefaultAsync(x => x.Id == userId);
-            if (user1 == null || user1.IsDeleted || user1.IsSuspended) return;
+            foreach (var score in existingScores)
+            {
+                var key1 = $"{score.UserId1}_{score.UserId2}";
+                var key2 = $"{score.UserId2}_{score.UserId1}";
+                existingScoreKeys.Add(key1);
+                existingScoreKeys.Add(key2);
+            }
 
-            var allUsers = await _uow.UserRepo.GetAll();
-            var activeUsers = allUsers.Where(u => !u.IsDeleted && !u.IsSuspended && u.Id != userId).ToList();
-            var userIds = activeUsers.Select(u => u.Id).ToList();
-            UserRoleDict = await _userService.GetUserIdRoleDict(userIds);
+            foreach (var user1 in sourceUsers)
+            {
+                foreach (var user2 in targetUsers.Where(u => u.Id != user1.Id))
+                {
+                    var key1 = $"{user1.Id}_{user2.Id}";
+                    var key2 = $"{user2.Id}_{user1.Id}";
 
-            await ProcessUserBatch(new List<User> { user1 }, activeUsers);
+                    if (existingScoreKeys.Contains(key1) || existingScoreKeys.Contains(key2))
+                    {
+                        var existingScore = existingScores.FirstOrDefault(s => 
+                            (s.UserId1 == user1.Id && s.UserId2 == user2.Id) || 
+                            (s.UserId1 == user2.Id && s.UserId2 == user1.Id));
+
+                        if (existingScore != null)
+                        {
+                            existingScore.Score = _similarityModel.ComputeScore(user1, user2);
+                            scoresToUpdate.Add(existingScore);
+                        }
+                    }
+                }
+            }
+
+            return scoresToUpdate;
         }
 
         #region private
@@ -140,14 +142,12 @@ namespace LiftNet.Engine.Engine.Impl
                     }
                     else
                     {
-                        // Only create new score if neither combination exists
                         newScores.Add(new SocialSimilarityScore
                         {
                             UserId1 = user1.Id,
                             UserId2 = user2.Id,
                             Score = score
                         });
-                        // Add to existing keys to prevent duplicates within the same batch
                         existingScoreKeys.Add(key1);
                         existingScoreKeys.Add(key2);
                     }

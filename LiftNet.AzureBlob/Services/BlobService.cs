@@ -33,7 +33,7 @@ namespace LiftNet.AzureBlob.Services
             var containerClient = new BlobContainerClient(_connectionString, containerName);
             await containerClient.CreateIfNotExistsAsync();
 
-            return containerClient;
+            return containerClient; 
         }
 
         public async Task<string> UploadFileAsync(IFormFile file, string containerName)
