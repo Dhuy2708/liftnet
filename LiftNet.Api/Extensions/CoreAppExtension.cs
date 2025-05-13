@@ -129,10 +129,5 @@ namespace LiftNet.Api.Extensions
             services.AddHostedService<MessageProcessingWorker>();
             return services;
         }
-        public static IServiceCollection RegisterEngines(this IServiceCollection services)
-        {
-            services.AddDependencies(typeof(EngineAssemblyRef).Assembly);
-            return services;
-        }
     }
 }

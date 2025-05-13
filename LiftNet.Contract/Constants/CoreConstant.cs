@@ -34,6 +34,11 @@ namespace LiftNet.Contract.Constants
         public const string Address = "address";
     }
 
+    public class BlobContainerName
+    {
+        public const string FFM_MODEL = "ffmmodel";
+    }
+
     public class EnvKeys
     {
         public const string JWT_KEY = "JWT_KEY";

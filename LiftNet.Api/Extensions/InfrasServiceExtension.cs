@@ -85,7 +85,7 @@ namespace LiftNet.Api.Extensions
             #endregion
 
             #region quartz
-#if !DEBUG
+#if DEBUG
             services.RegisterQuartzService();
 #endif
             #endregion
@@ -160,23 +160,22 @@ namespace LiftNet.Api.Extensions
             return services;
         }
 
-
         private static IServiceCollection RegisterQuartzService(this IServiceCollection services)
         {
-            services.AddQuartz(q =>
-            {
-                q.AddJob<ProvinceDiscService>(opts => opts.WithIdentity("ProvinceDiscJob", "DiscJobs"));
+            //services.AddQuartz(q =>
+            //{
+            //    q.AddJob<ProvinceDiscService>(opts => opts.WithIdentity("ProvinceDiscJob", "DiscJobs"));
 
-                q.AddTrigger(opts => opts
-                    .ForJob("ProvinceDiscJob", "DiscJobs")
-                    .WithIdentity("ProvinceDiscTrigger", "DiscTriggers")
-                    .StartNow()
-                    .WithSimpleSchedule(schedule => schedule
-                        .WithIntervalInHours(JobIntervalHour.PROVINCE_DISC)
-                        .RepeatForever()
-                    )
-                );
-            });
+            //    q.AddTrigger(opts => opts
+            //        .ForJob("ProvinceDiscJob", "DiscJobs")
+            //        .WithIdentity("ProvinceDiscTrigger", "DiscTriggers")
+            //        .StartNow()
+            //        .WithSimpleSchedule(schedule => schedule
+            //            .WithIntervalInHours(JobIntervalHour.PROVINCE_DISC)
+            //            .RepeatForever()
+            //        )
+            //    );
+            //});
 
             services.AddQuartz(q =>
             {

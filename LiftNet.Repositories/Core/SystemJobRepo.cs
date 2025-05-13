@@ -110,12 +110,14 @@ namespace LiftNet.Repositories.Core
                     return firstInserted;
                 }
 
+#if !DEBUG
                 if (systemJob!.EndTime == null || !(systemJob.Status == (int)JobStatus.Finished || systemJob.Status == (int)JobStatus.Failed))
                 {
                     _logger.Error("last job not finished, return");
                     return null;
                 }
-                    
+#endif
+                
                 var inserted = new SystemJob()
                 {
                     Id = JobUtil.GetJobId(type),

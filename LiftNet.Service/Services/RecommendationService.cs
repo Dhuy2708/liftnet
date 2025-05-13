@@ -1,15 +1,9 @@
-﻿using LiftNet.Contract.Interfaces.IRepos;
+﻿using LiftNet.Contract.Enums.Social;
+using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Views.Users;
-using LiftNet.Domain.Entities;
 using LiftNet.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using LiftNet.Contract.Interfaces.IRepos;
-using LiftNet.Contract.Enums.Social;
 
 namespace LiftNet.Service.Services
 {
@@ -56,7 +50,7 @@ namespace LiftNet.Service.Services
                 .ToListAsync();
 
 
-            var similarityScoresDict = similarityScores.ToDictionary(s => s.UserId2, s => s.Score); 
+            var similarityScoresDict = similarityScores.ToDictionary(s => s.UserId2, s => s.Score);
 
             var users = await query
                 .AsNoTracking()
@@ -80,8 +74,8 @@ namespace LiftNet.Service.Services
             var userIds = users.Select(x => x.Id).ToList();
 
             var followingStatus = await _uow.SocialConnectionRepo.GetQueryable()
-                .Where(c => c.UserId == currentUserId && 
-                            userIds.Contains(c.TargetId) && 
+                .Where(c => c.UserId == currentUserId &&
+                            userIds.Contains(c.TargetId) &&
                             c.Status == (int)SocialConnectionStatus.Following)
                 .Select(c => c.TargetId)
                 .ToListAsync();

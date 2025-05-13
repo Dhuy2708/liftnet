@@ -1,4 +1,6 @@
-﻿using LiftNet.Ioc;
+﻿using LiftNet.Domain.Entities;
+using LiftNet.Engine.Data.Feat;
+using LiftNet.Ioc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Engine.Engine
 {
-    public interface ISocialEngine : IDependency
+    public interface ISocialEngine
     {
-        Task ComputeAllUserScores();
-        Task ComputeUserScore(string userId);
+        List<SocialSimilarityScore> ComputeUserScores(List<UserSimilarityFeature> sourceUsers, List<UserSimilarityFeature> targetUsers);
+        List<SocialSimilarityScore> UpdateExistingScores(List<SocialSimilarityScore> existingScores, List<UserSimilarityFeature> sourceUsers, List<UserSimilarityFeature> targetUsers);
     }
 }

@@ -21,10 +21,10 @@ namespace LiftNet.Timer.Service.Common
         protected readonly TimeSpan _intervalTime;
         protected DateTime _scanTime => DateTime.UtcNow;
 
-        protected BaseSystemJob(JobType jobType, IServiceProvider provider, TimeSpan intervalTime) : base(provider)
+        protected BaseSystemJob(JobType jobType, IServiceProvider provider, TimeSpan? intervalTime = null) : base(provider)
         {
             _jobType = jobType;
-            _intervalTime = intervalTime;
+            _intervalTime = intervalTime ?? TimeSpan.FromMinutes(10);
         }
 
         // this should be for main job, timer job already config interval time 
@@ -66,7 +66,7 @@ namespace LiftNet.Timer.Service.Common
             try
             {
                 _logger.Info($"begin job, type: {_jobType}");
-#if DEBUG
+#if !DEBUG
                 if (!await CheckJobCanRun())
                 {
                     _logger.Info($"job has been run before, skip");
