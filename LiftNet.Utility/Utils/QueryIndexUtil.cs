@@ -56,7 +56,7 @@ namespace LiftNet.Utility.Utils
                             {
                                 paramKeys.Add($"@param{paramIndex + j}");
                             }
-                            sb.Append($"c.{condItem.Property} in({String.Join(", ", paramKeys)}) ");
+                            sb.Append($"c.{condItem.Property} in({string.Join(", ", paramKeys)}) ");
                             for (int j = 0; j < condItem.Values.Count(); j++)
                             {
                                 AddParam(result, paramKeys[j], condItem.Type, condItem.Values[j]);
@@ -69,10 +69,29 @@ namespace LiftNet.Utility.Utils
                         switch (op)
                         {
                             case QueryOperator.Contains:
-                                if (condItem.Type is FilterType.String && condItem.Values.Count() == 1)
+                                if (condItem.Type is FilterType.String && condItem.Values.Count() > 0)
                                 {
-                                    sb.Append($"CONTAINS(c.{condItem.Property}, @param{paramIndex}) ");
-                                    AddParam(result, $"@param{paramIndex}", condItem.Type, condItem.Values[0]);
+                                    List<string> ctsParam = [];
+                                    foreach (var value in condItem.Values)
+                                    {
+                                        AddParam(result, $"@param{paramIndex}", condItem.Type, value);
+                                        ctsParam.Add($"@param{paramIndex}");
+                                        paramIndex++;
+                                    }
+                                    sb.Append($"c.{condItem.Property} in ({string.Join(", ", ctsParam)}) ");
+                                }
+                                break;
+                            case QueryOperator.NotContains:
+                                if (condItem.Type is FilterType.String && condItem.Values.Count() > 0)
+                                {
+                                    List<string> ctsParam = [];
+                                    foreach (var value in condItem.Values)
+                                    {
+                                        AddParam(result, $"@param{paramIndex}", condItem.Type, value);
+                                        ctsParam.Add($"@param{paramIndex}");
+                                        paramIndex++;
+                                    }
+                                    sb.Append($"c.{condItem.Property} not in ({string.Join(", ", ctsParam)}) ");
                                 }
                                 break;
                             case QueryOperator.StartsWith:
@@ -155,6 +174,16 @@ namespace LiftNet.Utility.Utils
                     if (bool.TryParse(value, out bool boolValue))
                     {
                         param.Params.Add(paramKey, (typeof(bool), boolValue));
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"Invalid boolean value for param {paramKey}");
+                    }
+                    break;
+                case FilterType.Float:
+                    if (float.TryParse(value, out float floatValue))
+                    {
+                        param.Params.Add(paramKey, (typeof(float), floatValue));
                     }
                     else
                     {

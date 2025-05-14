@@ -67,11 +67,6 @@ namespace LiftNet.Engine.Data.Normalized
             get; set;
         } = string.Empty;
 
-        public float NormalizedLikes
-        {
-            get; set;
-        }
-
         public float NormalizedTimeAgo
         {
             get; set;

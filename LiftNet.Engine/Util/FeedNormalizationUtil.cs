@@ -45,7 +45,6 @@ namespace LiftNet.Engine.Util
             return new NormalizedFeedFieldAware
             {
                 FeedId = feed.FeedId,
-                NormalizedLikes = NormalizeLikes(feed.Likes),
                 NormalizedTimeAgo = NormalizeTimeAgo(feed.CreatedAt)
             };
         }

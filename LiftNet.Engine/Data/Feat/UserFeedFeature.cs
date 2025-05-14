@@ -60,11 +60,6 @@ namespace LiftNet.Engine.Data.Feat
             get; set;
         } = string.Empty;
 
-        public int Likes
-        {
-            get; set;
-        }
-
         public DateTime CreatedAt
         {
             get; set;

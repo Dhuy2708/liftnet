@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using LiftNet.Contract.Enums.Feed;
 using LiftNet.Contract.Dtos.Query;
 using LiftNet.Domain.ViewModels;
+using LiftNet.Handler.Feeds.Queries.Requests;
 
 namespace LiftNet.Api.Controllers
 {
@@ -136,11 +137,31 @@ namespace LiftNet.Api.Controllers
             if (string.IsNullOrEmpty(userId))
                 return BadRequest(LiftNetRes.ErrorResponse("User ID is required"));
 
-            var command = new ListFeedCommand
+            var command = new ListFeedInProfileQuery
             {
                 UserId = UserId,
                 ProfileId = userId,
                 QueryCondition = queryCondition
+            };
+
+            var result = await _mediator.Send(command);
+            if (result.Success)
+                return Ok(result);
+
+            return StatusCode(500, result);
+        }
+
+        [HttpGet("list")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
+        [ProducesResponseType(typeof(LiftNetRes<FeedViewModel>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ListRecommendedFeeds()
+        {
+            if (string.IsNullOrEmpty(UserId))
+                return Unauthorized();
+
+            var command = new RecommendFeedsQuery
+            {
+                UserId = UserId
             };
 
             var result = await _mediator.Send(command);

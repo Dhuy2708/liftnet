@@ -16,6 +16,7 @@ namespace LiftNet.Contract.Enums
         LessThanOrEqual = 5,
         Contains = 6,
         StartsWith = 7,
+        NotContains = 8,
     }
 
     public enum QueryLogic
@@ -30,7 +31,8 @@ namespace LiftNet.Contract.Enums
         String = 0,
         Integer = 1,
         DateTime = 2,
-        Boolean = 3
+        Boolean = 3,
+        Float = 4,
     }
 
     public enum SortType

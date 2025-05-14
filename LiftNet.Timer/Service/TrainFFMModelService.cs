@@ -49,6 +49,23 @@ namespace LiftNet.Timer.Service
 
         private async Task TrainModel()
         {
+            //var score = _feedEngine.Predict(new UserFeedFeature
+            //{
+            //    Feed = new FeedFieldAware
+            //    {
+            //        FeedId = "34233302-0662-4787-8eb7-310b11a8ee6e",
+            //        CreatedAt = DateTime.UtcNow
+            //    },
+            //    User = new UserFieldAware
+            //    {
+            //        UserId = "8ca03fef-cb45-497b-acae-62ff46aef8e1",
+            //        Age = 27,
+            //        Gender = LiftNetGender.Male,
+            //        Location = (0, 0),
+            //        Role = LiftNetRoleEnum.Seeker
+            //    }
+            //});
+            //await _feedIndexService.UpdateAllFeedsRandomFieldAsync();
             var condition = new QueryCondition();
             condition.PageSize = -1; // query max
             condition.AddCondition(new ConditionItem("schema", new List<string> { $"{(int)DataSchema.Feed}" }, FilterType.Integer));
@@ -149,7 +166,6 @@ namespace LiftNet.Timer.Service
                 Feed = new FeedFieldAware
                 {
                     FeedId = feed.Id,
-                    Likes = feedLikes.GetValueOrDefault(feed.Id, new List<string>()).Count,
                     CreatedAt = feed.CreatedAt
                 },
                 Label = label
