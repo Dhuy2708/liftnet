@@ -85,7 +85,7 @@ namespace LiftNet.Api.Extensions
             #endregion
 
             #region quartz
-#if DEBUG
+#if !DEBUG
             services.RegisterQuartzService();
 #endif
             #endregion
@@ -162,36 +162,36 @@ namespace LiftNet.Api.Extensions
 
         private static IServiceCollection RegisterQuartzService(this IServiceCollection services)
         {
-            //services.AddQuartz(q =>
-            //{
-            //    q.AddJob<ProvinceDiscService>(opts => opts.WithIdentity("ProvinceDiscJob", "DiscJobs"));
+            services.AddQuartz(q =>
+            {
+                q.AddJob<ProvinceDiscService>(opts => opts.WithIdentity("ProvinceDiscJob", "DiscJobs"));
 
-            //    q.AddTrigger(opts => opts
-            //        .ForJob("ProvinceDiscJob", "DiscJobs")
-            //        .WithIdentity("ProvinceDiscTrigger", "DiscTriggers")
-            //        .StartNow()
-            //        .WithSimpleSchedule(schedule => schedule
-            //            .WithIntervalInHours(JobIntervalHour.PROVINCE_DISC)
-            //            .RepeatForever()
-            //        )
-            //    );
-            //});
+                q.AddTrigger(opts => opts
+                    .ForJob("ProvinceDiscJob", "DiscJobs")
+                    .WithIdentity("ProvinceDiscTrigger", "DiscTriggers")
+                    .StartNow()
+                    .WithSimpleSchedule(schedule => schedule
+                        .WithIntervalInHours(JobIntervalHour.PROVINCE_DISC)
+                        .RepeatForever()
+                    )
+                );
+            });
 
-            //services.AddQuartz(q =>
-            //{
-            //    q.AddJob<SocialScoreService>(opts => opts.WithIdentity("SocialScoreJob", "MLJobs"));
+            services.AddQuartz(q =>
+            {
+                q.AddJob<SocialScoreService>(opts => opts.WithIdentity("SocialScoreJob", "MLJobs"));
 
-            //    q.AddTrigger(opts => opts
-            //        .ForJob("SocialScoreJob", "MLJobs")
-            //        .WithIdentity("SocialScoreJobTrigger", "MLTriggers")
-            //        .StartNow()
-            //        .WithSimpleSchedule(schedule => schedule
-            //            .WithIntervalInHours(JobIntervalHour.UPDATE_SOCIAL_SCORE)
-            //            .RepeatForever()
-            //        )
-            //    );
-            //}); 
-            
+                q.AddTrigger(opts => opts
+                    .ForJob("SocialScoreJob", "MLJobs")
+                    .WithIdentity("SocialScoreJobTrigger", "MLTriggers")
+                    .StartNow()
+                    .WithSimpleSchedule(schedule => schedule
+                        .WithIntervalInHours(JobIntervalHour.UPDATE_SOCIAL_SCORE)
+                        .RepeatForever()
+                    )
+                );
+            });
+
             services.AddQuartz(q =>
             {
                 q.AddJob<TrainFFMModelService>(opts => opts.WithIdentity("TrainFFMModelJob", "MLJobs"));

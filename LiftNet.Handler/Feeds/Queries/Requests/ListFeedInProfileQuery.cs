@@ -3,9 +3,9 @@ using LiftNet.Domain.Response;
 using LiftNet.Contract.Dtos.Query;
 using LiftNet.Domain.ViewModels;
 
-namespace LiftNet.Handler.Feeds.Commands.Requests
+namespace LiftNet.Handler.Feeds.Queries.Requests
 {
-    public class ListFeedCommand : IRequest<PaginatedLiftNetRes<FeedViewModel>>
+    public class ListFeedInProfileQuery : IRequest<PaginatedLiftNetRes<FeedViewModel>>
     {
 
         public string UserId

@@ -5,25 +5,25 @@ using LiftNet.Domain.Indexes;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Domain.ViewModels;
-using LiftNet.Handler.Feeds.Commands.Requests;
+using LiftNet.Handler.Feeds.Queries.Requests;
 using MediatR;
 
-namespace LiftNet.Handler.Feeds.Commands
+namespace LiftNet.Handler.Feeds.Queries
 {
-    public class ListFeedHandler : IRequestHandler<ListFeedCommand, PaginatedLiftNetRes<FeedViewModel>>
+    public class ListFeedInProfileHandler : IRequestHandler<ListFeedInProfileQuery, PaginatedLiftNetRes<FeedViewModel>>
     {
         private readonly IFeedIndexService _feedService;
-        private readonly ILiftLogger<ListFeedHandler> _logger;
+        private readonly ILiftLogger<ListFeedInProfileHandler> _logger;
 
-        public ListFeedHandler(
+        public ListFeedInProfileHandler(
             IFeedIndexService feedService,
-            ILiftLogger<ListFeedHandler> logger)
+            ILiftLogger<ListFeedInProfileHandler> logger)
         {
             _feedService = feedService;
             _logger = logger;
         }
 
-        public async Task<PaginatedLiftNetRes<FeedViewModel>> Handle(ListFeedCommand request, CancellationToken cancellationToken)
+        public async Task<PaginatedLiftNetRes<FeedViewModel>> Handle(ListFeedInProfileQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace LiftNet.Handler.Feeds.Commands
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, "Error in ListFeedHandler");
+                _logger.Error(ex, "Error in ListFeedInProfileHandler");
                 return PaginatedLiftNetRes<FeedViewModel>.ErrorResponse("Internal server error");
             }
         }

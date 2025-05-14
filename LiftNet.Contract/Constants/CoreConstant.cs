@@ -73,4 +73,9 @@ namespace LiftNet.Contract.Constants
         public const string REDIS_USER = "REDIS_USER";
         public const string REDIS_PASSWORD = "REDIS_PASSWORD";
     }
+
+    public class RedisCacheKeys
+    {
+        public const string SEEN_FEEDS_CACHE_KEY = "feed:seen:{0}"; // user id 
+    }
 }

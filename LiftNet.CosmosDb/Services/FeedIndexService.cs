@@ -5,6 +5,7 @@ using LiftNet.Contract.Interfaces.IServices.Indexes;
 using LiftNet.CosmosDb.Contracts;
 using LiftNet.Domain.Indexes;
 using LiftNet.Domain.Interfaces;
+using LiftNet.Utility.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -194,6 +195,10 @@ namespace LiftNet.CosmosDb.Services
         {
             try
             {
+                if (feedIds.IsNullOrEmpty())
+                {
+                    return [];
+                }
                 var condition = new QueryCondition();
                 condition.AddCondition(new ConditionItem("feedid", feedIds, FilterType.String));
                 condition.AddCondition(new ConditionItem("schema", new List<string> { $"{(int)DataSchema.Like}" }, FilterType.Integer, QueryOperator.Equal, QueryLogic.And));
@@ -276,6 +281,7 @@ namespace LiftNet.CosmosDb.Services
             try
             {
                 var condition = new QueryCondition();
+                condition.PageSize = 0;
                 condition.AddCondition(new ConditionItem("schema", new List<string> { $"{(int)DataSchema.Feed}" }, FilterType.Integer));
                 
                 var (feeds, _) = await QueryAsync(condition);

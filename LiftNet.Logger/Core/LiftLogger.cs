@@ -93,6 +93,7 @@ namespace LiftNet.Logger.Core
         public void Error(Exception e, string message)
         {
             var newMsg = $"{message}, ex: {e.Message}";
+            Error(newMsg);
         }
 
         private void LogConsole(LogType type, string message)
