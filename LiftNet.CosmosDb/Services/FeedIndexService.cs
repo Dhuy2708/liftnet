@@ -245,5 +245,29 @@ namespace LiftNet.CosmosDb.Services
                 return feedIds.ToDictionary(id => id, _ => false);
             }
         }
+
+        public async Task<Dictionary<string, List<string>>> GetFeedLikesAsync(List<string> feedIds)
+        {
+            try
+            {
+                var condition = new QueryCondition();
+                condition.AddCondition(new ConditionItem("feedid", feedIds, FilterType.String));
+                condition.AddCondition(new ConditionItem("schema", new List<string> { $"{(int)DataSchema.Like}" }, FilterType.Integer, QueryOperator.Equal, QueryLogic.And));
+                
+                var (likes, _) = await _likeIndexService.QueryAsync(condition);
+                
+                return likes
+                    .GroupBy(x => x.FeedId)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => g.Select(x => x.UserId).ToList()
+                    );
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error getting likes for feeds");
+                return feedIds.ToDictionary(id => id, _ => new List<string>());
+            }
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace LiftNet.Api.Extensions
 
         private static IServiceCollection RegisterSocialEngine(this IServiceCollection services)
         {
-            services.AddScoped<ISocialEngine, SocialEngine>(); // will fix this
+            services.AddSingleton<ISocialEngine, SocialEngine>(); 
             return services;
         }
 
