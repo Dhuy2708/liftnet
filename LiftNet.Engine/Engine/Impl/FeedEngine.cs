@@ -25,13 +25,14 @@ namespace LiftNet.Engine.Engine.Impl
 
         public async Task Train(IEnumerable<UserFeedFeature> trainingData)
         {
-            var normalizedData = trainingData.Select(x => FeedNormalizationUtil.NormalizeUserFeedFeature(x));
+            var normalizedData = trainingData.Select(x => FeedNormalizationUtil.NormalizeUserFeedFeature(x))
+                                             .ToList();
             await _model.Train(normalizedData);
         }
 
         public async Task IncrementalTrain(IEnumerable<UserFeedFeature> newData)
         {
-            var normalizedData = newData.Select(x => FeedNormalizationUtil.NormalizeUserFeedFeature(x));
+            var normalizedData = newData.Select(x => FeedNormalizationUtil.NormalizeUserFeedFeature(x)).ToList();
             await _model.TrainIncremental(normalizedData);
         }
 

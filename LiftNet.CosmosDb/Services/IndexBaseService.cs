@@ -73,7 +73,12 @@ namespace LiftNet.CosmosDb.Services
         public async Task<(List<T> Items, string? NextPageToken)> QueryAsync(string query, int pageSize = 10, string? nextPageToken = null)
         {
             var queryDefinition = new QueryDefinition(query);
-            var queryRequestOptions = new QueryRequestOptions { MaxItemCount = pageSize };
+            var queryRequestOptions = new QueryRequestOptions();
+
+            if (pageSize > 0)
+            {
+                queryRequestOptions.MaxItemCount = pageSize;
+            }
 
             var iterator = _container.GetItemQueryIterator<T>(queryDefinition, nextPageToken, queryRequestOptions);
 

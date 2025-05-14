@@ -18,12 +18,13 @@ namespace LiftNet.Engine.Util
 
         public static NormalizedUserFeedFeature NormalizeUserFeedFeature(UserFeedFeature feature)
         {
-            return new NormalizedUserFeedFeature
+            var result = new NormalizedUserFeedFeature
             {
                 User = NormalizeUserFields(feature.User),
                 Feed = NormalizeFeedFields(feature.Feed),
                 Label = feature.Label
             };
+            return result;
         }
 
         private static NormalizedUserFieldAware NormalizeUserFields(UserFieldAware user)
@@ -34,8 +35,8 @@ namespace LiftNet.Engine.Util
                 AgeRangeOneHot = OneHotEncodeAgeRange(UserUtil.GetAgeRange(user.Age)),
                 RoleOneHot = OneHotEncodeRole(user.Role),
                 GenderOneHot = OneHotEncodeGender(user.Gender),
-                NormalizedLat = NormalizeLatitude(user.Location.Value.Lat),
-                NormalizedLng = NormalizeLongitude(user.Location.Value.Lng)
+                NormalizedLat = NormalizeLatitude(user.Location?.Lat ?? 0),
+                NormalizedLng = NormalizeLongitude(user.Location?.Lng ?? 0)
             };
         }
 
@@ -59,7 +60,7 @@ namespace LiftNet.Engine.Util
 
         private static float[] OneHotEncodeRole(LiftNetRoleEnum role)
         {
-            var roles = Enum.GetValues(typeof(LiftNetRoleEnum)).Length;
+            var roles = Enum.GetValues(typeof(LiftNetRoleEnum)).Length - 1; // remove admin
             var encoding = new float[roles];
             encoding[(int)role] = 1f;
             return encoding;

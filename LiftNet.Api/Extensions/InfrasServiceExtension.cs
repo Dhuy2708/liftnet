@@ -177,13 +177,28 @@ namespace LiftNet.Api.Extensions
             //    );
             //});
 
+            //services.AddQuartz(q =>
+            //{
+            //    q.AddJob<SocialScoreService>(opts => opts.WithIdentity("SocialScoreJob", "MLJobs"));
+
+            //    q.AddTrigger(opts => opts
+            //        .ForJob("SocialScoreJob", "MLJobs")
+            //        .WithIdentity("SocialScoreJobTrigger", "MLTriggers")
+            //        .StartNow()
+            //        .WithSimpleSchedule(schedule => schedule
+            //            .WithIntervalInHours(JobIntervalHour.UPDATE_SOCIAL_SCORE)
+            //            .RepeatForever()
+            //        )
+            //    );
+            //}); 
+            
             services.AddQuartz(q =>
             {
-                q.AddJob<SocialScoreService>(opts => opts.WithIdentity("SocialScoreJob", "MLJobs"));
+                q.AddJob<TrainFFMModelService>(opts => opts.WithIdentity("TrainFFMModelJob", "MLJobs"));
 
                 q.AddTrigger(opts => opts
-                    .ForJob("SocialScoreJob", "MLJobs")
-                    .WithIdentity("SocialScoreJobTrigger", "MLTriggers")
+                    .ForJob("TrainFFMModelJob", "MLJobs")
+                    .WithIdentity("TrainFFMModelJobTrigger", "MLTriggers")
                     .StartNow()
                     .WithSimpleSchedule(schedule => schedule
                         .WithIntervalInHours(JobIntervalHour.UPDATE_SOCIAL_SCORE)
