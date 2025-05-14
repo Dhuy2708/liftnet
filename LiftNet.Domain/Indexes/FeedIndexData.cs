@@ -20,5 +20,11 @@ namespace LiftNet.Domain.Indexes
         {
             get; set;
         }
+
+        [JsonProperty(PropertyName = "rand")]
+        public float Rand
+        {
+            get; set;
+        } = (float)new Random().NextDouble();
     }
 }

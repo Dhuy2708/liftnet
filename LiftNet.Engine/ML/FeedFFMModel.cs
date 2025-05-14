@@ -14,7 +14,7 @@ namespace LiftNet.Engine.ML
         private readonly MLContext _mlContext;
         private readonly IBlobService _blobService;
         private ITransformer _model;
-        private PredictionEngine<FeedFFMData, FeedFFMPrediction> _predictionEngine;
+        private PredictionEngine<VectorizedFeedFFMData, FeedFFMPrediction> _predictionEngine;
         private const double MAX_DISTANCE_KM = 50.0;
         private const string MODEL_FILE = "feed_ffm_model.zip";
 
@@ -32,6 +32,8 @@ namespace LiftNet.Engine.ML
             var pipeline = _mlContext.Transforms.NormalizeMinMax(
                      new[]
                      {
+                        new InputOutputColumnPair("UserId"),
+                        new InputOutputColumnPair("FeedId"),
                         new InputOutputColumnPair("UserAgeRangeOneHot"),
                         new InputOutputColumnPair("UserRoleOneHot"),
                         new InputOutputColumnPair("UserGenderOneHot"),
@@ -39,22 +41,22 @@ namespace LiftNet.Engine.ML
                         new InputOutputColumnPair("HasLocation"),
                         new InputOutputColumnPair("HasAge"),
                         new InputOutputColumnPair("HasGender"),
-                        new InputOutputColumnPair("FeedLikes"),
                         new InputOutputColumnPair("FeedTimeAgo")
                      })
                  .Append(_mlContext.BinaryClassification.Trainers.FieldAwareFactorizationMachine(
                      new FieldAwareFactorizationMachineTrainer.Options
                      {
-                         FeatureColumnName = "UserRoleOneHot",
+                         FeatureColumnName = "UserId",
                          ExtraFeatureColumns = new[]
                          {
+                            "FeedId",
+                            "UserRoleOneHot",
                             "UserGenderOneHot",
                             "UserAgeRangeOneHot",
                             "LocationProximity",
                             "HasLocation",
                             "HasAge",
                             "HasGender",
-                            "FeedLikes",
                             "FeedTimeAgo"
                          },
                          LabelColumnName = "Label",
@@ -65,7 +67,7 @@ namespace LiftNet.Engine.ML
                      }));
 
             _model = pipeline.Fit(trainData);
-            _predictionEngine = _mlContext.Model.CreatePredictionEngine<FeedFFMData, FeedFFMPrediction>(_model);
+            _predictionEngine = _mlContext.Model.CreatePredictionEngine<VectorizedFeedFFMData, FeedFFMPrediction>(_model);
             await SaveModelAsync();
         }
 
@@ -95,7 +97,7 @@ namespace LiftNet.Engine.ML
                     }));
 
             _model = pipeline.Fit(trainData);
-            _predictionEngine = _mlContext.Model.CreatePredictionEngine<FeedFFMData, FeedFFMPrediction>(_model);
+            _predictionEngine = _mlContext.Model.CreatePredictionEngine<VectorizedFeedFFMData, FeedFFMPrediction>(_model);
             await SaveModelAsync();
         }
 
@@ -126,7 +128,7 @@ namespace LiftNet.Engine.ML
                 var modelBytes = await _blobService.DownloadFileAsync(MODEL_FILE, BlobContainerName.FFM_MODEL);
                 using var memoryStream = new MemoryStream(modelBytes);
                 _model = _mlContext.Model.Load(memoryStream, out var _);
-                _predictionEngine = _mlContext.Model.CreatePredictionEngine<FeedFFMData, FeedFFMPrediction>(_model);
+                _predictionEngine = _mlContext.Model.CreatePredictionEngine<VectorizedFeedFFMData, FeedFFMPrediction>(_model);
             }
             catch (FileNotFoundException)
             {
@@ -134,14 +136,16 @@ namespace LiftNet.Engine.ML
             }
         }
 
-        private FeedFFMData ConvertToFFMData(NormalizedUserFeedFeature feature)
+        private VectorizedFeedFFMData ConvertToFFMData(NormalizedUserFeedFeature feature)
         {
             var hasLocation = feature.User.NormalizedLat != 0 || feature.User.NormalizedLng != 0 ? 1.0f : 0.0f;
             var hasAge = feature.User.AgeRangeOneHot.Any(x => x > 0) ? 1.0f : 0.0f;
             var hasGender = feature.User.GenderOneHot.Any(x => x > 0) ? 1.0f : 0.0f;
 
-            return new FeedFFMData
+            return new VectorizedFeedFFMData
             {
+                UserId = new[] { HashStringToFloat(feature.User.UserId) },
+                FeedId = new[] { HashStringToFloat(feature.Feed.FeedId) },
                 UserAgeRangeOneHot = feature.User.AgeRangeOneHot,
                 UserRoleOneHot = feature.User.RoleOneHot,
                 UserGenderOneHot = feature.User.GenderOneHot,
@@ -151,10 +155,15 @@ namespace LiftNet.Engine.ML
                 HasLocation = new[] { hasLocation },
                 HasAge = new[] { hasAge },
                 HasGender = new[] { hasGender },
-                FeedLikes = new[] { feature.Feed.NormalizedLikes },
                 FeedTimeAgo = new[] { feature.Feed.NormalizedTimeAgo },
                 Label = feature.Label > 0.5f
             };
+        }
+
+        private float HashStringToFloat(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return 0f;
+            return (float)(Math.Abs(input.GetHashCode()) / (double)int.MaxValue);
         }
 
         private float CalculateLocationProximity(double userLat, double userLng)

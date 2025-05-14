@@ -149,7 +149,6 @@ namespace LiftNet.Timer.Service
                 Feed = new FeedFieldAware
                 {
                     FeedId = feed.Id,
-                    Likes = feedLikes.GetValueOrDefault(feed.Id, new List<string>()).Count,
                     CreatedAt = feed.CreatedAt
                 },
                 Label = label

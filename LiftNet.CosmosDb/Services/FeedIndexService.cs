@@ -36,7 +36,8 @@ namespace LiftNet.CosmosDb.Services
                     Medias = medias ?? new List<string>(),
                     Schema = DataSchema.Feed,
                     CreatedAt = DateTime.UtcNow,
-                    ModifiedAt = DateTime.UtcNow
+                    ModifiedAt = DateTime.UtcNow,
+                    Rand = (float)new Random().NextDouble()
                 };
 
                 return await UpsertAsync(feed);
@@ -68,7 +69,7 @@ namespace LiftNet.CosmosDb.Services
                 }
 
                 existingFeed.ModifiedAt = DateTime.UtcNow;
-
+                existingFeed.Rand = (float)new Random().NextDouble();
                 return await UpsertAsync(existingFeed);
             }
             catch (Exception ex)
@@ -267,6 +268,31 @@ namespace LiftNet.CosmosDb.Services
             {
                 _logger.Error(ex, "Error getting likes for feeds");
                 return feedIds.ToDictionary(id => id, _ => new List<string>());
+            }
+        }
+
+        public async Task<bool> UpdateAllFeedsRandomFieldAsync()
+        {
+            try
+            {
+                var condition = new QueryCondition();
+                condition.AddCondition(new ConditionItem("schema", new List<string> { $"{(int)DataSchema.Feed}" }, FilterType.Integer));
+                
+                var (feeds, _) = await QueryAsync(condition);
+                
+                foreach (var feed in feeds)
+                {
+                    feed.Rand = (float)new Random().NextDouble();
+                    feed.ModifiedAt = DateTime.UtcNow;
+                    await UpdateFeedAsync(feed.Id, feed.UserId);
+                }
+                
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error updating random fields for all feeds");
+                return false;
             }
         }
     }

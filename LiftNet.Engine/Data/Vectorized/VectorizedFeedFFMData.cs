@@ -3,8 +3,14 @@ using System;
 
 namespace LiftNet.Engine.Data.Vectorized
 {
-    public class FeedFFMData
+    public class VectorizedFeedFFMData
     {
+        [VectorType(1)]
+        public float[] UserId { get; set; }
+
+        [VectorType(1)]
+        public float[] FeedId { get; set; }
+
         [VectorType(8)] // UserAgeRange has 8 possible values (0-7)
         public float[] UserAgeRangeOneHot { get; set; }
 
@@ -25,9 +31,6 @@ namespace LiftNet.Engine.Data.Vectorized
 
         [VectorType(1)]
         public float[] HasGender { get; set; }
-
-        [VectorType(1)]
-        public float[] FeedLikes { get; set; }
 
         [VectorType(1)]
         public float[] FeedTimeAgo { get; set; }
