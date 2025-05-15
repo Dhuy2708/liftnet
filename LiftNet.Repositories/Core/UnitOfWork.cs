@@ -137,6 +137,28 @@ namespace LiftNet.Repositories.Core
                 return _socialSimilarityScoreRepo;
             }
         }
+
+        private IConversationRepo? _conversationRepo = null;
+        public IConversationRepo ConversationRepo
+        {
+            get
+            {
+                _conversationRepo ??= _serviceProvider.GetRequiredService<IConversationRepo>();
+                _conversationRepo.AutoSave = false;
+                return _conversationRepo;
+            }
+        }
+
+        private IConversationUserRepo? _conversationUserRepo = null;
+        public IConversationUserRepo ConversationUserRepo
+        {
+            get
+            {
+                _conversationUserRepo ??= _serviceProvider.GetRequiredService<IConversationUserRepo>();
+                _conversationUserRepo.AutoSave = false;
+                return _conversationUserRepo;
+            }
+        }
         #endregion
 
         public async Task BeginTransactionAsync()

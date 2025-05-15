@@ -19,6 +19,8 @@ namespace LiftNet.Contract.Interfaces.IRepos
         IVersionRepo VersionRepo { get;}
         IAddressRepo AddressRepo { get; }
         ISocialSimilarityScoreRepo SocialSimilarityScoreRepo { get; }
+        IConversationRepo ConversationRepo { get; }
+        IConversationUserRepo ConversationUserRepo { get; }
         Task BeginTransactionAsync();
         Task<int> CommitAsync();
         Task RollbackAsync();
