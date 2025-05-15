@@ -30,6 +30,10 @@ namespace LiftNet.Persistence.Context
         public DbSet<SocialConnection> SocialConnections { get; set; }
         public DbSet<CoachExtension> CoachExtensions { get; set; }
 
+        // chat
+        public DbSet<Conversation> Conversations { get; set; }
+        public DbSet<ConversationUser> ConversationUsers { get; set; }
+
         // vn geo
         public DbSet<Province> Provinces { get; set; }
         public DbSet<District> Districts { get; set; }

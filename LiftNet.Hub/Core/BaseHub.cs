@@ -47,19 +47,19 @@ namespace LiftNet.Hub.Core
         }
 
 
-        public async Task SendToUser(string userId, T message)
+        protected async Task SendToUser(string userId, T message)
         {
             var connections = _connPool.GetUserConnectionsByHub(userId, _hubName);
             await Send(connections, message);
         }
 
-        public async Task SendToAllInOneHub(T message)
+        protected async Task SendToAllInOneHub(T message)
         {
             var conns = _connPool.GetAllConnectionsByHub(_hubName);
             await Send(conns, message);
         }
 
-        public async Task SendToAll(T message)
+        protected async Task SendToAll(T message)
         {
             await Clients.All.SendAsync("RecieveMessage", message);
         }

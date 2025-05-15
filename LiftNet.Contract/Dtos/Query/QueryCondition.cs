@@ -1,4 +1,5 @@
 ﻿using LiftNet.Contract.Enums;
+using LiftNet.Domain.Indexes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -119,6 +120,42 @@ namespace LiftNet.Contract.Dtos.Query
             Operator = queryOperator;
             Logic = logic;
             Type = filterType;
+        }
+
+        public ConditionItem(string property, string value, QueryOperator queryOperator = QueryOperator.Equal, QueryLogic logic = QueryLogic.None)
+        {
+            Property = property;
+            Values = [value];
+            Operator = queryOperator;
+            Logic = logic;
+            Type = FilterType.String;
+        }
+
+        public ConditionItem(string property, int value, QueryOperator queryOperator = QueryOperator.Equal, QueryLogic logic = QueryLogic.None)
+        {
+            Property = property;
+            Values = [value.ToString()];
+            Operator = queryOperator;
+            Logic = logic;
+            Type = FilterType.Integer;
+        }
+
+        public ConditionItem(string property, bool value, QueryOperator queryOperator = QueryOperator.Equal, QueryLogic logic = QueryLogic.None)
+        {
+            Property = property;
+            Values = [value.ToString()];
+            Operator = queryOperator;
+            Logic = logic;
+            Type = FilterType.Boolean;
+        }
+
+        public ConditionItem(DataSchema schema, QueryOperator queryOperator = QueryOperator.Equal, QueryLogic logic = QueryLogic.None)
+        {
+            Property = "schema";
+            Values = [$"{(int)schema}"];
+            Operator = queryOperator;
+            Logic = logic;
+            Type = FilterType.Integer;
         }
     }
 
