@@ -43,6 +43,7 @@
     <ProjectReference Include="..\LiftNet.Domain\LiftNet.Domain.csproj" />
     <ProjectReference Include="..\LiftNet.Engine\LiftNet.Engine.csproj" />
     <ProjectReference Include="..\LiftNet.Handler\LiftNet.Handler.csproj" />
+    <ProjectReference Include="..\LiftNet.Hub\LiftNet.Hub.csproj" />
     <ProjectReference Include="..\LiftNet.Ioc\LiftNet.Ioc.csproj" />
     <ProjectReference Include="..\LiftNet.Logger\LiftNet.Logger.csproj" />
     <ProjectReference Include="..\LiftNet.MapSDK\LiftNet.MapSDK.csproj" />
