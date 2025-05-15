@@ -1,26 +1,21 @@
+using LiftNet.Contract.Dtos.Query;
+using LiftNet.Contract.Enums.Feed;
+using LiftNet.Contract.Views.Feeds;
+using LiftNet.Domain.Constants;
+using LiftNet.Domain.Indexes;
+using LiftNet.Domain.Response;
+using LiftNet.Handler.Feeds.Commands.Requests;
+using LiftNet.Handler.Feeds.Queries.Requests;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Net;
-using System.Threading.Tasks;
-using MediatR;
-using LiftNet.Domain.Response;
-using LiftNet.Domain.Indexes;
-using LiftNet.Handler.Feeds.Commands.Requests;
-using LiftNet.Domain.Constants;
-using Microsoft.AspNetCore.Http;
-using System.Linq;
-using System.Collections.Generic;
-using LiftNet.Contract.Enums.Feed;
-using LiftNet.Contract.Dtos.Query;
-using LiftNet.Domain.ViewModels;
-using LiftNet.Handler.Feeds.Queries.Requests;
 
 namespace LiftNet.Api.Controllers
 {
     public class FeedController : LiftNetControllerBase
     {
-        public FeedController(IMediator mediator, IServiceProvider serviceProvider) 
+        public FeedController(IMediator mediator, IServiceProvider serviceProvider)
             : base(mediator, serviceProvider)
         {
         }
@@ -171,4 +166,4 @@ namespace LiftNet.Api.Controllers
             return StatusCode(500, result);
         }
     }
-} 
+}

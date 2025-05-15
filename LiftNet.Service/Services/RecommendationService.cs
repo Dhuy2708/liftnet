@@ -85,11 +85,20 @@ namespace LiftNet.Service.Services
                             .Take(pageSize)
                             .Select(x => x.Feed)
                             .ToList();
-                foreach (var feed in recommendedFeeds)
+
+                if (recommendedFeeds.IsNullOrEmpty())
                 {
-                    seenFeeds.Add(feed.Id);
+                    await _redisCache.RemoveAsync(seenFeedsKey);
                 }
-                await _redisCache.SetAsync(seenFeedsKey, seenFeeds, TimeSpan.FromDays(CACHE_EXPIRATION_DAYS));
+                else
+                {
+                    foreach (var feed in recommendedFeeds)
+                    {
+                        seenFeeds.Add(feed.Id);
+                    }
+                    await _redisCache.SetAsync(seenFeedsKey, seenFeeds, TimeSpan.FromDays(CACHE_EXPIRATION_DAYS));
+                }
+                    
                 return recommendedFeeds;
             }
             catch (Exception ex)
@@ -148,6 +157,7 @@ namespace LiftNet.Service.Services
             var condition = new QueryCondition();
             condition.PageSize = MAX_COLLABORATIVE_FEEDS_COUNT;
             condition.AddCondition(new ConditionItem("schema", [$"{(int)DataSchema.Feed}"], FilterType.Integer, logic: QueryLogic.And));
+            condition.AddCondition(new ConditionItem("userid", [userId], queryOperator: QueryOperator.NotEqual, logic: QueryLogic.And));
             if (seenFeeds.IsNotNullOrEmpty())
             {
                 condition.AddCondition(new ConditionItem("id", seenFeeds.ToList(), FilterType.String, QueryOperator.NotContains, logic: QueryLogic.And));

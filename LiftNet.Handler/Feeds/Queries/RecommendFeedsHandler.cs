@@ -1,14 +1,18 @@
-using System.Threading;
-using System.Threading.Tasks;
-using System.Linq;
-using MediatR;
-using LiftNet.Domain.Response;
-using LiftNet.Domain.ViewModels;
+using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Interfaces.IServices.Indexes;
+using LiftNet.Contract.Views.Feeds;
+using LiftNet.Contract.Views.Users;
+using LiftNet.Domain.Entities;
+using LiftNet.Domain.Enums;
+using LiftNet.Domain.Response;
 using LiftNet.Handler.Feeds.Queries.Requests;
-using System.Collections.Generic;
 using LiftNet.Utility.Extensions;
+using LiftNet.Utility.Mappers;
+using LiftNet.Utility.Utils;
+using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace LiftNet.Handler.Feeds.Queries
 {
@@ -16,10 +20,15 @@ namespace LiftNet.Handler.Feeds.Queries
     {
         private readonly IRecommendationService _recommendationService;
         private readonly IFeedIndexService _feedIndexService;
-        public RecommendFeedsHandler(IRecommendationService recommendationService, IFeedIndexService feedIndexService)
+        private readonly RoleManager<Role> _roleManager;
+        private readonly IUserRepo _userRepo;
+
+        public RecommendFeedsHandler(IRecommendationService recommendationService, IFeedIndexService feedIndexService, RoleManager<Role> roleManager, IUserRepo userRepo)
         {
             _recommendationService = recommendationService;
             _feedIndexService = feedIndexService;
+            _roleManager = roleManager;
+            _userRepo = userRepo;
         }
 
         public async Task<LiftNetRes<FeedViewModel>> Handle(RecommendFeedsQuery request, CancellationToken cancellationToken)
@@ -30,6 +39,9 @@ namespace LiftNet.Handler.Feeds.Queries
             {
                 return LiftNetRes<FeedViewModel>.SuccessResponse([]);
             }
+            var userIds = feeds.Select(x => x.UserId).ToList();
+            var userOverviewDict = await AssembleUserOverviews(userIds);
+
             var likeCounts = await _feedIndexService.GetFeedLikeCountsAsync(feedIds);
             var likeStatuses = await _feedIndexService.GetFeedLikeStatusesAsync(feedIds, request.UserId);
 
@@ -39,7 +51,7 @@ namespace LiftNet.Handler.Feeds.Queries
                 viewModels.Add(new FeedViewModel
                 {
                     Id = feed.Id,
-                    UserId = feed.UserId,
+                    UserOverview = userOverviewDict[feed.UserId],
                     Content = feed.Content,
                     Medias = feed.Medias,
                     CreatedAt = feed.CreatedAt,
@@ -50,5 +62,28 @@ namespace LiftNet.Handler.Feeds.Queries
             }
             return LiftNetRes<FeedViewModel>.SuccessResponse(viewModels);
         }
+
+        private async Task<Dictionary<string, UserOverview>> AssembleUserOverviews(List<string> userIds)
+        {
+            userIds = userIds.Distinct().ToList();
+            var roles = await _roleManager.Roles.ToListAsync();
+            var roleDict = roles.ToDictionary(x => x.Id, x => x.Name);
+
+            var users = await _userRepo.GetQueryable()
+                                 .Include(x => x.UserRoles)
+                                 .Where(x => userIds.Contains(x.Id))
+                                 .ToListAsync();
+            Dictionary<string, LiftNetRoleEnum> roleEnumDict = new();
+
+            foreach (var user in users)
+            {
+                if (user.UserRoles.FirstOrDefault() is { } userRole && roleDict.TryGetValue(userRole.RoleId, out var roleEnum))
+                {
+                    roleEnumDict[user.Id] = RoleUtil.GetRole(roleEnum!);
+                }
+            }
+            var userOverviews = users.Select(x => x.ToOverview(roleEnumDict)).ToList();
+            return userOverviews.ToDictionary(x => x.Id, v => v);
+        }
     }
-} 
+}
