@@ -1,7 +1,6 @@
-using MediatR;
+using LiftNet.Contract.Views.Feeds;
 using LiftNet.Domain.Response;
-using LiftNet.Domain.ViewModels;
-using System.Collections.Generic;
+using MediatR;
 
 namespace LiftNet.Handler.Feeds.Queries.Requests
 {
@@ -9,4 +8,4 @@ namespace LiftNet.Handler.Feeds.Queries.Requests
     {
         public string UserId { get; set; }
     }
-} 
+}

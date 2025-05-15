@@ -1,7 +1,7 @@
 using MediatR;
 using LiftNet.Domain.Response;
 using LiftNet.Contract.Dtos.Query;
-using LiftNet.Domain.ViewModels;
+using LiftNet.Contract.Views.Feeds;
 
 namespace LiftNet.Handler.Feeds.Queries.Requests
 {

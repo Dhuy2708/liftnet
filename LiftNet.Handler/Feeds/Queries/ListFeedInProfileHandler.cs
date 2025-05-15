@@ -1,10 +1,10 @@
 using LiftNet.Contract.Dtos.Query;
 using LiftNet.Contract.Enums;
 using LiftNet.Contract.Interfaces.IServices.Indexes;
+using LiftNet.Contract.Views.Feeds;
 using LiftNet.Domain.Indexes;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
-using LiftNet.Domain.ViewModels;
 using LiftNet.Handler.Feeds.Queries.Requests;
 using MediatR;
 
@@ -53,7 +53,6 @@ namespace LiftNet.Handler.Feeds.Queries
                     viewModels.Add(new FeedViewModel
                     {
                         Id = feed.Id,
-                        UserId = feed.UserId,
                         Content = feed.Content,
                         Medias = feed.Medias,
                         CreatedAt = feed.CreatedAt,
