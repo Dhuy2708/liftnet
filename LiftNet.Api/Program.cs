@@ -2,6 +2,7 @@
 using dotenv.net;
 using LiftNet.Api.Extensions;
 using LiftNet.Api.Middlewares;
+using LiftNet.Hub.Core;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.JsonWebTokens;
 using NSwag;
@@ -24,6 +25,7 @@ public class Program
         builder.Services.RegisterInfras();
         builder.Services.RegisterHostedService();
         builder.Services.RegisterEngines();
+        builder.Services.RegisterHubs();
 
         builder.Services.AddControllers();
         builder.Services.AddSwagger();
@@ -34,17 +36,16 @@ public class Program
             options.SuppressModelStateInvalidFilter = true;
         });
 
-        //#if DEBUG
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowAll", policy =>
             {
-                policy.AllowAnyOrigin()
+                policy.WithOrigins("http://localhost:5173"!)
                       .AllowAnyHeader()
-                      .AllowAnyMethod();
+                      .AllowAnyMethod()
+                      .AllowCredentials();
             });
         });
-        //#endif
 
         #region app
         var app = builder.Build();
@@ -63,6 +64,8 @@ public class Program
         app.UseMiddleware<ExceptionMiddleware>();
 
         app.MapControllers();
+
+        app.MapHub<ChatHub>("/chat-hub");
 
         app.Run();
         #endregion;

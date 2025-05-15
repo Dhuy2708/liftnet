@@ -31,8 +31,8 @@ namespace LiftNet.Api.Extensions
                 opt.Password.RequireUppercase = false;
                 opt.Password.RequiredLength = 6;
             }).AddRoles<Role>()
-            .AddEntityFrameworkStores<LiftNetDbContext>()
-            .AddDefaultTokenProviders();
+              .AddEntityFrameworkStores<LiftNetDbContext>()
+              .AddDefaultTokenProviders();
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             services.AddAuthentication(options =>
             {
