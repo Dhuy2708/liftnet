@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace LiftNet.Domain.Entities
 {
     [Table("ConversationUsers")]
-    public sealed class ConversationUser
+    public sealed class ConversationUser // for group only
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

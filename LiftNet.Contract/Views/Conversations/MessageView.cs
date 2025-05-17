@@ -5,23 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Hub.Contract
+namespace LiftNet.Contract.Views.Conversations
 {
-    public class ChatMessage : HubMessage
+    public class MessageView
     {
-        public string TrackId
+        public string Id
         {
             get; set;
         }
-        public string ConversationId
-        {
-            get; set;
-        }
-        public DateTime Time
+        public string SenderId
         {
             get; set;
         }
         public ChatMessageType Type
+        {
+            get; set;
+        }
+        public string Body
         {
             get; set;
         }
