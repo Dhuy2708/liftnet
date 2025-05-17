@@ -1,5 +1,8 @@
-﻿using LiftNet.Hub.Contract;
+﻿using LiftNet.Domain.Entities;
+using LiftNet.Domain.Interfaces;
+using LiftNet.Hub.Contract;
 using LiftNet.Hub.Provider;
+using LiftNet.Utility.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -17,6 +20,7 @@ namespace LiftNet.Hub.Core
     {
         protected readonly ConnectionPool _connPool;
         protected string _hubName;
+        protected string CallerId => Context.UserIdentifier ?? string.Empty;
 
         public BaseHub(ConnectionPool connPool, string hubName)
         {
@@ -28,10 +32,9 @@ namespace LiftNet.Hub.Core
 
         public override async Task OnConnectedAsync()
         {
-            var userId = Context.UserIdentifier;
-            if (!string.IsNullOrEmpty(userId))
+            if (!string.IsNullOrEmpty(CallerId))
             {
-                _connPool.AddConnection(userId, Context.ConnectionId, _hubName);
+                _connPool.AddConnection(CallerId, Context.ConnectionId, _hubName);
             }
             await base.OnConnectedAsync();
         }
@@ -46,11 +49,32 @@ namespace LiftNet.Hub.Core
             await base.OnDisconnectedAsync(exception);
         }
 
+        protected async Task SendToCaller(T message)
+        {
+            var userId = Context.UserIdentifier;
+            if (userId.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            var connections = _connPool.GetUserConnectionsByHub(userId!, _hubName);
+            await Send(connections, message);
+        }
 
         protected async Task SendToUser(string userId, T message)
         {
             var connections = _connPool.GetUserConnectionsByHub(userId, _hubName);
             await Send(connections, message);
+        }
+
+        protected async Task SendToUsers(List<string> userIds, T message)
+        {
+            var tasks = userIds.Select(x =>
+            {
+                var connections = _connPool.GetUserConnectionsByHub(x, _hubName);
+                return Send(connections, message);
+            });
+            await Task.WhenAll(tasks);
         }
 
         protected async Task SendToAllInOneHub(T message)

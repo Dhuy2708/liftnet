@@ -28,8 +28,4 @@
     <ProjectReference Include="..\LiftNet.Ioc\LiftNet.Ioc.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Interfaces\Engines\" />
-  </ItemGroup>
-
 </Project>

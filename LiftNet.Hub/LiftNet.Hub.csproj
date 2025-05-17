@@ -4,6 +4,7 @@
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	  <NoWarn>CS8618</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,7 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LiftNet.Contract\LiftNet.Contract.csproj" />
     <ProjectReference Include="..\LiftNet.Domain\LiftNet.Domain.csproj" />
+    <ProjectReference Include="..\LiftNet.Utility\LiftNet.Utility.csproj" />
   </ItemGroup>
 
 </Project>

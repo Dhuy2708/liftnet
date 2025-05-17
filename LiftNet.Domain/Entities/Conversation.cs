@@ -17,25 +17,51 @@ namespace LiftNet.Domain.Entities
             get; set;
         } = Guid.NewGuid().ToString();
 
+        [ForeignKey(nameof(User1))]
+        public string? UserId1
+        {
+            get; set;
+        }
+
+        [ForeignKey(nameof(User2))]
+        public string? UserId2
+        {
+            get; set;
+        }
+
         public bool IsGroup
         {
             get; set;
         }
+
         public string? GroupTitle
         {
             get; set;
         }
+
         public string? GroupImage
         {
             get; set;
         }
+
         public DateTime CreatedAt
         {
             get; set;
         }
+
         public DateTime LastUpdate
         {
             get; set;
         } = DateTime.UtcNow;
+
+        // mapping
+        public User User1
+        {
+            get; set;
+        }
+        public User User2
+        {
+            get; set;
+        }
     }
 }

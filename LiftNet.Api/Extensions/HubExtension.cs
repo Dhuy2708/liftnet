@@ -23,7 +23,7 @@ namespace LiftNet.Api.Extensions
             });
 
             services.AddSingleton<ConnectionPool>();
-            services.AddSingleton<ChatHub>();
+            services.AddTransient<ChatHub>();
             return services;
         }
     }
