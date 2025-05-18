@@ -13,7 +13,7 @@ namespace LiftNet.Contract.Views.Conversations
         {
             get; set;
         }
-        public List<UserOverview> Members
+        public List<UserOverview> OtherMembers
         {
             get; set;
         }

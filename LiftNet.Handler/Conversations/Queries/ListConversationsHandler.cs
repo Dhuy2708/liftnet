@@ -66,17 +66,19 @@ namespace LiftNet.Handler.Conversations.Queries
                 var user1 = conversation.User1;
                 var user2 = conversation.User2;
                 var targetUser = conversation.UserId1 == userId ? user2 : user1;
+                var lastMessage = lastMessagesDict.GetValueOrDefault(conversation.Id) ?? null;
                 result.Add(new ConversationOverview
                 {
                     Id = conversation.Id,
                     Img = conversation.UserId1 == userId ? conversation.User2!.Avatar : conversation.User1!.Avatar,
                     IsGroup = false,
-                    LastMessage = lastMessagesDict.TryGetValue(conversation.Id, out var lastMessage) ? new MessageView
+                    LastMessage = lastMessage != null ? new MessageView
                     {
                         Body = lastMessage.Message,
                         Id = lastMessage.Id,
                         SenderId = lastMessage.UserId,
                         Type = lastMessage.Type,
+                        Time = new DateTimeOffset(lastMessage.CreatedAt, TimeSpan.Zero),
                     } : null,
                     Name = conversation.UserId1 == userId
                                         ? user2.FirstName + user2.LastName

@@ -26,10 +26,12 @@ namespace LiftNet.Hub.Core
 
         public ChatHub(ConnectionPool connPool,
                        IChatIndexService chatService,
+                       IConversationRepo conversationRepo,
                        ILiftLogger<ChatHub> logger) 
             : base(connPool, HubNames.chat)
         {
             _chatService = chatService;
+            _conversationRepo = conversationRepo;
             _logger = logger;
         }
 
@@ -37,6 +39,7 @@ namespace LiftNet.Hub.Core
         {
             try
             {
+                string? msgId = null;
                 try
                 {
                     _logger.Info($"sending message to userid : {recieverIds}");
@@ -44,7 +47,11 @@ namespace LiftNet.Hub.Core
                     {
                         return;
                     }
-                    await _chatService.SaveMessages(message.ConversationId, CallerId, message.Body, message.Type, message.Time);
+                    msgId = await _chatService.SaveMessages(message.ConversationId, CallerId, message.Body, message.Type, message.Time);
+                    if (msgId.IsNotNullOrEmpty())
+                    {
+                        message.MessageId = msgId;
+                    }
                     var conversation = await _conversationRepo.GetById(message.ConversationId);
                     if (conversation != null)
                     {
@@ -59,7 +66,7 @@ namespace LiftNet.Hub.Core
                     return;
                 }
 
-                var pingTask = PingMessageStatus(message.TrackId, ChatMessageStatus.Sent);
+                var pingTask = PingMessageStatus(message.TrackId, ChatMessageStatus.Sent, msgId);
                 var sendTask = SendToUsers(recieverIds, message);
                 await Task.WhenAll(pingTask, sendTask);
             }
@@ -70,13 +77,14 @@ namespace LiftNet.Hub.Core
             }
         }
 
-        private async Task PingMessageStatus(string trackId, ChatMessageStatus status)
+        private async Task PingMessageStatus(string trackId, ChatMessageStatus status, string? messageId = null)
         {
-            await Clients.Caller.SendAsync("MessageSent", new
+            await SendToCaller(new
             {
-                MessageId = trackId,
+                TrackId = trackId,
+                MessageId = messageId,
                 Status = (int)status
-            });
+            }, "MessageSent");
         }
     }
 }
