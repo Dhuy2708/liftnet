@@ -11,19 +11,18 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Conversations.Queries
 {
-    public class GetConversationInfoHandler : IRequestHandler<GetConversationInfoQuery, LiftNetRes<ConversationInfo>>
+    public class GetConversationInfoByUserIdHandler : IRequestHandler<GetConversationInfoByUserIdQuery, LiftNetRes<ConversationInfo>>
     {
         private readonly IConversationRepo _conversationRepo;
         private readonly IUserService _userService;
         private readonly ILiftLogger<GetConversationInfoHandler> _logger;
 
-        public GetConversationInfoHandler(IConversationRepo conversationRepo, 
+        public GetConversationInfoByUserIdHandler(IConversationRepo conversationRepo,
                                           IUserService userService,
                                           ILiftLogger<GetConversationInfoHandler> logger)
         {
@@ -32,27 +31,30 @@ namespace LiftNet.Handler.Conversations.Queries
             _logger = logger;
         }
 
-        public async Task<LiftNetRes<ConversationInfo>> Handle(GetConversationInfoQuery request, CancellationToken cancellationToken)
+        public async Task<LiftNetRes<ConversationInfo>> Handle(GetConversationInfoByUserIdQuery request, CancellationToken cancellationToken)
         {
-            var conversationId = request.ConversationId;
             var userId = request.UserId;
+            var targetId = request.TargetId;
 
-            if (conversationId.IsNullOrEmpty() || userId.IsNullOrEmpty())
+            if (targetId.IsNullOrEmpty() || userId.IsNullOrEmpty())
             {
-                return LiftNetRes<ConversationInfo>.ErrorResponse("conversationId is required");
+                return LiftNetRes<ConversationInfo>.ErrorResponse("targetId is required");
             }
 
-            if (!await _conversationRepo.IsConversationExist(conversationId, userId))
-            {
-                return LiftNetRes<ConversationInfo>.ErrorResponse("conversation is not exist");
-            }
+            var isExist = await _conversationRepo.IsConversationExistByUserId(userId, targetId);
 
+            if (!isExist)
+            {
+                return LiftNetRes<ConversationInfo>.ErrorResponse("conversation not found");
+            }
             var conversation = await _conversationRepo.GetQueryable()
                                 .Include(x => x.User1)
                                 .ThenInclude(x => x.UserRoles)
                                 .Include(x => x.User2)
                                 .ThenInclude(x => x.UserRoles)
-                                .FirstAsync(x => x.Id == conversationId);
+                                .FirstAsync(x => (x.UserId1 == userId && x.UserId2 == targetId) ||
+                                                 (x.UserId1 == targetId && x.UserId2 == userId));
+
             var user1 = conversation.User1;
             var user2 = conversation.User2;
             var targetUser = user1.Id == userId ? user2 : user1;
@@ -80,5 +82,6 @@ namespace LiftNet.Handler.Conversations.Queries
 
             return LiftNetRes<ConversationInfo>.SuccessResponse(result);
         }
+
     }
 }

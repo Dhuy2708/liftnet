@@ -20,4 +20,16 @@ namespace LiftNet.Handler.Conversations.Queries.Requests
             get; set;
         }
     }
+
+    public class GetConversationInfoByUserIdQuery : IRequest<LiftNetRes<ConversationInfo>>
+    {
+        public string UserId
+        {
+            get; set;
+        }
+        public string TargetId
+        {
+            get; set;
+        }
+    }
 }

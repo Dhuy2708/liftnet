@@ -112,5 +112,46 @@ namespace LiftNet.Api.Controllers
             }
             return StatusCode(500, result);
         }
+
+        [HttpGet("byUserId")]
+        [Authorize]
+        [ProducesResponseType(typeof(LiftNetRes<ConversationInfo>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetConversationInfoByUserId([FromQuery] string targetId)
+        {
+            var request = new GetConversationInfoByUserIdQuery
+            {
+                UserId = UserId,
+                TargetId = targetId
+            };
+
+            var result = await _mediator.Send(request);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpGet("checkIfExist")]
+        [Authorize]
+        [ProducesResponseType(typeof(LiftNetRes<bool>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> CheckIfExist([FromQuery] string targetId)
+        {
+            if (UserId.IsNullOrEmpty())
+            {
+                return Unauthorized();
+            }
+            var request = new CheckIfConversationExistQuery
+            {
+                UserId = UserId,
+                TargetId = targetId
+            };
+            var result = await _mediator.Send(request);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
     }
 }
