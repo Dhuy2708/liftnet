@@ -1,4 +1,5 @@
-﻿using LiftNet.Contract.Views.Conversations;
+﻿using LiftNet.Contract.Dtos.Query;
+using LiftNet.Contract.Views.Conversations;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Conversations.Commands.Requests;
 using LiftNet.Handler.Conversations.Queries.Requests;
@@ -57,6 +58,35 @@ namespace LiftNet.Api.Controllers
             };
 
             var result = await _mediator.Send(command);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpPost("message/list")]
+        [Authorize]
+        [ProducesResponseType(typeof(PaginatedLiftNetRes<MessageView>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ListMessages([FromBody] QueryCondition conditions)
+        {
+            if (UserId.IsNullOrEmpty())
+            {
+                return Unauthorized();
+            }
+
+            if (conditions == null)
+            {
+                conditions = new QueryCondition();
+            }
+
+            var request = new ListMessagesQuery
+            {
+                Conditions = conditions,
+                UserId = UserId
+            };
+
+            var result = await _mediator.Send(request);
             if (result.Success)
             {
                 return Ok(result);

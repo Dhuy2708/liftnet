@@ -1,4 +1,4 @@
-﻿using LiftNet.Domain.Enums;
+﻿using LiftNet.Contract.Views.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,34 +7,21 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Contract.Views.Conversations
 {
-    public class ConversationOverview
+    public class ConversationInfo
     {
         public string Id
         {
             get; set;
         }
-
+        public List<UserOverview> Members
+        {
+            get; set;
+        }
         public string Name
         {
             get; set;
         }
-
-        public string Img
-        {
-            get; set;
-        }
-
         public bool IsGroup
-        {
-            get; set;
-        }
-
-        public LiftNetRoleEnum? Role
-        {
-            get; set;
-        }
-
-        public MessageView? LastMessage
         {
             get; set;
         }
