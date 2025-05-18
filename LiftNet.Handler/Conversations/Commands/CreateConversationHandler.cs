@@ -12,13 +12,16 @@ namespace LiftNet.Handler.Conversations.Commands
     public class CreateConversationHandler : IRequestHandler<CreateConversationCommand, LiftNetRes<string>>
     {
         private readonly IConversationRepo _conversationRepo;
+        private readonly IUserRepo _userRepo;
         private readonly ILiftLogger<CreateConversationHandler> _logger;
 
         public CreateConversationHandler(
             IConversationRepo conversationRepo,
+            IUserRepo userRepo,
             ILiftLogger<CreateConversationHandler> logger)
         {
             _conversationRepo = conversationRepo;
+            _userRepo = userRepo;
             _logger = logger;
         }
 
@@ -29,6 +32,15 @@ namespace LiftNet.Handler.Conversations.Commands
             {
                 return LiftNetRes<string>.ErrorResponse("cant create conversation with yourself");
             }
+
+            var isUserExist = await _userRepo.GetQueryable()
+                                       .AnyAsync(x => x.Id == request.TargetId, cancellationToken);
+
+            if (!isUserExist)
+            {
+                return LiftNetRes<string>.ErrorResponse("target user not found");
+            }
+
             // Check if conversation already exists
             var existingConversation = await _conversationRepo.GetQueryable()
                 .Where(x => !x.IsGroup && 
@@ -38,7 +50,7 @@ namespace LiftNet.Handler.Conversations.Commands
 
             if (existingConversation != null)
             {
-                return LiftNetRes<string>.ErrorResponse("conversation already exists");
+                return LiftNetRes<string>.SuccessResponse(existingConversation.Id, "conversation already exists");
             }
 
             var conversation = new Conversation
