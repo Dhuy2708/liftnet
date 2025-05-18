@@ -13,6 +13,10 @@ namespace LiftNet.Hub.Contract
         {
             get; set;
         }
+        public string? MessageId
+        {
+            get; set;
+        }
         public string ConversationId
         {
             get; set;

@@ -41,10 +41,7 @@ namespace LiftNet.Handler.Conversations.Queries
                 return PaginatedLiftNetRes<MessageView>.ErrorResponse("conversationId is required");
             }
 
-            var isExist = await _conversationRepo.GetQueryable()
-                                        .AnyAsync(x => x.Id == conversationId && (x.UserId1 == request.UserId || x.UserId2 == request.UserId));
-
-            if (!isExist)
+            if (! await _conversationRepo.IsConversationExist(conversationId, request.UserId))
             {
                 return PaginatedLiftNetRes<MessageView>.ErrorResponse("conversation is not exist");
             }
@@ -59,7 +56,8 @@ namespace LiftNet.Handler.Conversations.Queries
                 Id = x.Id,
                 SenderId = x.UserId,
                 Type = x.Type,
-                Body = x.Message
+                Body = x.Message,
+                Time = new DateTimeOffset(x.CreatedAt, TimeSpan.Zero)
             }).ToList();
 
             _logger.Info("list messages successfully");

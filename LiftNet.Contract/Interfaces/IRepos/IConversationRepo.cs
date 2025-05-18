@@ -11,5 +11,6 @@ namespace LiftNet.Contract.Interfaces.IRepos
 {
     public interface IConversationRepo : ICrudBaseRepo<Conversation>, IDependency
     {
+        Task<bool> IsConversationExist(string conversationId, string userId);
     }
 }

@@ -130,6 +130,7 @@ namespace LiftNet.ServiceBus.Core.Impl
                 {
                     await Task.Delay(500, cts); // polling interval
                 }
+                _logger.Warn($"Cancellation requested for queue: {queueName}");
             }
             catch (TaskCanceledException)
             {

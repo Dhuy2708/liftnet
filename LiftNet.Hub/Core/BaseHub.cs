@@ -49,7 +49,7 @@ namespace LiftNet.Hub.Core
             await base.OnDisconnectedAsync(exception);
         }
 
-        protected async Task SendToCaller(T message)
+        protected async Task SendToCaller(T message, string? methodName = null)
         {
             var userId = Context.UserIdentifier;
             if (userId.IsNullOrEmpty())
@@ -58,7 +58,19 @@ namespace LiftNet.Hub.Core
             }
 
             var connections = _connPool.GetUserConnectionsByHub(userId!, _hubName);
-            await Send(connections, message);
+            await Send(connections, message, methodName);
+        }
+
+        protected async Task SendToCaller(object message, string? methodName = null)
+        {
+            var userId = Context.UserIdentifier;
+            if (userId.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            var connections = _connPool.GetUserConnectionsByHub(userId!, _hubName);
+            await Send(connections, message, methodName);
         }
 
         protected async Task SendToUser(string userId, T message)
@@ -88,15 +100,28 @@ namespace LiftNet.Hub.Core
             await Clients.All.SendAsync("RecieveMessage", message);
         }
 
-        protected async Task Send(IEnumerable<string> connections, T message)
+        protected async Task Send(IEnumerable<string> connections, T message, string? methodName = null)
         {
             if (!connections.Any())
             {
                 return;
             }
-
+            methodName ??= "RecieveMessage";
             var tasks = connections.Select(connectionId =>
-                                                   Clients.Client(connectionId).SendAsync("RecieveMessage", message)
+                                                   Clients.Client(connectionId).SendAsync(methodName, message)
+                                                ).ToList();
+            await Task.WhenAll(tasks);
+        }
+
+        protected async Task Send(IEnumerable<string> connections, object message, string? methodName = null)
+        {
+            if (!connections.Any())
+            {
+                return;
+            }
+            methodName ??= "RecieveMessage";
+            var tasks = connections.Select(connectionId =>
+                                                   Clients.Client(connectionId).SendAsync(methodName, message)
                                                 ).ToList();
             await Task.WhenAll(tasks);
         }

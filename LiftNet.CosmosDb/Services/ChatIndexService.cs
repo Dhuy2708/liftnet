@@ -78,13 +78,14 @@ namespace LiftNet.CosmosDb.Services
             return ([], null);
         }
 
-        public async Task<int> SaveMessages(string conversationId, string senderId, string message, ChatMessageType type = ChatMessageType.Text, DateTime? time = null)
+        public async Task<string?> SaveMessages(string conversationId, string senderId, string message, ChatMessageType type = ChatMessageType.Text, DateTime? time = null)
         {
             try
             {
+                var msgId = Guid.NewGuid().ToString();
                 var index = new ChatMessageIndexData()
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = msgId,
                     ConversationId = conversationId,
                     UserId = senderId,
                     Message = message,
@@ -95,13 +96,13 @@ namespace LiftNet.CosmosDb.Services
                 };
 
                 await UpsertAsync(index);
-                return 1;
+                return msgId;
             }
             catch (Exception e)
             {
                 _logger.Error(e, "SaveMessages error");
             }
-            return 0;
+            return null;
         }
 
     }

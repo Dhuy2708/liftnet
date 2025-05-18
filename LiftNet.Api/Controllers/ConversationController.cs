@@ -77,12 +77,31 @@ namespace LiftNet.Api.Controllers
 
             if (conditions == null)
             {
-                conditions = new QueryCondition();
+                return BadRequest();
             }
 
             var request = new ListMessagesQuery
             {
                 Conditions = conditions,
+                UserId = UserId
+            };
+
+            var result = await _mediator.Send(request);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpGet]
+        [Authorize]
+        [ProducesResponseType(typeof(LiftNetRes<ConversationInfo>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetConversationInfo([FromQuery] string conversationId)
+        {
+            var request = new GetConversationInfoQuery
+            {
+                ConversationId = conversationId,
                 UserId = UserId
             };
 

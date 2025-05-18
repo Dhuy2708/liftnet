@@ -25,5 +25,9 @@ namespace LiftNet.Contract.Views.Conversations
         {
             get; set;
         }
+        public DateTimeOffset Time
+        {
+            get; set;
+        }
     }
 }
