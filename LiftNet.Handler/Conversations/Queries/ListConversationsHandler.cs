@@ -1,4 +1,5 @@
 using LiftNet.Contract.Interfaces.IRepos;
+using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Interfaces.IServices.Indexes;
 using LiftNet.Contract.Views.Conversations;
 using LiftNet.Domain.Entities;
@@ -16,6 +17,7 @@ namespace LiftNet.Handler.Conversations.Queries
     {
         private readonly IConversationRepo _conversationRepo;
         private readonly IConversationUserRepo _conversationUserRepo;
+        private readonly IRoleService _roleService;
         private readonly IChatIndexService _chatService;
         private readonly ILiftLogger<ListConversationsHandler> _logger;
 
@@ -23,11 +25,13 @@ namespace LiftNet.Handler.Conversations.Queries
             IConversationRepo conversationRepo,
             IConversationUserRepo conversationUserRepo,
             IChatIndexService chatService,
+            IRoleService roleService,
             ILiftLogger<ListConversationsHandler> logger)
         {
             _conversationRepo = conversationRepo;
             _conversationUserRepo = conversationUserRepo;
             _chatService = chatService;
+            _roleService = roleService;
             _logger = logger;
         }
 
@@ -37,12 +41,15 @@ namespace LiftNet.Handler.Conversations.Queries
             var userId = request.UserId;
             var conversations = await _conversationRepo.GetQueryable()
                                         .Include(x => x.User1)
+                                        .ThenInclude(x => x.UserRoles)
                                         .Include(x => x.User2)
+                                        .ThenInclude(x => x.UserRoles)
                                         .Where(x => x.UserId1 == userId || x.UserId2 == userId)
                                         .OrderByDescending(x => x.LastUpdate)
                                         .Skip((request.PageNumber - 1) * pageSize)
                                         .ToListAsync();
 
+            var roleDict = await _roleService.GetAllRoleDictAsync();
             var conversationIds = conversations.Select(x => x.Id).ToList();
 
             var tasks = conversationIds
@@ -58,6 +65,7 @@ namespace LiftNet.Handler.Conversations.Queries
             {
                 var user1 = conversation.User1;
                 var user2 = conversation.User2;
+                var targetUser = conversation.UserId1 == userId ? user2 : user1;
                 result.Add(new ConversationOverview
                 {
                     Id = conversation.Id,
@@ -73,6 +81,7 @@ namespace LiftNet.Handler.Conversations.Queries
                     Name = conversation.UserId1 == userId
                                         ? user2.FirstName + user2.LastName
                                         : user1.FirstName + user1.LastName,
+                    Role = roleDict.GetValueOrDefault(targetUser.UserRoles.First()!.RoleId)
                 });
             }
 
