@@ -36,11 +36,16 @@ public class Program
             options.SuppressModelStateInvalidFilter = true;
         });
 
+        var orginUrl = "http://localhost:5173";
+
+#if !DEBUG
+        orginUrl = Environment.GetEnvironmentVariable("UI_URL") ?? "http://localhost:5173";
+#endif
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowAll", policy =>
             {
-                policy.WithOrigins("http://localhost:5173"!)
+                policy.WithOrigins(orginUrl!)
                       .AllowAnyHeader()
                       .AllowAnyMethod()
                       .AllowCredentials();

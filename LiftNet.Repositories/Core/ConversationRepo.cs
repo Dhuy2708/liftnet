@@ -21,5 +21,11 @@ namespace LiftNet.Repositories.Core
         {
             return await GetQueryable().AnyAsync(x => x.Id == conversationId && (x.UserId1 == userId || x.UserId2 == userId));
         }
+
+        public async Task<bool> IsConversationExistByUserId(string userId1, string userId2)
+        {
+            return await GetQueryable().AnyAsync(x => (x.UserId1 == userId1 && x.UserId2 == userId2) || 
+                                                      (x.UserId1 == userId2 && x.UserId2 == userId1));
+        }
     }
 }

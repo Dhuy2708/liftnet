@@ -14,8 +14,8 @@ COPY ["LiftNet.Api/LiftNet.Api.csproj", "LiftNet.Api/"]
 COPY ["LiftNet.Handler/LiftNet.Handler.csproj", "LiftNet.Handler/"]
 COPY ["LiftNet.Service/LiftNet.Service.csproj", "LiftNet.Service/"]
 COPY ["LiftNet.SharedKenel/LiftNet.SharedKenel.csproj", "LiftNet.SharedKenel/"]
-COPY ["LiftNet.ServiceBus/LiftNet.ServiceBus.csproj", "LiftNet.ServiceBus/"]
-COPY ["LiftNet.MailService/LiftNet.MailService.csproj", "LiftNet.MailService/"]
+COPY ["LiftNet.Engine/LiftNet.Engine.csproj", "LiftNet.Engine/"]
+COPY ["LiftNet.Hub/LiftNet.Hub.csproj", "LiftNet.Hub/"]
 
 # common
 COPY ["LiftNet.Contract/LiftNet.Contract.csproj", "LiftNet.Contract/"]
@@ -25,16 +25,22 @@ COPY ["LiftNet.Utility/LiftNet.Utility.csproj", "LiftNet.Utility/"]
 COPY ["LiftNet.Domain/LiftNet.Domain.csproj", "LiftNet.Domain/"]
 COPY ["LiftNet.Logger/LiftNet.Logger.csproj", "LiftNet.Logger/"]
 COPY ["LiftNet.Persistence/LiftNet.Persistence.csproj", "LiftNet.Persistence/"]
+COPY ["LiftNet.Ioc/LiftNet.Ioc.csproj", "LiftNet.Ioc/"]
 
 # infra
-COPY ["LiftNet.AzureBlob/LiftNet.AzureBlob.csproj", "LiftNet.AzureBlob/"]
-COPY ["LiftNet.CosmosDb/LiftNet.CosmosDb.csproj", "LiftNet.CosmosDb/"]
-COPY ["LiftNet.Ioc/LiftNet.Ioc.csproj", "LiftNet.Ioc/"]
 COPY ["LiftNet.ProvinceSDK/LiftNet.ProvinceSDK.csproj", "LiftNet.ProvinceSDK/"]
-COPY ["LiftNet.Repositories/LiftNet.Repositories.csproj", "LiftNet.Repositories/"]
 COPY ["LiftNet.MapSDK/LiftNet.MapSDK.csproj", "LiftNet.MapSDK/"]
 COPY ["LiftNet.Cloudinary/LiftNet.Cloudinary.csproj", "LiftNet.Cloudinary/"]
 COPY ["LiftNet.RedisCache/LiftNet.RedisCache.csproj", "LiftNet.RedisCache/"]
+COPY ["LiftNet.MailService/LiftNet.MailService.csproj", "LiftNet.MailService/"]
+
+# data
+COPY ["LiftNet.AzureBlob/LiftNet.AzureBlob.csproj", "LiftNet.AzureBlob/"]
+COPY ["LiftNet.CosmosDb/LiftNet.CosmosDb.csproj", "LiftNet.CosmosDb/"]
+COPY ["LiftNet.Repositories/LiftNet.Repositories.csproj", "LiftNet.Repositories/"]
+
+# event
+COPY ["LiftNet.ServiceBus/LiftNet.ServiceBus.csproj", "LiftNet.ServiceBus/"]
 
 # job
 COPY ["LiftNet.Job/LiftNet.Job.csproj", "LiftNet.Job/"]
