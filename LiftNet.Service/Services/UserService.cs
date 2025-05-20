@@ -28,6 +28,13 @@ namespace LiftNet.Service.Services
             _roleService = roleService;
         }
 
+        public async Task<List<User>> GetByIds(List<string> userIds)
+        {
+            return await _userRepo.GetQueryable()
+                                 .Where(x => userIds.Contains(x.Id))
+                                 .ToListAsync();
+        }
+
         public async Task<Dictionary<string, LiftNetRoleEnum>> GetUserIdRoleDict(List<string> userIds, Dictionary<string, LiftNetRoleEnum>? roleDict = null)
         {
             var result = new Dictionary<string, LiftNetRoleEnum>();

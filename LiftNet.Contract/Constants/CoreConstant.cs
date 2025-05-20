@@ -77,5 +77,6 @@ namespace LiftNet.Contract.Constants
     public class RedisCacheKeys
     {
         public const string SEEN_FEEDS_CACHE_KEY = "feed:seen:{0}"; // user id 
+        public const string SUGGESTED_FRIENDS_CACHE_KEY = "user:suggested-friends:{0}"; // user id
     }
 }

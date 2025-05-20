@@ -149,5 +149,22 @@ namespace LiftNet.Api.Controllers
             }
             return StatusCode(500, result);
         }
+
+        [HttpGet("suggestFriends")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
+        [ProducesResponseType(typeof(LiftNetRes<UserOverview>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> FriendSuggestion()
+        {
+            var req = new FriendSuggestionQuery()
+            {
+                UserId = UserId,
+            };
+            var result = await _mediator.Send(req);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }   
     }
 }

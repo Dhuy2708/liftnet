@@ -14,5 +14,6 @@ namespace LiftNet.Contract.Interfaces.IServices
         Task<Dictionary<string, LiftNetRoleEnum>> GetUserIdRoleDict(List<string> userIds, Dictionary<string, LiftNetRoleEnum>? roleDict = null);
         Task<List<User>> GetByIdsAsync(List<string> userIds);
         Task<BasicUserInfo?> GetBasicUserInfoAsync(string userId);
+        Task<List<User>> GetByIds(List<string> userIds);
     }
 }
