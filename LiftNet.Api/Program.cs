@@ -17,6 +17,10 @@ public class Program
         JsonWebTokenHandler.DefaultMapInboundClaims = false;
 
         var builder = WebApplication.CreateBuilder(args);
+        //builder.WebHost.ConfigureKestrel(options =>
+        //{
+        //    options.ListenAnyIP(8080);
+        //});
 
         builder.Services.RegisterAuth();
         builder.Services.RegisterDbConfig();

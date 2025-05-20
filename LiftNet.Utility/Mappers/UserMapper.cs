@@ -88,7 +88,7 @@ namespace LiftNet.Utility.Mappers
             };
         }
 
-        public static UserOverview ToOverview(this User user, Dictionary<string, LiftNetRoleEnum>? roleMapping = null)
+        public static UserOverview ToOverview(this User user, Dictionary<string, LiftNetRoleEnum>? userRoleMapping = null)
         {
             var result = new UserOverview
             {
@@ -101,9 +101,9 @@ namespace LiftNet.Utility.Mappers
                 IsDeleted = user.IsDeleted,
                 IsSuspended = user.IsSuspended
             };
-            if (roleMapping != null)
+            if (userRoleMapping != null)
             {
-                result.Role = roleMapping[user.Id];
+                result.Role = userRoleMapping[user.Id];
             }
             return result;
         }

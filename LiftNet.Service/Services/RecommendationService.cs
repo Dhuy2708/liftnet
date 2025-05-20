@@ -19,11 +19,20 @@ using System.Threading.Tasks;
 using LiftNet.Utility.Extensions;
 using LiftNet.Contract.Enums;
 using LiftNet.Engine.Engine;
+using System.Threading;
+using LiftNet.Utility.Mappers;
+using LiftNet.Domain.Entities;
 
 namespace LiftNet.Service.Services
 {
     internal class RecommendationService : IRecommendationService
     {
+        private const int CACHE_EXPIRATION_DAYS = 1;
+        private const int MAX_FOLLOWING_USERS = 5;
+        private const int MAX_CONTENT_BASED_FEED_PER_USER = 25;
+        private const int MAX_COLLABORATIVE_FEEDS_COUNT = 25;
+
+
         private readonly IUnitOfWork _uow;
         private readonly IUserService _userService;
         private readonly IFeedIndexService _feedIndexService;
@@ -31,19 +40,18 @@ namespace LiftNet.Service.Services
         private readonly ISocialSimilarityScoreRepo _similarityScoreRepo;
         private readonly IRedisCacheService _redisCache;
         private readonly IFeedEngine _engine;
+        private readonly IRoleService _roleService;
         private readonly ILiftLogger<RecommendationService> _logger;
-        private const int CACHE_EXPIRATION_DAYS = 1;
-        private const int MAX_FOLLOWING_USERS = 5;
-        private const int MAX_CONTENT_BASED_FEED_PER_USER = 25;
-        private const int MAX_COLLABORATIVE_FEEDS_COUNT = 25;
 
-        public RecommendationService(IUnitOfWork uow, 
-                                     IUserService userService, 
-                                     IFeedIndexService feedIndexService, 
-                                     ISocialConnectionRepo socialConnectionRepo, 
-                                     ISocialSimilarityScoreRepo similarityScoreRepo, 
+
+        public RecommendationService(IUnitOfWork uow,
+                                     IUserService userService,
+                                     IFeedIndexService feedIndexService,
+                                     ISocialConnectionRepo socialConnectionRepo,
+                                     ISocialSimilarityScoreRepo similarityScoreRepo,
                                      IRedisCacheService redisCache,
-                                     IFeedEngine model, 
+                                     IFeedEngine model,
+                                     IRoleService roleService,
                                      ILiftLogger<RecommendationService> logger)
         {
             _uow = uow;
@@ -53,9 +61,11 @@ namespace LiftNet.Service.Services
             _similarityScoreRepo = similarityScoreRepo;
             _redisCache = redisCache;
             _engine = model;
+            _roleService = roleService;
             _logger = logger;
         }
 
+        #region feed
         public async Task<List<FeedIndexData>> ListRecommendedFeedsAsync(string userId, int pageSize = 5)
         {
             try
@@ -184,7 +194,9 @@ namespace LiftNet.Service.Services
             }
             return result;
         }
+        #endregion
 
+        #region search
         public async Task<List<UserOverview>> SearchPrioritizedUser(string currentUserId, string search, int pageSize = 10, int pageNumber = 1)
         {
             if (string.IsNullOrEmpty(currentUserId))
@@ -263,5 +275,92 @@ namespace LiftNet.Service.Services
                 IsFollowing = followingStatus.Contains(x.Id)
             }).ToList();
         }
+        #endregion
+
+        #region friend suggestion
+        public async Task<List<UserOverview>> SuggestFriendsAsync(string userId, int pageSize = 10)
+        {
+            var suggestedUserKey = string.Format(RedisCacheKeys.SUGGESTED_FRIENDS_CACHE_KEY, userId);
+            var suggestedUserIds = await _redisCache.GetObjectAsync<HashSet<string>>(suggestedUserKey) ?? new HashSet<string>();
+
+            var followingIds = await _socialConnectionRepo.GetQueryable()
+                .Where(x => x.UserId == userId && x.Status == (int)SocialConnectionStatus.Following)
+                .Select(x => x.TargetId)
+                .ToListAsync();
+
+            var removeUserIds = followingIds.Concat(suggestedUserIds).Distinct().ToHashSet();
+            var thresholds = new List<double> { 0.4, 0.2, 0.0 };
+            var collected = new List<SocialSimilarityScore>();
+
+            foreach (var threshold in thresholds)
+            {
+                var candidates = await _similarityScoreRepo.GetQueryable()
+                    .Where(x => x.UserId1 == userId &&
+                                x.Score > threshold &&
+                                !removeUserIds.Contains(x.UserId2))
+                    .OrderBy(x => Guid.NewGuid())
+                    .Select(x => new SocialSimilarityScore
+                    {
+                        UserId2 = x.UserId2,
+                        Score = x.Score
+                    })
+                    .Take(100)
+                    .ToListAsync();
+
+                collected.AddRange(candidates);
+                removeUserIds.UnionWith(candidates.Select(x => x.UserId2));
+
+                if (collected.Count >= pageSize)
+                    break;
+            }
+
+            // query more
+            if (collected.Count < pageSize)
+            {
+                await _redisCache.RemoveAsync(suggestedUserKey);
+                suggestedUserIds.Clear();
+                removeUserIds = followingIds.ToHashSet();
+
+                collected.Clear();
+                foreach (var threshold in thresholds)
+                {
+                    var candidates = await _similarityScoreRepo.GetQueryable()
+                        .Where(x => x.UserId1 == userId &&
+                                    x.Score > threshold &&
+                                    !removeUserIds.Contains(x.UserId2))
+                        .OrderBy(x => Guid.NewGuid())
+                        .Select(x => new SocialSimilarityScore
+                        {
+                            UserId2 = x.UserId2,
+                            Score = x.Score
+                        })
+                        .Take(100)
+                        .ToListAsync();
+
+                    collected.AddRange(candidates);
+                    removeUserIds.UnionWith(candidates.Select(x => x.UserId2));
+
+                    if (collected.Count >= pageSize)
+                        break;
+                }
+            }
+
+            var userIds = collected
+                .OrderByDescending(x => x.Score)
+                .Take(pageSize)
+                .Select(x => x.UserId2)
+                .ToList();
+
+            var suggestUsers = await _userService.GetByIds(userIds);
+            var roleDict = await _userService.GetUserIdRoleDict(userIds);
+            var result = suggestUsers.Select(x => UserMapper.ToOverview(x, roleDict)).ToList();
+
+            foreach (var id in userIds)
+                suggestedUserIds.Add(id);
+
+            await _redisCache.SetAsync(suggestedUserKey, suggestedUserIds, TimeSpan.FromMinutes(5));
+            return result;
+        }
+        #endregion
     }
 }
