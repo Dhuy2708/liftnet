@@ -107,5 +107,16 @@ namespace LiftNet.Utility.Mappers
             }
             return result;
         }
+
+        public static List<UserOverview> ToOverviews(this List<User> users, Dictionary<string, LiftNetRoleEnum>? userRoleMapping = null)
+        {
+            var result = new List<UserOverview>();
+            foreach (var user in users)
+            {
+                var userView = user.ToOverview(userRoleMapping);
+                result.Add(userView);
+            }
+            return result;
+        }
     }
 }

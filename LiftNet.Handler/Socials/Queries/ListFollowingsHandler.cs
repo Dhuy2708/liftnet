@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Socials.Queries
 {
-    internal class ListFollowingsHandler : IRequestHandler<ListFollowingRequest, PaginatedLiftNetRes<UserOverview>>
+    internal class ListFollowingsHandler : IRequestHandler<ListFollowingQuery, PaginatedLiftNetRes<UserOverview>>
     {
         private readonly ILiftLogger<ListFollowingsHandler> _logger;
         private readonly IUnitOfWork _uow;
@@ -33,7 +33,7 @@ namespace LiftNet.Handler.Socials.Queries
             _roleManager = roleManager;
         }
 
-        public async Task<PaginatedLiftNetRes<UserOverview>> Handle(ListFollowingRequest request, CancellationToken cancellationToken)
+        public async Task<PaginatedLiftNetRes<UserOverview>> Handle(ListFollowingQuery request, CancellationToken cancellationToken)
         {
             try
             {

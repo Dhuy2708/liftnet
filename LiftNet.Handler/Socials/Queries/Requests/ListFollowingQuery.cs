@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Socials.Queries.Requests
 {
-    public class ListFollowingRequest : IRequest<PaginatedLiftNetRes<UserOverview>>
+    public class ListFollowingQuery : IRequest<PaginatedLiftNetRes<UserOverview>>
     {
         public string CallerId
         {
