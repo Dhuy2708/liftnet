@@ -4,6 +4,7 @@ using LiftNet.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LiftNet.Persistence.Migrations
 {
     [DbContext(typeof(LiftNetDbContext))]
-    partial class LiftNetDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250521121854_AddChatBotTables")]
+    partial class AddChatBotTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -647,46 +650,6 @@ namespace LiftNet.Persistence.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("LiftNet.Domain.Entities.UserPhysicalStat", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("ActivityLevel")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Age")
-                        .HasColumnType("int");
-
-                    b.Property<float?>("Bdf")
-                        .HasColumnType("real");
-
-                    b.Property<int?>("Gender")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Goal")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Height")
-                        .HasColumnType("int");
-
-                    b.Property<float?>("Mass")
-                        .HasColumnType("real");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserPhysicalStats");
-                });
-
             modelBuilder.Entity("LiftNet.Domain.Entities.UserRole", b =>
                 {
                     b.Property<string>("UserId")
@@ -1011,17 +974,6 @@ namespace LiftNet.Persistence.Migrations
                     b.Navigation("Province");
 
                     b.Navigation("Ward");
-                });
-
-            modelBuilder.Entity("LiftNet.Domain.Entities.UserPhysicalStat", b =>
-                {
-                    b.HasOne("LiftNet.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("LiftNet.Domain.Entities.UserRole", b =>

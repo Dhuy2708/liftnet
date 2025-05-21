@@ -46,5 +46,12 @@ namespace LiftNet.Persistence.Context
 
         // ml 
         public DbSet<SocialSimilarityScore> SocialSimilarityScores { get; set; }
+
+        // chat bot
+        public DbSet<ChatBotConversation> ChatBotConversations { get; set; }
+        public DbSet<ChatBotMessage> ChatBotMessages { get; set; }
+
+        // planning
+        public DbSet<UserPhysicalStat> UserPhysicalStats { get; set; }
     }
 }
