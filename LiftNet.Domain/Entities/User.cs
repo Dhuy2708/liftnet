@@ -49,6 +49,11 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        public string? Bio
+        {
+            get; set;
+        }
+
         [ForeignKey(nameof(Province))]
         public int? ProvinceCode
         {
