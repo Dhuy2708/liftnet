@@ -9,9 +9,9 @@ using System.Net;
 
 namespace LiftNet.Api.Controllers
 {
-    public class MatchingController : LiftNetControllerBase
+    public class FinderController : LiftNetControllerBase
     {
-        public MatchingController(IMediator mediator, IServiceProvider serviceProvider) : base(mediator, serviceProvider)
+        public FinderController(IMediator mediator, IServiceProvider serviceProvider) : base(mediator, serviceProvider)
         {
         }
 
@@ -20,7 +20,6 @@ namespace LiftNet.Api.Controllers
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> PostFinderRequest([FromBody] PostFinderRequest request)
         {
-
             var command = new PostFinderCommand
             {
                 UserId = UserId,
@@ -33,6 +32,26 @@ namespace LiftNet.Api.Controllers
                 EndPrice = request.EndPrice,
                 RepeatType = request.RepeatType,
                 Title = request.Title,
+            };
+
+            var result = await _mediator.Send(command);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpPost("apply")]
+        [Authorize(Policy = LiftNetPolicies.Coach)]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ApplyFinder([FromBody] ApplyFinderRequest request)
+        {
+            var command = new ApplyFinderPostCommand
+            {
+                UserId = UserId,
+                PostId = request.PostId,
+                Message = request.Message
             };
 
             var result = await _mediator.Send(command);

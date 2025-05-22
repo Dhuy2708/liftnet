@@ -18,13 +18,13 @@ namespace LiftNet.Handler.Matchings.Commands
     public class PostFinderHandler : IRequestHandler<PostFinderCommand, LiftNetRes>
     {
         private readonly ILiftLogger<PostFinderHandler> _logger;
-        private readonly IUnitOfWork _uow;
+        private readonly IFinderPostRepo _postRepo;
         private readonly IGeoService _geoService;
 
-        public PostFinderHandler(ILiftLogger<PostFinderHandler> logger, IUnitOfWork uow, IGeoService geoService)
+        public PostFinderHandler(ILiftLogger<PostFinderHandler> logger, IFinderPostRepo postRepo, IGeoService geoService)
         {
             _logger = logger;
-            _uow = uow;
+            _postRepo = postRepo;
             _geoService = geoService;
         }
 
@@ -42,6 +42,7 @@ namespace LiftNet.Handler.Matchings.Commands
                 var entity = new FinderPost
                 {
                     Id = Guid.NewGuid().ToString(),
+                    UserId = request.UserId,
                     Title = request.Title,
                     Description = request.Description,
                     StartPrice = request.StartPrice,
@@ -52,11 +53,13 @@ namespace LiftNet.Handler.Matchings.Commands
                     Lat = placeDetail.Latitude,
                     Lng = placeDetail.Longitude,
                     RepeatType = (int)request.RepeatType,
-                    Status = (int)FinderPostStatus.Open,
+                    Status = (int)FinderStatus.Open,
+                    CreatedAt = DateTime.UtcNow,
+                    ModifiedAt = DateTime.UtcNow,
                 };
 
-
-
+                await _postRepo.Create(entity);
+                return LiftNetRes.SuccessResponse();
             }
             catch (Exception ex)
             {

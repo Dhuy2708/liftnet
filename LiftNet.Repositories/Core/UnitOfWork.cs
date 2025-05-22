@@ -181,6 +181,17 @@ namespace LiftNet.Repositories.Core
                 return _finderPostRepo;
             }
         }
+
+        private IFinderPostApplicantRepo? _finderPostApplicantRepo = null;
+        public IFinderPostApplicantRepo FinderPostApplicantRepo
+        {
+            get
+            {
+                _finderPostApplicantRepo ??= _serviceProvider.GetRequiredService<IFinderPostApplicantRepo>();
+                _finderPostApplicantRepo.AutoSave = false;
+                return _finderPostApplicantRepo;
+            }
+        }
         #endregion
 
         public async Task BeginTransactionAsync()
