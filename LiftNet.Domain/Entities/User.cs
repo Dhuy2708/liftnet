@@ -125,5 +125,15 @@ namespace LiftNet.Domain.Entities
         {
             get; set;
         }
+
+        public Wallet Wallet
+        {
+            get; set;
+        }
+
+        public List<FinderPost> FinderPosts
+        {
+            get; set;
+        }
     }
 }

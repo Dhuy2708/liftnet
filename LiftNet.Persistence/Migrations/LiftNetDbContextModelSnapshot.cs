@@ -702,6 +702,26 @@ namespace LiftNet.Persistence.Migrations
                     b.ToTable("UserRoles", (string)null);
                 });
 
+            modelBuilder.Entity("LiftNet.Domain.Entities.Wallet", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Balance")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("Wallets");
+                });
+
             modelBuilder.Entity("LiftNet.Domain.Entities.Ward", b =>
                 {
                     b.Property<int>("Code")
@@ -1039,6 +1059,17 @@ namespace LiftNet.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("LiftNet.Domain.Entities.Wallet", b =>
+                {
+                    b.HasOne("LiftNet.Domain.Entities.User", "User")
+                        .WithOne("Wallet")
+                        .HasForeignKey("LiftNet.Domain.Entities.Wallet", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("LiftNet.Domain.Entities.Ward", b =>
                 {
                     b.HasOne("LiftNet.Domain.Entities.District", "District")
@@ -1111,6 +1142,9 @@ namespace LiftNet.Persistence.Migrations
                     b.Navigation("Extension");
 
                     b.Navigation("UserRoles");
+
+                    b.Navigation("Wallet")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

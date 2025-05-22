@@ -159,6 +159,28 @@ namespace LiftNet.Repositories.Core
                 return _conversationUserRepo;
             }
         }
+
+        private IWalletRepo? _walletRepo = null;
+        public IWalletRepo WalletRepo
+        {
+            get
+            {
+                _walletRepo ??= _serviceProvider.GetRequiredService<IWalletRepo>();
+                _walletRepo.AutoSave = false;
+                return _walletRepo;
+            }
+        }
+
+        private IFinderPostRepo? _finderPostRepo = null;
+        public IFinderPostRepo FinderPostRepo
+        {
+            get
+            {
+                _finderPostRepo ??= _serviceProvider.GetRequiredService<IFinderPostRepo>();
+                _finderPostRepo.AutoSave = false;
+                return _finderPostRepo;
+            }
+        }
         #endregion
 
         public async Task BeginTransactionAsync()
