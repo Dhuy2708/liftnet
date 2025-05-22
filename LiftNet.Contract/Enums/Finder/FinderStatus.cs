@@ -12,4 +12,12 @@ namespace LiftNet.Contract.Enums.Finder
         Open = 1,
         Closed = 2,
     }
+
+    public enum FinderApplyingStatus
+    {
+        None = 0,
+        Applying = 1,
+        Canceled = 2,
+
+    }
 }

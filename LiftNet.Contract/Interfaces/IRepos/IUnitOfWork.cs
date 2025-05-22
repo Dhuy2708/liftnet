@@ -23,6 +23,7 @@ namespace LiftNet.Contract.Interfaces.IRepos
         IConversationUserRepo ConversationUserRepo { get; }
         IWalletRepo WalletRepo { get; }
         IFinderPostRepo FinderPostRepo { get; }
+        IFinderPostApplicantRepo FinderPostApplicantRepo { get; }
         Task BeginTransactionAsync();
         Task<int> CommitAsync();
         Task RollbackAsync();

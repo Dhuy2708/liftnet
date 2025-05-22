@@ -79,8 +79,23 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        public DateTime CreatedAt
+        {
+            get; set;
+        }
+
+        public DateTime ModifiedAt
+        {
+            get; set;
+        } = DateTime.UtcNow;
+
         // mapping
         public User User
+        {
+            get; set;
+        }
+
+        public List<FinderPostApplicant> Applicants
         {
             get; set;
         }
