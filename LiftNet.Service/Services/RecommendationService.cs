@@ -129,6 +129,10 @@ namespace LiftNet.Service.Services
                             .Take(MAX_FOLLOWING_USERS)
                             .Select(x => x.TargetId)
                             .ToListAsync();
+            if (topFollowingUsers.IsNullOrEmpty())
+            {
+                return [];
+            }
             var condition = new QueryCondition();
             condition.PageSize = MAX_CONTENT_BASED_FEED_PER_USER;
             condition.AddCondition(new ConditionItem("userid", topFollowingUsers, logic: QueryLogic.And));
