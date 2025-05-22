@@ -48,7 +48,7 @@ namespace LiftNet.Api.Controllers
         [HttpPost("apply")]
         [Authorize(Policy = LiftNetPolicies.Coach)]
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> ApplyFinder([FromBody] ApplyFinderRequest request)
+        public async Task<IActionResult> ApplyFinder(ApplyFinderRequest request)
         {
             var command = new ApplyFinderPostCommand
             {
@@ -102,6 +102,30 @@ namespace LiftNet.Api.Controllers
             var request = new ExploreFinderPostsQuery
             {
                 UserId = UserId
+            };
+
+            var result = await _mediator.Send(request);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpGet("applicants/{postId}")]
+        [Authorize(Policy = LiftNetPolicies.Seeker)]
+        [ProducesResponseType(typeof(LiftNetRes<FinderPostApplicantView>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ListApplicants(string postId)
+        {
+            if (string.IsNullOrEmpty(UserId))
+            {
+                return Unauthorized();
+            }
+
+            var request = new ListFinderPostApplicantsQuery
+            {
+                UserId = UserId,
+                PostId = postId
             };
 
             var result = await _mediator.Send(request);

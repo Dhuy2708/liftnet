@@ -35,7 +35,7 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
-        public string CancelReason
+        public string? CancelReason
         {
             get; set;
         }

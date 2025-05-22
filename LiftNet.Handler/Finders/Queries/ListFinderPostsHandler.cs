@@ -7,6 +7,7 @@ using LiftNet.Contract.Views.Users;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Finders.Queries.Requests;
+using LiftNet.Utility.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,11 +49,10 @@ namespace LiftNet.Handler.Finders.Queries
                     query = query.Where(x => x.Status == (int)FinderPostStatus.Open);
                 }
 
-                var titleFilter = request.Conditions.FindCondition("title");
-                if (titleFilter != null && !string.IsNullOrEmpty(titleFilter.Values.FirstOrDefault()))
+                var title = request.Conditions.Search;
+                if (title.IsNotNullOrEmpty())
                 {
-                    var title = titleFilter.Values.First();
-                    query = query.Where(x => x.Title.Contains(title));
+                    query = query.Where(x => x.Title.Contains(title!));
                 }
 
                 var statusFilter = request.Conditions.FindCondition("status");
