@@ -88,5 +88,28 @@ namespace LiftNet.Api.Controllers
             }
             return StatusCode(500, result);
         }
+
+        [HttpGet("explore")]
+        [Authorize(Policy = LiftNetPolicies.Coach)]
+        [ProducesResponseType(typeof(LiftNetRes<List<FinderPostView>>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ExploreFinderPosts()
+        {
+            if (string.IsNullOrEmpty(UserId))
+            {
+                return Unauthorized();
+            }
+
+            var request = new ExploreFinderPostsQuery
+            {
+                UserId = UserId
+            };
+
+            var result = await _mediator.Send(request);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
     }
 }
