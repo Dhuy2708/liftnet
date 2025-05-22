@@ -30,8 +30,12 @@ namespace LiftNet.Repositories.Core
             _logger = logger;
         }
 
-
         #region query
+        public IQueryable<TEntity> FromRawSql(string sql, params object?[] parameters)
+        {
+            return _dbContext.Set<TEntity>().FromSqlRaw(sql, parameters);
+        }
+
         public async Task<int> ExecuteRawQuery(string sql)
         {
             return await _dbContext.Database.ExecuteSqlRawAsync(sql);

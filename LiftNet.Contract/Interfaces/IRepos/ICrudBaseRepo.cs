@@ -11,6 +11,7 @@ namespace LiftNet.Contract.Interfaces.IRepos
     public interface ICrudBaseRepo<T> where T : class
     {
         bool AutoSave { get; set; }
+        IQueryable<T> FromRawSql(string sql, params object?[] parameters);
         IQueryable<T> GetQueryable(QueryCondition? conditions = null, bool dontAssignNotDeleted = true);
         Task<IEnumerable<T>> QueryByConditions(QueryCondition condition, string[]? includeProps = null);
         Task<IEnumerable<T>> GetAll(string[]? includeProps = null);
