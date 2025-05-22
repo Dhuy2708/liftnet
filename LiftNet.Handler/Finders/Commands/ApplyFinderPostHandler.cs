@@ -3,11 +3,11 @@ using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
-using LiftNet.Handler.Matchings.Commands.Requests;
+using LiftNet.Handler.Finders.Commands.Requests;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace LiftNet.Handler.Matchings.Commands
+namespace LiftNet.Handler.Finders.Commands
 {
     public class ApplyFinderPostHandler : IRequestHandler<ApplyFinderPostCommand, LiftNetRes>
     {

@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Handler.Matchings.Commands.Requests
+namespace LiftNet.Handler.Finders.Commands.Requests
 {
     public class PostFinderCommand : IRequest<LiftNetRes>
     {

@@ -4,7 +4,7 @@ using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
-using LiftNet.Handler.Matchings.Commands.Requests;
+using LiftNet.Handler.Finders.Commands.Requests;
 using LiftNet.SharedKenel.Extensions;
 using MediatR;
 using System;
@@ -13,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Handler.Matchings.Commands
+namespace LiftNet.Handler.Finders.Commands
 {
     public class PostFinderHandler : IRequestHandler<PostFinderCommand, LiftNetRes>
     {
@@ -53,7 +53,7 @@ namespace LiftNet.Handler.Matchings.Commands
                     Lat = placeDetail.Latitude,
                     Lng = placeDetail.Longitude,
                     RepeatType = (int)request.RepeatType,
-                    Status = (int)FinderStatus.Open,
+                    Status = (int)FinderApplyingStatus.Applying,
                     CreatedAt = DateTime.UtcNow,
                     ModifiedAt = DateTime.UtcNow,
                 };

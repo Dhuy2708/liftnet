@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using LiftNet.Handler.Matchings.Commands.Requests;
+using LiftNet.Handler.Finders.Commands.Requests;
 
 public class PostFinderCommandValidator : AbstractValidator<PostFinderCommand>
 {

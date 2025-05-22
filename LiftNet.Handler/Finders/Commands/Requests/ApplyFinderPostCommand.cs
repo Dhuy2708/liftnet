@@ -1,7 +1,7 @@
 using LiftNet.Domain.Response;
 using MediatR;
 
-namespace LiftNet.Handler.Matchings.Commands.Requests
+namespace LiftNet.Handler.Finders.Commands.Requests
 {
     public class ApplyFinderPostCommand : IRequest<LiftNetRes>
     {

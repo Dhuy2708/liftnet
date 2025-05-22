@@ -1,7 +1,10 @@
 ﻿using LiftNet.Api.Requests.Matchings;
+using LiftNet.Contract.Dtos.Query;
+using LiftNet.Contract.Views.Finders;
 using LiftNet.Domain.Constants;
 using LiftNet.Domain.Response;
-using LiftNet.Handler.Matchings.Commands.Requests;
+using LiftNet.Handler.Finders.Commands.Requests;
+using LiftNet.Handler.Finders.Queries.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -55,6 +58,30 @@ namespace LiftNet.Api.Controllers
             };
 
             var result = await _mediator.Send(command);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpPost("list")]
+        [Authorize(Policy = LiftNetPolicies.Seeker)]
+        [ProducesResponseType(typeof(PaginatedLiftNetRes<FinderPostView>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ListFinderPosts([FromBody] QueryCondition conditions)
+        {
+            if (string.IsNullOrEmpty(UserId))
+            {
+                return Unauthorized();
+            }
+
+            var request = new ListFinderPostsQuery
+            {
+                Conditions = conditions,
+                UserId = UserId
+            };
+
+            var result = await _mediator.Send(request);
             if (result.Success)
             {
                 return Ok(result);
