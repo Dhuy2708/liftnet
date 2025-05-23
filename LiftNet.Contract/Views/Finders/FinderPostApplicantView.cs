@@ -22,7 +22,7 @@ namespace LiftNet.Contract.Views.Finders
         { 
             get; set; 
         }
-        public string CancelReason 
+        public string? CancelReason 
         { 
             get; set; 
         }
