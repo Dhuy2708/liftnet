@@ -35,6 +35,7 @@ namespace LiftNet.Api.Controllers
                 EndPrice = request.EndPrice,
                 RepeatType = request.RepeatType,
                 Title = request.Title,
+                IsAnonymous = request.IsAnonymous
             };
 
             var result = await _mediator.Send(command);
@@ -91,7 +92,7 @@ namespace LiftNet.Api.Controllers
 
         [HttpGet("explore")]
         [Authorize(Policy = LiftNetPolicies.Coach)]
-        [ProducesResponseType(typeof(LiftNetRes<List<FinderPostView>>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(LiftNetRes<ExploreFinderPostView>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> ExploreFinderPosts()
         {
             if (string.IsNullOrEmpty(UserId))

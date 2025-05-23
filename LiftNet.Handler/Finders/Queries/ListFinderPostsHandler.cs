@@ -76,7 +76,6 @@ namespace LiftNet.Handler.Finders.Queries
                     {
                         Id = x.Id,
                         Title = x.Title,
-                        Poster = null,
                         Description = x.Description,
                         StartTime = x.StartTime,
                         EndTime = x.EndTime,

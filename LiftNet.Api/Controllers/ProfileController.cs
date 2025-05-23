@@ -73,5 +73,23 @@ namespace LiftNet.Api.Controllers
             }
             return StatusCode(500, result);
         }
+
+        [HttpPost("update/address")]
+        [Authorize]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> UpdateAddress([FromBody] string locationId)
+        {
+            var command = new UpdateAdressCommand
+            {
+                UserId = UserId,
+                LocationId = locationId
+            };
+            var result = await _mediator.Send(command);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
     }
 }

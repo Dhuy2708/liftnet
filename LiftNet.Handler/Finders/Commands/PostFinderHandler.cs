@@ -44,6 +44,7 @@ namespace LiftNet.Handler.Finders.Commands
                     Id = Guid.NewGuid().ToString(),
                     UserId = request.UserId,
                     Title = request.Title,
+                    IsAnonymous = request.IsAnonymous,
                     Description = request.Description,
                     StartPrice = request.StartPrice,
                     EndPrice = request.EndPrice,

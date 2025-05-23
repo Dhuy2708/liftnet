@@ -23,6 +23,11 @@ namespace LiftNet.Handler.Finders.Commands.Requests
             get; set;
         }
 
+        public bool IsAnonymous
+        {
+            get; set;
+        }
+
         public string Description
         {
             get; set;

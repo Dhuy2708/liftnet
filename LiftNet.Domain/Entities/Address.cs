@@ -52,5 +52,11 @@ namespace LiftNet.Domain.Entities
         {
             get; set;
         } = DateTime.UtcNow;
+
+        // mapping
+        public User User
+        {
+            get; set;
+        }
     }
 }

@@ -5,6 +5,7 @@ using LiftNet.Contract.Views.Feeds;
 using LiftNet.Contract.Views.Users;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Enums;
+using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Feeds.Queries.Requests;
 using LiftNet.Utility.Extensions;
@@ -22,18 +23,25 @@ namespace LiftNet.Handler.Feeds.Queries
         private readonly IFeedIndexService _feedIndexService;
         private readonly RoleManager<Role> _roleManager;
         private readonly IUserRepo _userRepo;
+        private readonly ILiftLogger<RecommendFeedsHandler> _logger;
 
-        public RecommendFeedsHandler(IRecommendationService recommendationService, IFeedIndexService feedIndexService, RoleManager<Role> roleManager, IUserRepo userRepo)
+        public RecommendFeedsHandler(IRecommendationService recommendationService, 
+                                     IFeedIndexService feedIndexService, 
+                                     RoleManager<Role> roleManager, 
+                                     IUserRepo userRepo, 
+                                     ILiftLogger<RecommendFeedsHandler> logger)
         {
             _recommendationService = recommendationService;
             _feedIndexService = feedIndexService;
             _roleManager = roleManager;
             _userRepo = userRepo;
+            _logger = logger;
         }
 
         public async Task<LiftNetRes<FeedViewModel>> Handle(RecommendFeedsQuery request, CancellationToken cancellationToken)
         {
             var feeds = await _recommendationService.ListRecommendedFeedsAsync(request.UserId, 5);
+            _logger.Info($"listing recommend feeds, count: {feeds.Count}");
             var feedIds = feeds.Select(f => f.Id).ToList();
             if (feedIds.IsNullOrEmpty())
             {
