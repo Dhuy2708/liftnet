@@ -4,6 +4,7 @@ using LiftNet.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LiftNet.Persistence.Migrations
 {
     [DbContext(typeof(LiftNetDbContext))]
-    partial class LiftNetDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250523083205_AnonymousFieldFinderPostTable")]
+    partial class AnonymousFieldFinderPostTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -688,6 +691,9 @@ namespace LiftNet.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Location")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
 
@@ -729,9 +735,7 @@ namespace LiftNet.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId")
-                        .IsUnique()
-                        .HasFilter("[AddressId] IS NOT NULL");
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("DistrictCode");
 
@@ -1142,8 +1146,8 @@ namespace LiftNet.Persistence.Migrations
             modelBuilder.Entity("LiftNet.Domain.Entities.User", b =>
                 {
                     b.HasOne("LiftNet.Domain.Entities.Address", "Address")
-                        .WithOne("User")
-                        .HasForeignKey("LiftNet.Domain.Entities.User", "AddressId");
+                        .WithMany()
+                        .HasForeignKey("AddressId");
 
                     b.HasOne("LiftNet.Domain.Entities.District", "District")
                         .WithMany()
@@ -1247,12 +1251,6 @@ namespace LiftNet.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("LiftNet.Domain.Entities.Address", b =>
-                {
-                    b.Navigation("User")
                         .IsRequired();
                 });
 

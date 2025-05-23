@@ -47,10 +47,6 @@ namespace LiftNet.Contract.Dtos.Auth
         {
             get; set;
         }
-        public string? Location
-        {
-            get; set;
-        }
         public string? AddressId
         {
             get; set;

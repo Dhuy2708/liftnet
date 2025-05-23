@@ -4,7 +4,7 @@ using MediatR;
 
 namespace LiftNet.Handler.Finders.Queries.Requests
 {
-    public class ExploreFinderPostsQuery : IRequest<LiftNetRes<List<FinderPostView>>>
+    public class ExploreFinderPostsQuery : IRequest<LiftNetRes<ExploreFinderPostView>>
     {
         public string UserId { get; set; }
     }

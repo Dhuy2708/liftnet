@@ -45,7 +45,6 @@ namespace LiftNet.Repositories.Core
                 ProvinceCode = model.ProvinceCode,
                 DistrictCode = model.DistrictCode,
                 WardCode = model.WardCode,
-                Location = model.Location,
                 AddressId = model.AddressId,
                 Age = model.Age,
                 Gender = (int)model.Gender,

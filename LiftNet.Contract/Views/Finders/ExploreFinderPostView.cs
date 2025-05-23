@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Contract.Views.Finders
 {
-    public class FinderPostView
+    public class ExploreFinderPostView
     {
         public string Id
         {
@@ -21,6 +21,11 @@ namespace LiftNet.Contract.Views.Finders
         }
 
         public string Description
+        {
+            get; set;
+        }
+
+        public UserOverview? Poster
         {
             get; set;
         }
@@ -45,6 +50,7 @@ namespace LiftNet.Contract.Views.Finders
             get; set;
         }
 
+        // address
         public double? Lat
         {
             get; set;
@@ -56,6 +62,17 @@ namespace LiftNet.Contract.Views.Finders
         }
 
         public string? PlaceName
+        {
+            get; set;
+        }
+
+        public float DistanceAway
+        {
+            get; set;
+        }
+
+        // hide option
+        public bool IsAnonymous
         {
             get; set;
         }
@@ -79,6 +96,5 @@ namespace LiftNet.Contract.Views.Finders
         {
             get; set;
         }
-
     }
 }

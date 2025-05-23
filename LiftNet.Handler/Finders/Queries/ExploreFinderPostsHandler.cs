@@ -7,6 +7,7 @@ using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Finders.Queries.Requests;
+using LiftNet.Utility.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Finders.Queries
 {
-    public class ExploreFinderPostsHandler : IRequestHandler<ExploreFinderPostsQuery, LiftNetRes<List<FinderPostView>>>
+    public class ExploreFinderPostsHandler : IRequestHandler<ExploreFinderPostsQuery, LiftNetRes<ExploreFinderPostView>>
     {
         private readonly ILiftLogger<ExploreFinderPostsHandler> _logger;
         private readonly IFinderPostRepo _postRepo;
@@ -33,19 +34,19 @@ namespace LiftNet.Handler.Finders.Queries
             _userRepo = userRepo;
         }
 
-        public async Task<LiftNetRes<List<FinderPostView>>> Handle(ExploreFinderPostsQuery request, CancellationToken cancellationToken)
+        public async Task<LiftNetRes<ExploreFinderPostView>> Handle(ExploreFinderPostsQuery request, CancellationToken cancellationToken)
         {
             try
             {
                 var coach = await _userRepo.GetById(request.UserId, new[] { "Address" });
                 if (coach == null)
                 {
-                    return LiftNetRes<List<FinderPostView>>.ErrorResponse("User not found");
+                    return LiftNetRes<ExploreFinderPostView>.ErrorResponse("User not found");
                 }
 
                 if (coach.Address == null)
                 {
-                    return LiftNetRes<List<FinderPostView>>.ErrorResponse("Coach must have an address to use this feature");
+                    return LiftNetRes<ExploreFinderPostView>.ErrorResponse("Coach must have an address to use this feature");
                 }
 
                 var coachLat = coach.Address.Lat;
@@ -67,11 +68,16 @@ namespace LiftNet.Handler.Finders.Queries
                 ", coachLat, coachLng, (int)FinderPostStatus.Open)
                 .ToListAsync(cancellationToken);
 
+                if (posts.IsNullOrEmpty())
+                {
+                    return LiftNetRes<ExploreFinderPostView>.SuccessResponse([]);
+                }
+
                 var userIds = posts.Select(p => p.UserId).Distinct().ToList();
                 var users = await _userRepo.GetAll(new[] { "Id", "FirstName", "LastName", "Avatar" });
                 var userDict = users.ToDictionary(u => u.Id, u => u);
 
-                var postViews = posts.Select(post => new FinderPostView
+                var postViews = posts.Select(post => new ExploreFinderPostView
                 {
                     Id = post.Id,
                     Title = post.Title,
@@ -80,8 +86,10 @@ namespace LiftNet.Handler.Finders.Queries
                     EndTime = post.EndTime,
                     StartPrice = post.StartPrice,
                     EndPrice = post.EndPrice,
+                    PlaceName = post.PlaceName,
                     Lat = post.Lat,
                     Lng = post.Lng,
+                    IsAnonymous = post.IsAnonymous,
                     HideAddress = post.HideAddress,
                     RepeatType = (RepeatingType)post.RepeatType,
                     Status = (FinderPostStatus)post.Status,
@@ -96,12 +104,12 @@ namespace LiftNet.Handler.Finders.Queries
                 })
                 .ToList();
 
-                return LiftNetRes<List<FinderPostView>>.SuccessResponse(postViews);
+                return LiftNetRes<ExploreFinderPostView>.SuccessResponse(postViews);
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, "Error occurred while exploring finder posts");
-                return LiftNetRes<List<FinderPostView>>.ErrorResponse("Error occurred while exploring finder posts");
+                return LiftNetRes<ExploreFinderPostView>.ErrorResponse("Error occurred while exploring finder posts");
             }
         }
     }

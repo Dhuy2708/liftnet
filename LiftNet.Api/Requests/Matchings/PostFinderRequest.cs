@@ -36,6 +36,11 @@ namespace LiftNet.Api.Requests.Matchings
             get; set;
         }
 
+        public bool IsAnonymous
+        {
+            get; set;
+        }
+
         public string LocationId
         {
             get; set;

@@ -149,7 +149,6 @@ namespace LiftNet.Handler.Auths.Commands
                 ProvinceCode = request.Address?.ProvinceCode,
                 DistrictCode = request.Address?.DistrictCode,
                 WardCode = request.Address?.WardCode,
-                Location = placeDetail?.FormattedAddress ?? string.Empty,
                 AddressId = address?.Id
             };
             _logger.Info($"attempt to register, username: {request.Username}");
