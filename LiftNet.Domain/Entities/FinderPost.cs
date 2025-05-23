@@ -64,6 +64,11 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        public string? PlaceName
+        {
+            get; set;
+        }
+
         public bool HideAddress
         {
             get; set;

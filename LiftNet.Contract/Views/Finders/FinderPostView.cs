@@ -59,6 +59,11 @@ namespace LiftNet.Contract.Views.Finders
             get; set;
         }
 
+        public string? PlaceName
+        {
+            get; set;
+        }
+
         public bool HideAddress
         {
             get; set;

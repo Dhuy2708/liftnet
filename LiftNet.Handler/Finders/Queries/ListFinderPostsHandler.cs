@@ -2,6 +2,7 @@ using LiftNet.Contract.Dtos.Query;
 using LiftNet.Contract.Enums.Appointment;
 using LiftNet.Contract.Enums.Finder;
 using LiftNet.Contract.Interfaces.IRepos;
+using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Views.Finders;
 using LiftNet.Contract.Views.Users;
 using LiftNet.Domain.Interfaces;
@@ -16,6 +17,7 @@ namespace LiftNet.Handler.Finders.Queries
     public class ListFinderPostsHandler : IRequestHandler<ListFinderPostsQuery, PaginatedLiftNetRes<FinderPostView>>
     {
         private readonly ILiftLogger<ListFinderPostsHandler> _logger;
+        private readonly IGeoService _geoService;
         private readonly IFinderPostRepo _postRepo;
         private readonly IUserRepo _userRepo;
 
@@ -82,6 +84,7 @@ namespace LiftNet.Handler.Finders.Queries
                         EndPrice = x.EndPrice,
                         Lat = x.Lat,
                         Lng = x.Lng,
+                        PlaceName = x.PlaceName,
                         HideAddress = x.HideAddress,
                         RepeatType = (RepeatingType)x.RepeatType,
                         Status = (FinderPostStatus)x.Status,

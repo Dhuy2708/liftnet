@@ -52,6 +52,7 @@ namespace LiftNet.Handler.Finders.Commands
                     HideAddress = request.HideAddress,
                     Lat = placeDetail.Latitude,
                     Lng = placeDetail.Longitude,
+                    PlaceName = placeDetail.FormattedAddress,
                     RepeatType = (int)request.RepeatType,
                     Status = (int)FinderApplyingStatus.Applying,
                     CreatedAt = DateTime.UtcNow,
