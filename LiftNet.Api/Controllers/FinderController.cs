@@ -1,5 +1,7 @@
-﻿using LiftNet.Api.Requests.Matchings;
+﻿using LiftNet.Api.Requests.Finders;
+using LiftNet.Api.Requests.Matchings;
 using LiftNet.Contract.Dtos.Query;
+using LiftNet.Contract.Enums.Finder;
 using LiftNet.Contract.Views.Finders;
 using LiftNet.Domain.Constants;
 using LiftNet.Domain.Response;
@@ -93,8 +95,12 @@ namespace LiftNet.Api.Controllers
         [HttpGet("explore")]
         [Authorize(Policy = LiftNetPolicies.Coach)]
         [ProducesResponseType(typeof(LiftNetRes<ExploreFinderPostView>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> ExploreFinderPosts()
+        public async Task<IActionResult> ExploreFinderPosts([FromQuery] float maxDistance)
         {
+            if (maxDistance <= 0)
+            {
+                return BadRequest(LiftNetRes.ErrorResponse("invalid distance"));
+            }
             if (string.IsNullOrEmpty(UserId))
             {
                 return Unauthorized();
@@ -102,7 +108,8 @@ namespace LiftNet.Api.Controllers
 
             var request = new ExploreFinderPostsQuery
             {
-                UserId = UserId
+                UserId = UserId,
+                MaxDistance = maxDistance
             };
 
             var result = await _mediator.Send(request);
@@ -127,6 +134,34 @@ namespace LiftNet.Api.Controllers
             {
                 UserId = UserId,
                 PostId = postId
+            };
+
+            var result = await _mediator.Send(request);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpPost("responseApplicant")]
+        [Authorize(Policy = LiftNetPolicies.Seeker)]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ResponseApplicant([FromBody] ResponseApplicantReq req)
+        {
+            if (string.IsNullOrEmpty(UserId))
+            {
+                return Unauthorized();
+            }
+            if (req.Status is FinderPostResponseType.None)
+            {
+                return BadRequest();
+            }
+            var request = new ResponseApplicantCommand
+            {
+                UserId = UserId,
+                ApplicantId = req.ApplicantId,
+                Status = req.Status
             };
 
             var result = await _mediator.Send(request);
