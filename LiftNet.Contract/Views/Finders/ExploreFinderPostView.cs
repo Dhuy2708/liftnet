@@ -82,6 +82,11 @@ namespace LiftNet.Contract.Views.Finders
             get; set;
         }
 
+        public FinderApplyingStatus ApplyingStatus
+        {
+            get; set;
+        }
+
         public RepeatingType RepeatType
         {
             get; set;

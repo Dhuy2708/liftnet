@@ -18,6 +18,12 @@ namespace LiftNet.Contract.Enums.Finder
         None = 0,
         Applying = 1,
         Canceled = 2,
+    }
 
+    public enum FinderPostResponseType
+    {
+        None = 0,
+        Accept = 1,
+        Reject = 2,
     }
 }

@@ -1,20 +1,26 @@
 using LiftNet.Contract.Enums.Appointment;
 using LiftNet.Contract.Enums.Finder;
 using LiftNet.Contract.Interfaces.IRepos;
+using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Views.Finders;
 using LiftNet.Contract.Views.Users;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Finders.Queries.Requests;
+using LiftNet.RedisCache.Interface;
 using LiftNet.Utility.Extensions;
+using LiftNet.Utility.Mappers;
 using MediatR;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using LiftNet.Contract.Constants;
 
 namespace LiftNet.Handler.Finders.Queries
 {
@@ -22,16 +28,24 @@ namespace LiftNet.Handler.Finders.Queries
     {
         private readonly ILiftLogger<ExploreFinderPostsHandler> _logger;
         private readonly IFinderPostRepo _postRepo;
+        private readonly IFinderPostApplicantRepo _applicantRepo;
         private readonly IUserRepo _userRepo;
+        private readonly IUserService _userService;
+        private readonly IRedisCacheService _redisCacheService;
 
-        public ExploreFinderPostsHandler(
-            ILiftLogger<ExploreFinderPostsHandler> logger,
-            IFinderPostRepo postRepo,
-            IUserRepo userRepo)
+        public ExploreFinderPostsHandler(ILiftLogger<ExploreFinderPostsHandler> logger,
+                                         IFinderPostRepo postRepo, 
+                                         IFinderPostApplicantRepo applicantRepo,
+                                         IUserRepo userRepo, 
+                                         IUserService userService, 
+                                         IRedisCacheService redisCacheService)
         {
             _logger = logger;
             _postRepo = postRepo;
+            _applicantRepo = applicantRepo;
             _userRepo = userRepo;
+            _userService = userService;
+            _redisCacheService = redisCacheService;
         }
 
         public async Task<LiftNetRes<ExploreFinderPostView>> Handle(ExploreFinderPostsQuery request, CancellationToken cancellationToken)
@@ -51,56 +65,88 @@ namespace LiftNet.Handler.Finders.Queries
 
                 var coachLat = coach.Address.Lat;
                 var coachLng = coach.Address.Lng;
+                var maxDistanceValue = request.MaxDistance;
 
-                var posts = await _postRepo.FromRawSql(@"
-                    SELECT * FROM (
-                        SELECT *, 
-                        6371 * acos(
-                            cos(radians({0})) * cos(radians(Lat)) *
-                            cos(radians(Lng) - radians({1})) +
-                            sin(radians({0})) * sin(radians(Lat))
-                        ) AS DistanceInKm
-                        FROM FinderPosts
-                        WHERE Status = {2}
-                    ) AS fp
-                    ORDER BY DistanceInKm, CreatedAt DESC
-                    LIMIT 10
-                ", coachLat, coachLng, (int)FinderPostStatus.Open)
-                .ToListAsync(cancellationToken);
+                var cachedPostIds = await _redisCacheService.GetObjectAsync<List<string>>(
+                    string.Format(RedisCacheKeys.EXPLORED_FINDER_POST_CACHE_KEY, request.UserId)
+                );
 
+                var query = $@"
+                            WITH PostsWithDistance AS (
+                                SELECT 
+                                    p.*,
+                                    CAST(6371 * acos(
+                                        cos(radians({coachLat})) * cos(radians(p.Lat)) *
+                                        cos(radians(p.Lng) - radians({coachLng})) +
+                                        sin(radians({coachLat})) * sin(radians(p.Lat))
+                                    ) AS FLOAT) AS DistanceAway
+                                FROM FinderPosts p
+                                WHERE p.Status = {(int)FinderPostStatus.Open}
+                                {(cachedPostIds != null && cachedPostIds.Any() ? $"AND p.Id NOT IN ({string.Join(",", cachedPostIds.Select(id => $"'{id}'"))})" : "")}
+                            )
+                            SELECT *
+                            FROM PostsWithDistance
+                            WHERE ({maxDistanceValue} IS NULL OR DistanceAway <= {maxDistanceValue})
+                            ORDER BY DistanceAway, CreatedAt DESC
+                            OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY;
+                        ";
+
+                var posts = await _postRepo.FromRawSql(query).ToListAsync(cancellationToken);
                 if (posts.IsNullOrEmpty())
                 {
+                    await _redisCacheService.RemoveAsync(string.Format(RedisCacheKeys.EXPLORED_FINDER_POST_CACHE_KEY, request.UserId));
                     return LiftNetRes<ExploreFinderPostView>.SuccessResponse([]);
                 }
 
-                var userIds = posts.Select(p => p.UserId).Distinct().ToList();
-                var users = await _userRepo.GetAll(new[] { "Id", "FirstName", "LastName", "Avatar" });
-                var userDict = users.ToDictionary(u => u.Id, u => u);
-
-                var postViews = posts.Select(post => new ExploreFinderPostView
+                var postIds = posts.Select(p => p.Id).ToList();
+                if (cachedPostIds != null && cachedPostIds.Any())
                 {
-                    Id = post.Id,
-                    Title = post.Title,
-                    Description = post.Description,
-                    StartTime = post.StartTime,
-                    EndTime = post.EndTime,
-                    StartPrice = post.StartPrice,
-                    EndPrice = post.EndPrice,
-                    PlaceName = post.PlaceName,
-                    Lat = post.Lat,
-                    Lng = post.Lng,
-                    IsAnonymous = post.IsAnonymous,
-                    HideAddress = post.HideAddress,
-                    RepeatType = (RepeatingType)post.RepeatType,
-                    Status = (FinderPostStatus)post.Status,
-                    CreatedAt = post.CreatedAt,
-                    Poster = userDict.ContainsKey(post.UserId) ? new UserOverview
+                    postIds.AddRange(cachedPostIds);
+                }
+                
+                await _redisCacheService.SetAsync(
+                    string.Format(RedisCacheKeys.EXPLORED_FINDER_POST_CACHE_KEY, request.UserId),
+                    postIds,
+                    TimeSpan.FromHours(1)
+                );
+
+                var postStatusDict = await GetAppliedPostStatusDict(request.UserId);
+
+                var userIds = posts.Where(x => !x.IsAnonymous)
+                                   .Select(p => p.UserId).Distinct().ToList();
+                var userDict = (await _userRepo.GetQueryable()
+                                        .Where(u => userIds.Contains(u.Id))
+                                        .ToListAsync(cancellationToken))
+                             .ToDictionary(k => k.Id, v => v);
+                var userRoleDict = await _userService.GetUserIdRoleDict(userIds);
+
+                var postViews = posts.Select(post =>
+                {
+                    var distanceAway = CalculateDistance(coachLat, coachLng, post.Lat, post.Lng);
+
+                    return new ExploreFinderPostView
                     {
-                        Id = userDict[post.UserId].Id,
-                        FirstName = userDict[post.UserId].FirstName,
-                        LastName = userDict[post.UserId].LastName,
-                        Avatar = userDict[post.UserId].Avatar
-                    } : null
+                        Id = post.Id,
+                        Title = post.Title,
+                        DistanceAway = distanceAway,
+                        Description = post.Description,
+                        StartTime = post.StartTime,
+                        EndTime = post.EndTime,
+                        StartPrice = post.StartPrice,
+                        EndPrice = post.EndPrice,
+                        PlaceName = post.HideAddress ? null : post.PlaceName,
+                        Lat = post.HideAddress ? null : post.Lat,
+                        Lng = post.HideAddress ? null : post.Lng,
+                        IsAnonymous = post.IsAnonymous,
+                        HideAddress = post.HideAddress,
+                        ApplyingStatus = postStatusDict.GetValueOrDefault(post.Id, FinderApplyingStatus.None),
+                        RepeatType = (RepeatingType)post.RepeatType,
+                        Status = (FinderPostStatus)post.Status,
+                        CreatedAt = post.CreatedAt,
+                        Poster = post.IsAnonymous
+                            ? null
+                            : userDict.GetValueOrDefault<string, User>(post.UserId)?.ToOverview(userRoleDict)
+                    };
                 })
                 .ToList();
 
@@ -111,6 +157,36 @@ namespace LiftNet.Handler.Finders.Queries
                 _logger.Error(ex, "Error occurred while exploring finder posts");
                 return LiftNetRes<ExploreFinderPostView>.ErrorResponse("Error occurred while exploring finder posts");
             }
+        }
+
+        private async Task<Dictionary<string, FinderApplyingStatus>> GetAppliedPostStatusDict(string trainerId)
+        {
+            return (await _applicantRepo.GetQueryable()
+                                       .Where(x => x.TrainerId == trainerId)
+                                       .Select(x => new FinderPostApplicant
+                                       {
+                                           PostId = x.PostId,
+                                           Status = x.Status
+                                       })
+                                       .ToListAsync())
+                                       .ToDictionary(k => k.PostId, v => (FinderApplyingStatus)v.Status);
+        }
+
+        private float CalculateDistance(double lat1, double lon1, double lat2, double lon2)
+        {
+            const double R = 6371; // Earth's radius in kilometers
+            var dLat = ToRadians(lat2 - lat1);
+            var dLon = ToRadians(lon2 - lon1);
+            var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
+                    Math.Cos(ToRadians(lat1)) * Math.Cos(ToRadians(lat2)) *
+                    Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+            var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            return (float)(R * c);
+        }
+
+        private double ToRadians(double degrees)
+        {
+            return degrees * Math.PI / 180;
         }
     }
 } 

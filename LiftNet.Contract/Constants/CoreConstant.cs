@@ -78,5 +78,6 @@ namespace LiftNet.Contract.Constants
     {
         public const string SEEN_FEEDS_CACHE_KEY = "feed:seen:{0}"; // user id 
         public const string SUGGESTED_FRIENDS_CACHE_KEY = "user:suggested-friends:{0}"; // user id
+        public const string EXPLORED_FINDER_POST_CACHE_KEY = "finder:explore:{0}"; // trainer id
     }
 }
