@@ -1,4 +1,5 @@
-﻿using LiftNet.Domain.Response;
+﻿using LiftNet.Contract.Views;
+using LiftNet.Domain.Response;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -6,15 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Handler.Profiles.Commands
+namespace LiftNet.Handler.Profiles.Queries.Requests
 {
-    public class UpdateAdressCommand : IRequest<LiftNetRes>
+    public class GetAddressQuery : IRequest<LiftNetRes<AddressView>>
     {
         public string UserId
-        {
-            get; set;
-        }
-        public string LocationId
         {
             get; set;
         }

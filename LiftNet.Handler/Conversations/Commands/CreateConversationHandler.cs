@@ -53,13 +53,14 @@ namespace LiftNet.Handler.Conversations.Commands
                 return LiftNetRes<string>.SuccessResponse(existingConversation.Id, "conversation already exists");
             }
 
+            var timeCreated = DateTime.UtcNow;
             var conversation = new Conversation
             {
                 UserId1 = request.UserId,
                 UserId2 = request.TargetId,
                 IsGroup = false,
-                CreatedAt = DateTime.UtcNow,
-                LastUpdate = DateTime.UtcNow
+                CreatedAt = timeCreated,
+                LastUpdate = timeCreated
             };
 
             await _conversationRepo.Create(conversation);

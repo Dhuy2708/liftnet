@@ -1,5 +1,25 @@
 ﻿namespace LiftNet.Contract.Views
 {
+    public class AddressView
+    {
+        public string PlaceName
+        {
+            get; set;
+        }
+        public double Lat
+        {
+            get; set;
+        }
+        public double Lng
+        {
+            get; set;
+        }
+        public string PlaceId
+        {
+            get; set;
+        }
+    }
+
     public class ProvinceView
     {
         public int Code

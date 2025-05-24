@@ -44,7 +44,8 @@ namespace LiftNet.Handler.Conversations.Queries
                                         .ThenInclude(x => x.UserRoles)
                                         .Include(x => x.User2)
                                         .ThenInclude(x => x.UserRoles)
-                                        .Where(x => x.UserId1 == userId || x.UserId2 == userId)
+                                        .Where(x => (x.UserId1 == userId || x.UserId2 == userId) &&
+                                                    x.CreatedAt != x.LastUpdate)
                                         .OrderByDescending(x => x.LastUpdate)
                                         .Skip((request.PageNumber - 1) * pageSize)
                                         .ToListAsync();
