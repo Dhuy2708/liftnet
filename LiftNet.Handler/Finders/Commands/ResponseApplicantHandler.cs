@@ -58,7 +58,7 @@ namespace LiftNet.Handler.Finders.Commands
 
                 if (request.Status == FinderPostResponseType.Accept)
                 {
-                    applicant.Status = (int)FinderPostResponseType.Accept;
+                    applicant.Status = (int)FinderApplyingStatus.Accepted;
                     applicant.Post.Status = (int)FinderPostStatus.Closed;
 
                     var otherApplicants = await _applicantRepo.GetQueryable()
@@ -69,7 +69,7 @@ namespace LiftNet.Handler.Finders.Commands
 
                     foreach (var other in otherApplicants)
                     {
-                        other.Status = (int)FinderPostResponseType.Reject;
+                        other.Status = (int)FinderApplyingStatus.Rejected;
                     }
 
                     await _applicantRepo.UpdateRange(otherApplicants);
@@ -79,7 +79,7 @@ namespace LiftNet.Handler.Finders.Commands
                 }
                 else if (request.Status == FinderPostResponseType.Reject)
                 {
-                    applicant.Status = (int)FinderPostResponseType.Reject;
+                    applicant.Status = (int)FinderApplyingStatus.Rejected;
                     await _applicantRepo.Update(applicant);
                     await _applicantRepo.SaveChangesAsync();
                 }
