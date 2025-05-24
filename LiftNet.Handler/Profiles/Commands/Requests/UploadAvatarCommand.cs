@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Handler.Profiles.Commands
+namespace LiftNet.Handler.Profiles.Commands.Requests
 {
-    public class UploadCoverCommand : IRequest<LiftNetRes>
+    public class UploadAvatarCommand : IRequest<LiftNetRes>
     {
         public string UserId
         {

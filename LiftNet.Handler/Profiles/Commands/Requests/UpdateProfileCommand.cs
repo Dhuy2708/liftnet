@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Handler.Profiles.Commands
+namespace LiftNet.Handler.Profiles.Commands.Requests
 {
     public class UpdateProfileCommand : IRequest<LiftNetRes>
     {

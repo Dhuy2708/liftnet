@@ -65,6 +65,30 @@ namespace LiftNet.Api.Controllers
             return StatusCode(500, result);
         }
 
+        [HttpGet("id")]
+        [Authorize]
+        [ProducesResponseType(typeof(LiftNetRes<string>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetConversationId([FromQuery] string targetId)
+        {
+            if (UserId.IsNullOrEmpty())
+            {
+                return Unauthorized();
+            }
+
+            var command = new CreateConversationCommand
+            {
+                UserId = UserId,
+                TargetId = targetId
+            };
+
+            var result = await _mediator.Send(command);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
         [HttpPost("message/list")]
         [Authorize]
         [ProducesResponseType(typeof(PaginatedLiftNetRes<MessageView>), (int)HttpStatusCode.OK)]

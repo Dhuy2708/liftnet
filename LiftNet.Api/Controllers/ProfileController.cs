@@ -1,4 +1,5 @@
 ﻿using LiftNet.Api.Requests.Profiles;
+using LiftNet.Contract.Views;
 using LiftNet.Domain.Constants;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Profiles.Commands;
@@ -85,6 +86,23 @@ namespace LiftNet.Api.Controllers
                 LocationId = locationId
             };
             var result = await _mediator.Send(command);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpGet("address")]
+        [Authorize]
+        [ProducesResponseType(typeof(LiftNetRes<AddressView>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetAddress()
+        {
+            if (string.IsNullOrEmpty(UserId))
+            {
+                return Unauthorized();
+            }
+            var result = await _mediator.Send(new GetAddressQuery { UserId = UserId });
             if (result.Success)
             {
                 return Ok(result);
