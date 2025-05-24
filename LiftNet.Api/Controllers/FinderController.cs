@@ -68,6 +68,26 @@ namespace LiftNet.Api.Controllers
             return StatusCode(500, result);
         }
 
+        [HttpPost("cancel")]
+        [Authorize(Policy = LiftNetPolicies.Coach)]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ApplyFinder(CancelFinderRequest request)
+        {
+            var command = new CancelFinderPostCommand
+            {
+                UserId = UserId,
+                PostId = request.PostId,
+                Reason = request.Reason
+            };
+
+            var result = await _mediator.Send(command);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
         [HttpPost("list")]
         [Authorize(Policy = LiftNetPolicies.Seeker)]
         [ProducesResponseType(typeof(PaginatedLiftNetRes<FinderPostView>), (int)HttpStatusCode.OK)]
