@@ -144,7 +144,7 @@ namespace LiftNet.Api.Controllers
             return StatusCode(500, result);
         }
 
-        [HttpPost("responseApplicant")]
+        [HttpPost("applicant/response")]
         [Authorize(Policy = LiftNetPolicies.Seeker)]
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> ResponseApplicant([FromBody] ResponseApplicantReq req)
