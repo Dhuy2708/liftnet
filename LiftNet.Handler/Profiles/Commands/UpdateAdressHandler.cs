@@ -4,7 +4,7 @@ using LiftNet.Domain.Entities;
 using LiftNet.Domain.Exceptions;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
-using LiftNet.Handler.Profiles.Commands;
+using LiftNet.Handler.Profiles.Commands.Requests;
 using LiftNet.Utility.Extensions;
 using MediatR;
 using System;
@@ -13,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Handler.Profiles
+namespace LiftNet.Handler.Profiles.Commands
 {
     public class UpdateAdressHandler : IRequestHandler<UpdateAdressCommand, LiftNetRes>
     {

@@ -53,6 +53,7 @@ namespace LiftNet.Handler.Profiles.Queries
                     Lng = address.Lng,
                     PlaceId = address.PlaceId,
                 };
+                return LiftNetRes<AddressView>.SuccessResponse(addressView);
             }
             catch (Exception ex)
             {

@@ -3,6 +3,8 @@ using LiftNet.Contract.Views;
 using LiftNet.Domain.Constants;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Profiles.Commands;
+using LiftNet.Handler.Profiles.Commands.Requests;
+using LiftNet.Handler.Profiles.Queries.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
