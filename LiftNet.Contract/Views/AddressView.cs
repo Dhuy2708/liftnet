@@ -6,6 +6,10 @@
         {
             get; set;
         }
+        public string ShortPlaceName
+        {
+            get; set;
+        }
         public double Lat
         {
             get; set;

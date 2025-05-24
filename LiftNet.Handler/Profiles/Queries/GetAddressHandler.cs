@@ -48,7 +48,8 @@ namespace LiftNet.Handler.Profiles.Queries
 
                 var addressView = new AddressView
                 {
-                    PlaceName = address.PlaceName,
+                    PlaceName = address.FormattedAddress,
+                    ShortPlaceName = address.PlaceName,
                     Lat = address.Lat,
                     Lng = address.Lng,
                     PlaceId = address.PlaceId,
