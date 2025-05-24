@@ -26,7 +26,7 @@ namespace LiftNet.Contract.Views.Finders
         { 
             get; set; 
         }
-        public FinderApplyingStatus Status 
+        public FinderPostApplyingStatus Status 
         { 
             get; set; 
         }

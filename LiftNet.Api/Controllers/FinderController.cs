@@ -171,5 +171,26 @@ namespace LiftNet.Api.Controllers
             }
             return StatusCode(500, result);
         }
+
+        [HttpGet("applieds")]
+        [Authorize(Policy = LiftNetPolicies.Coach)]
+        [ProducesResponseType(typeof(LiftNetRes<ExploreFinderPostView>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ListAppliedFinderPosts()
+        {
+            if (string.IsNullOrEmpty(UserId))
+            {
+                return Unauthorized();
+            }
+            var request = new ListAppliedFinderPostsQuery
+            {
+                UserId = UserId
+            };
+            var result = await _mediator.Send(request);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
     }
 }

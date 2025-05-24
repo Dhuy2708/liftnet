@@ -1,4 +1,5 @@
-﻿using LiftNet.Domain.Entities;
+﻿using LiftNet.Contract.Views.Users;
+using LiftNet.Domain.Entities;
 using LiftNet.Domain.Enums;
 using LiftNet.Ioc;
 using System;
@@ -15,5 +16,7 @@ namespace LiftNet.Contract.Interfaces.IServices
         Task<List<User>> GetByIdsAsync(List<string> userIds);
         Task<BasicUserInfo?> GetBasicUserInfoAsync(string userId);
         Task<List<User>> GetByIds(List<string> userIds);
+        Task<List<UserOverview>> Convert2Overviews(List<User> users);
+        Task<List<UserOverview>> Convert2Overviews(List<string> userIds);
     }
 }

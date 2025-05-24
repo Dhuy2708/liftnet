@@ -55,7 +55,7 @@ namespace LiftNet.Handler.Finders.Commands
                     Lng = placeDetail.Longitude,
                     PlaceName = placeDetail.FormattedAddress,
                     RepeatType = (int)request.RepeatType,
-                    Status = (int)FinderApplyingStatus.Applying,
+                    Status = (int)FinderPostApplyingStatus.Applying,
                     CreatedAt = DateTime.UtcNow,
                     ModifiedAt = DateTime.UtcNow,
                 };

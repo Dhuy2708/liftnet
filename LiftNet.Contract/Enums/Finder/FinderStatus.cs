@@ -13,7 +13,7 @@ namespace LiftNet.Contract.Enums.Finder
         Closed = 2,
     }
 
-    public enum FinderApplyingStatus
+    public enum FinderPostApplyingStatus
     {
         None = 0,
         Applying = 1,
