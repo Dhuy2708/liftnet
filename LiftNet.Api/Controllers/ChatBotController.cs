@@ -13,7 +13,7 @@ namespace LiftNet.Api.Controllers
         }
 
         [HttpPost("conversation/create")]
-        [ProducesResponseType(typeof(LiftNetRes), 200)]
+        [ProducesResponseType(typeof(LiftNetRes<string>), 200)]
         public async Task<IActionResult> CreateConversation([FromBody] CreateChatBotConversationReq req)
         {
             if (string.IsNullOrEmpty(UserId))

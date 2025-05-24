@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.ChatBots.Commands.Requests
 {
-    public class CreateChatBotConversationCommand : IRequest<LiftNetRes>
+    public class CreateChatBotConversationCommand : IRequest<LiftNetRes<string>>
     {
         public string UserId
         {
