@@ -192,6 +192,28 @@ namespace LiftNet.Repositories.Core
                 return _finderPostApplicantRepo;
             }
         }
+
+        private IChatBotConversationRepo? _chatBotConversationRepo = null;
+        public IChatBotConversationRepo ChatBotConversationRepo
+        {
+            get
+            {
+                _chatBotConversationRepo ??= _serviceProvider.GetRequiredService<IChatBotConversationRepo>();
+                _chatBotConversationRepo.AutoSave = false;
+                return _chatBotConversationRepo;
+            }
+        }
+
+        private IChatBotMessageRepo? _chatBotMessageRepo = null;
+        public IChatBotMessageRepo ChatBotMessageRepo
+        {
+            get
+            {
+                _chatBotMessageRepo ??= _serviceProvider.GetRequiredService<IChatBotMessageRepo>();
+                _chatBotMessageRepo.AutoSave = false;
+                return _chatBotMessageRepo;
+            }
+        }
         #endregion
 
         public async Task BeginTransactionAsync()
