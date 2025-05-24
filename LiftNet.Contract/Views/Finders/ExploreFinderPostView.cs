@@ -82,7 +82,7 @@ namespace LiftNet.Contract.Views.Finders
             get; set;
         }
 
-        public FinderApplyingStatus ApplyingStatus
+        public FinderPostApplyingStatus ApplyingStatus
         {
             get; set;
         }

@@ -79,7 +79,7 @@ namespace LiftNet.Handler.Finders.Queries
                     PostId = applicant.PostId,
                     Message = applicant.Message,
                     CancelReason = applicant.CancelReason,
-                    Status = (FinderApplyingStatus)applicant.Status,
+                    Status = (FinderPostApplyingStatus)applicant.Status,
                     CreatedAt = applicant.CreatedAt,
                     ModifiedAt = applicant.ModifiedAt,
                     Trainer = trainerOverviewDict.GetValueOrDefault<string, UserOverview>(applicant.TrainerId, null)

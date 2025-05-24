@@ -1,11 +1,13 @@
 ﻿using LiftNet.Contract.Constants;
 using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Interfaces.IServices;
+using LiftNet.Contract.Views.Users;
 using LiftNet.Domain.Constants;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Enums;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Utility.Extensions;
+using LiftNet.Utility.Mappers;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -111,6 +113,30 @@ namespace LiftNet.Service.Services
                 _logger.Error(ex, $"Error getting basic info for user: {userId}");
                 return null;
             }
+        }
+
+        public async Task<List<UserOverview>> Convert2Overviews(List<User> users)
+        {
+            if (users.IsNullOrEmpty())
+            {
+                return [];
+            }
+            var roleDict = await GetUserIdRoleDict(users.Select(x => x.Id).ToList());
+            return users.ToOverviews(roleDict);
+        }
+
+        public async Task<List<UserOverview>> Convert2Overviews(List<string> userIds)
+        {
+            if (userIds.IsNullOrEmpty())
+            {
+                return [];
+            }
+            var users = await _userRepo.GetQueryable()
+                                       .Where(x => userIds.Contains(x.Id))
+                                       .ToListAsync();
+
+            var roleDict = await GetUserIdRoleDict(users.Select(x => x.Id).ToList());
+            return users.ToOverviews(roleDict);
         }
     }
 }

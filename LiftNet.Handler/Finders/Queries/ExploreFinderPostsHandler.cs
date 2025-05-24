@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using LiftNet.Contract.Constants;
+using LiftNet.Utility.Utils;
 
 namespace LiftNet.Handler.Finders.Queries
 {
@@ -34,10 +35,10 @@ namespace LiftNet.Handler.Finders.Queries
         private readonly IRedisCacheService _redisCacheService;
 
         public ExploreFinderPostsHandler(ILiftLogger<ExploreFinderPostsHandler> logger,
-                                         IFinderPostRepo postRepo, 
+                                         IFinderPostRepo postRepo,
                                          IFinderPostApplicantRepo applicantRepo,
-                                         IUserRepo userRepo, 
-                                         IUserService userService, 
+                                         IUserRepo userRepo,
+                                         IUserService userService,
                                          IRedisCacheService redisCacheService)
         {
             _logger = logger;
@@ -103,7 +104,7 @@ namespace LiftNet.Handler.Finders.Queries
                 {
                     postIds.AddRange(cachedPostIds);
                 }
-                
+
                 await _redisCacheService.SetAsync(
                     string.Format(RedisCacheKeys.EXPLORED_FINDER_POST_CACHE_KEY, request.UserId),
                     postIds,
@@ -122,7 +123,7 @@ namespace LiftNet.Handler.Finders.Queries
 
                 var postViews = posts.Select(post =>
                 {
-                    var distanceAway = CalculateDistance(coachLat, coachLng, post.Lat, post.Lng);
+                    var distanceAway = GeoUtil.CalculateDistance(coachLat, coachLng, post.Lat, post.Lng);
 
                     return new ExploreFinderPostView
                     {
@@ -139,7 +140,7 @@ namespace LiftNet.Handler.Finders.Queries
                         Lng = post.HideAddress ? null : post.Lng,
                         IsAnonymous = post.IsAnonymous,
                         HideAddress = post.HideAddress,
-                        ApplyingStatus = postStatusDict.GetValueOrDefault(post.Id, FinderApplyingStatus.None),
+                        ApplyingStatus = postStatusDict.GetValueOrDefault(post.Id, FinderPostApplyingStatus.None),
                         RepeatType = (RepeatingType)post.RepeatType,
                         Status = (FinderPostStatus)post.Status,
                         CreatedAt = post.CreatedAt,
@@ -159,7 +160,7 @@ namespace LiftNet.Handler.Finders.Queries
             }
         }
 
-        private async Task<Dictionary<string, FinderApplyingStatus>> GetAppliedPostStatusDict(string trainerId)
+        private async Task<Dictionary<string, FinderPostApplyingStatus>> GetAppliedPostStatusDict(string trainerId)
         {
             return (await _applicantRepo.GetQueryable()
                                        .Where(x => x.TrainerId == trainerId)
@@ -169,24 +170,7 @@ namespace LiftNet.Handler.Finders.Queries
                                            Status = x.Status
                                        })
                                        .ToListAsync())
-                                       .ToDictionary(k => k.PostId, v => (FinderApplyingStatus)v.Status);
-        }
-
-        private float CalculateDistance(double lat1, double lon1, double lat2, double lon2)
-        {
-            const double R = 6371; // Earth's radius in kilometers
-            var dLat = ToRadians(lat2 - lat1);
-            var dLon = ToRadians(lon2 - lon1);
-            var a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
-                    Math.Cos(ToRadians(lat1)) * Math.Cos(ToRadians(lat2)) *
-                    Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
-            var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-            return (float)(R * c);
-        }
-
-        private double ToRadians(double degrees)
-        {
-            return degrees * Math.PI / 180;
+                                       .ToDictionary(k => k.PostId, v => (FinderPostApplyingStatus)v.Status);
         }
     }
 } 

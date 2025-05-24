@@ -51,25 +51,25 @@ namespace LiftNet.Handler.Finders.Commands
                     return LiftNetRes.ErrorResponse("You don't have permission to respond to this applicant");
                 }
 
-                if (applicant.Status != (int)FinderApplyingStatus.Applying)
+                if (applicant.Status != (int)FinderPostApplyingStatus.Applying)
                 {
                     return LiftNetRes.ErrorResponse("Applicant is not in a pending state");
                 }
 
                 if (request.Status == FinderPostResponseType.Accept)
                 {
-                    applicant.Status = (int)FinderApplyingStatus.Accepted;
+                    applicant.Status = (int)FinderPostApplyingStatus.Accepted;
                     applicant.Post.Status = (int)FinderPostStatus.Closed;
 
                     var otherApplicants = await _applicantRepo.GetQueryable()
                         .Where(x => x.PostId == applicant.PostId
                                     && x.Id != applicant.Id
-                                    && x.Status == (int)FinderApplyingStatus.Applying)
+                                    && x.Status == (int)FinderPostApplyingStatus.Applying)
                         .ToListAsync(cancellationToken);
 
                     foreach (var other in otherApplicants)
                     {
-                        other.Status = (int)FinderApplyingStatus.Rejected;
+                        other.Status = (int)FinderPostApplyingStatus.Rejected;
                     }
 
                     await _applicantRepo.UpdateRange(otherApplicants);
@@ -79,7 +79,7 @@ namespace LiftNet.Handler.Finders.Commands
                 }
                 else if (request.Status == FinderPostResponseType.Reject)
                 {
-                    applicant.Status = (int)FinderApplyingStatus.Rejected;
+                    applicant.Status = (int)FinderPostApplyingStatus.Rejected;
                     await _applicantRepo.Update(applicant);
                     await _applicantRepo.SaveChangesAsync();
                 }

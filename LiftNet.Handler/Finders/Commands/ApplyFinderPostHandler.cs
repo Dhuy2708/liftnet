@@ -57,7 +57,7 @@ namespace LiftNet.Handler.Finders.Commands
                     PostId = request.PostId,
                     TrainerId = request.UserId,
                     Message = request.Message,
-                    Status = (int)FinderApplyingStatus.Applying,
+                    Status = (int)FinderPostApplyingStatus.Applying,
                     CreatedAt = DateTime.UtcNow,
                     ModifiedAt = DateTime.UtcNow,
                 };
