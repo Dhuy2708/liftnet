@@ -27,6 +27,7 @@
     <ProjectReference Include="..\LiftNet.Engine\LiftNet.Engine.csproj" />
     <ProjectReference Include="..\LiftNet.Ioc\LiftNet.Ioc.csproj" />
     <ProjectReference Include="..\LiftNet.MapSDK\LiftNet.MapSDK.csproj" />
+    <ProjectReference Include="..\LiftNet.Redis\LiftNet.Redis.csproj" />
     <ProjectReference Include="..\LiftNet.Utility\LiftNet.Utility.csproj" />
   </ItemGroup>
 

@@ -1,9 +1,9 @@
-﻿using LiftNet.RedisCache.Interface;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using LiftNet.Domain.Response;
+using LiftNet.Redis.Interface;
 
 namespace LiftNet.Api.Controllers
 {

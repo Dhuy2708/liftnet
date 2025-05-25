@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.RedisCache.Interface
+namespace LiftNet.Redis.Interface
 {
     public interface IRedisCacheService
     {

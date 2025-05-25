@@ -1,4 +1,4 @@
-﻿using LiftNet.RedisCache.Interface;
+﻿using LiftNet.Redis.Interface;
 using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.RedisCache.Service
+namespace LiftNet.Redis.Service
 {
     public class RedisCacheService : IRedisCacheService
     {

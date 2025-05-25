@@ -21,7 +21,7 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
-        public string Text
+        public string Message
         {
             get; set;
         }
