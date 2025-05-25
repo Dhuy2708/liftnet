@@ -72,6 +72,10 @@ namespace LiftNet.Contract.Constants
         public const string REDIS_PORT = "REDIS_PORT";
         public const string REDIS_USER = "REDIS_USER";
         public const string REDIS_PASSWORD = "REDIS_PASSWORD";
+
+        // chatbot engine
+        public const string LOCAL_CHATBOT_ENGINE_URL = "LOCAL_CHATBOT_ENGINE_URL";
+        public const string CHATBOT_ENGINE_URL = "CHATBOT_ENGINE_URL";
     }
 
     public class RedisCacheKeys

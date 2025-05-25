@@ -26,7 +26,8 @@ namespace LiftNet.Redis.Service
             if (handler == null)
                 throw new ArgumentNullException(nameof(handler));
 
-            await _subscriber.SubscribeAsync(channel, (redisChannel, redisValue) =>
+            var redisChannel = RedisChannel.Literal(channel);  
+            await _subscriber.SubscribeAsync(redisChannel, (redisChannel, redisValue) =>
             {
                 handler(redisChannel, redisValue);
             });
@@ -37,7 +38,8 @@ namespace LiftNet.Redis.Service
             if (string.IsNullOrEmpty(channel))
                 throw new ArgumentNullException(nameof(channel));
 
-            await _subscriber.UnsubscribeAsync(channel);
+            var redisChannel = RedisChannel.Literal(channel); 
+            await _subscriber.UnsubscribeAsync(redisChannel);
         }
     }
 }
