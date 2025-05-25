@@ -75,7 +75,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.CosmosDbTests", "Li
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{618ABA26-3FFF-4829-8F48-5F2A91FC9496}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.RedisCache", "LiftNet.RedisCache\LiftNet.RedisCache.csproj", "{4439FCF0-236D-48B3-B65E-4740D9A8C69C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Redis", "LiftNet.Redis\LiftNet.Redis.csproj", "{4439FCF0-236D-48B3-B65E-4740D9A8C69C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Hub", "LiftNet.Hub\LiftNet.Hub.csproj", "{F22C34F4-7821-43B6-A78B-2C1FDE4D5E18}"
 EndProject
