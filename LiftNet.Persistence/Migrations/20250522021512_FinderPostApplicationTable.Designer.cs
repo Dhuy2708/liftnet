@@ -205,7 +205,7 @@ namespace LiftNet.Persistence.Migrations
                     b.Property<bool>("IsHuman")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Text")
+                    b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

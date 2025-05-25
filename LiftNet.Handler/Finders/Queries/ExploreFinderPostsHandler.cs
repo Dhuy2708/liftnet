@@ -8,7 +8,6 @@ using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Finders.Queries.Requests;
-using LiftNet.RedisCache.Interface;
 using LiftNet.Utility.Extensions;
 using LiftNet.Utility.Mappers;
 using MediatR;
@@ -22,6 +21,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using LiftNet.Contract.Constants;
 using LiftNet.Utility.Utils;
+using LiftNet.Redis.Interface;
 
 namespace LiftNet.Handler.Finders.Queries
 {

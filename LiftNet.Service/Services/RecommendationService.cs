@@ -8,7 +8,6 @@ using LiftNet.Domain.Indexes;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Engine.Data.Feat;
 using LiftNet.Engine.ML;
-using LiftNet.RedisCache.Interface;
 using LiftNet.Contract.Constants;
 using LiftNet.Contract.Dtos.Query;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +21,7 @@ using LiftNet.Engine.Engine;
 using System.Threading;
 using LiftNet.Utility.Mappers;
 using LiftNet.Domain.Entities;
+using LiftNet.Redis.Interface;
 
 namespace LiftNet.Service.Services
 {

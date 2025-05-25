@@ -1,4 +1,4 @@
-﻿namespace LiftNet.RedisCache
+﻿namespace LiftNet.Redis
 {
     public class Class1
     {

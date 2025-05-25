@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using dotenv.net;
+﻿using dotenv.net;
 using LiftNet.Api.Utils;
 using LiftNet.AzureBlob.Services;
 using LiftNet.Cloudinary.Contracts;
@@ -11,17 +10,13 @@ using LiftNet.Contract.Interfaces.IServices.Indexes;
 using LiftNet.CosmosDb.Contracts;
 using LiftNet.CosmosDb.Services;
 using LiftNet.Domain.Constants;
-using LiftNet.MapSDK.Apis;
 using LiftNet.MapSDK.Contracts;
-using LiftNet.ProvinceSDK.Apis;
-using LiftNet.RedisCache.Interface;
-using LiftNet.RedisCache.Service;
+using LiftNet.Redis.Interface;
+using LiftNet.Redis.Service;
 using LiftNet.ServiceBus.Contracts;
 using LiftNet.ServiceBus.Core.Impl;
 using LiftNet.ServiceBus.Interfaces;
 using LiftNet.Timer.Service;
-using LiftNet.Utility.Extensions;
-using LiftNet.WorkerService.Worker;
 using Microsoft.Azure.Cosmos;
 using Quartz;
 using StackExchange.Redis;
@@ -46,7 +41,7 @@ namespace LiftNet.Api.Extensions
 
             var cosmosClient = new CosmosClient(cosmosCnnStr);
             services.AddSingleton(provider => new CosmosCredential(cosmosClient, cosmosDbId));
-     
+
             services.AddScoped(typeof(IIndexBaseService<>), typeof(IndexBaseService<>));
             services.AddDependencies(typeof(CosmosDb.CosmosDbAssemblyRef).Assembly);
             #endregion
@@ -64,7 +59,7 @@ namespace LiftNet.Api.Extensions
             {
                 Key = Environment.GetEnvironmentVariable(EnvKeys.GOONG_MAP_API_KEY)!
             });
-            
+
             services.AddDependencies(typeof(MapSDK.MapSdkAssemblyRef).Assembly);
 
             // cloudinary
@@ -94,15 +89,15 @@ namespace LiftNet.Api.Extensions
             services.RegisterRabbitMq();
             #endregion
 
-            #region redis cache
+            #region redis 
             var redisDbHostName = Environment.GetEnvironmentVariable(EnvKeys.REDIS_HOST_NAME)!;
             var redisDbPort = Environment.GetEnvironmentVariable(EnvKeys.REDIS_PORT)!;
             var redisDbUser = Environment.GetEnvironmentVariable(EnvKeys.REDIS_USER)!;
             var redisDbPassword = Environment.GetEnvironmentVariable(EnvKeys.REDIS_PASSWORD)!;
 
-            if (string.IsNullOrEmpty(redisDbHostName) || 
-                string.IsNullOrEmpty(redisDbPort) || 
-                string.IsNullOrEmpty(redisDbUser) || 
+            if (string.IsNullOrEmpty(redisDbHostName) ||
+                string.IsNullOrEmpty(redisDbPort) ||
+                string.IsNullOrEmpty(redisDbUser) ||
                 string.IsNullOrEmpty(redisDbPassword))
             {
                 throw new ArgumentNullException("Redis credentials not found or lacks info.");
@@ -120,7 +115,13 @@ namespace LiftNet.Api.Extensions
                 options.ConfigurationOptions = configurationOptions;
             });
 
+            services.AddSingleton<IConnectionMultiplexer>(sp =>
+            {
+                return ConnectionMultiplexer.Connect(configurationOptions);
+            });
+
             services.AddSingleton<IRedisCacheService, RedisCacheService>();
+            services.AddScoped<IRedisSubService, RedisSubService>();
             #endregion
 
             return services;
