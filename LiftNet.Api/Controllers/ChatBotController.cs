@@ -7,6 +7,7 @@ using LiftNet.Handler.ChatBots.Commands.Requests;
 using LiftNet.Handler.ChatBots.Queries.Requests;
 using LiftNet.Redis.Interface;
 using LiftNet.Redis.Service;
+using LiftNet.Utility.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -46,6 +47,27 @@ namespace LiftNet.Api.Controllers
             return StatusCode(500, result);
         }
 
+        [HttpGet("conversations")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
+        [ProducesResponseType(typeof(LiftNetRes<ChatbotConversationView>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ListConversations()
+        {
+            if (string.IsNullOrEmpty(UserId))
+            {
+                return Unauthorized();
+            }
+            var command = new ListChatbotConversationsQuery
+            {
+                UserId = UserId,
+            };
+            var result = await _mediator.Send(command);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
         [HttpPost("chat")]
         [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
         [ProducesResponseType(typeof(LiftNetRes<string>), (int)HttpStatusCode.OK)]
@@ -76,15 +98,23 @@ namespace LiftNet.Api.Controllers
             var sessionId = conversationId;
             var channel = $"chatbot.session:{sessionId}";
 
-            Response.Headers.Add("Content-Type", "text/event-stream");
-            Response.Headers.Add("Cache-Control", "no-cache");
-            Response.Headers.Add("Connection", "keep-alive");
+            Response.Headers["Content-Type"] = "text/event-stream";
+            Response.Headers["Cache-Control"] = "no-cache";
 
             var cancellationToken = HttpContext.RequestAborted;
 
             async Task SendSseMessage(string message)
             {
-                await Response.WriteAsync($"data: {message}\n\n");
+                if (message.Eq("\""))
+                {
+                    return;
+                }
+                if ((message.StartsWith("'") && message.EndsWith("'")) || (message.StartsWith("\"") && message.EndsWith("\"")))
+                {
+                    message = message.Substring(1, message.Length - 2);
+                }
+
+                await Response.WriteAsync($"data: {message}");
                 await Response.Body.FlushAsync();
             }
 
@@ -96,7 +126,8 @@ namespace LiftNet.Api.Controllers
                     return;
                 }
 
-                await SendSseMessage(redisValue.ToString());
+                var str = redisValue.ToString();
+                await SendSseMessage(str);
             });
 
             var chatTask = _chatbotService.ChatAsync(UserId, conversationId, req.Message);

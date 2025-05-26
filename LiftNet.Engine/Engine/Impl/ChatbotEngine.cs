@@ -23,7 +23,8 @@ namespace LiftNet.Engine.Engine.Impl
             var requestBody = new
             {
                 message = message,
-                session_id = conversationId
+                session_id = conversationId,
+                user_id = userId,
             };
 
             var content = new StringContent(
@@ -31,7 +32,7 @@ namespace LiftNet.Engine.Engine.Impl
                 Encoding.UTF8,
                 "application/json"
             );
-
+                
             var url = $"{_engineUrl}/chat";
             var response = await _httpClient.PostAsync(url, content);
 
