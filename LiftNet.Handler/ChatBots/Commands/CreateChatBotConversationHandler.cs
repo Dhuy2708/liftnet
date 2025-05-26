@@ -4,6 +4,7 @@ using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.ChatBots.Commands.Requests;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,15 @@ namespace LiftNet.Handler.ChatBots.Commands
         {
             try
             {
+                var nameExist = await _conversationRepo.GetQueryable()
+                                                       .AnyAsync(x => x.UserId == request.UserId &&
+                                                                      x.Title == request.Title, cancellationToken);
+
+                if (nameExist)
+                {
+                    return LiftNetRes<string>.ErrorResponse("A conversation with this title already exists for the user.");
+                }
+
                 var entity = new ChatBotConversation()
                 {
                     Id = Guid.NewGuid().ToString(),
