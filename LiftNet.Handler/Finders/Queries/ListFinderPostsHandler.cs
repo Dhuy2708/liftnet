@@ -9,6 +9,7 @@ using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Finders.Queries.Requests;
 using LiftNet.Utility.Extensions;
+using LiftNet.Utility.Utils;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,7 +49,8 @@ namespace LiftNet.Handler.Finders.Queries
 
                 if (request.Conditions.FindCondition("status") == null)
                 {
-                    query = query.Where(x => x.Status == (int)FinderPostStatus.Open);
+                    query = query.Where(x => x.Status == (int)FinderPostStatus.Open &&
+                                             x.StartTime > DateTime.UtcNow);
                 }
 
                 var title = request.Conditions.Search;
@@ -62,7 +64,16 @@ namespace LiftNet.Handler.Finders.Queries
                 {
                     if (int.TryParse(statusFilter.Values.First(), out int status))
                     {
-                        query = query.Where(x => x.Status == status);
+                        if (status == (int)FinderPostStatus.Closed)
+                        {
+                            query = query.Where(x => x.Status == status ||
+                                                     x.StartTime < DateTime.UtcNow);
+                        }
+                        else if (status == (int)FinderPostStatus.Open)
+                        {
+                            query = query.Where(x => x.Status == status &&
+                                                     x.StartTime > DateTime.UtcNow);
+                        }
                     }
                 }
 
@@ -77,8 +88,8 @@ namespace LiftNet.Handler.Finders.Queries
                         Id = x.Id,
                         Title = x.Title,
                         Description = x.Description,
-                        StartTime = x.StartTime,
-                        EndTime = x.EndTime,
+                        StartTime = x.StartTime != null ? new DateTimeOffset(x.StartTime!.Value, TimeSpan.Zero) : null,
+                        EndTime = x.EndTime != null ? new DateTimeOffset(x.EndTime.Value, TimeSpan.Zero) : null,
                         StartPrice = x.StartPrice,
                         EndPrice = x.EndPrice,
                         Lat = x.Lat,
@@ -87,7 +98,7 @@ namespace LiftNet.Handler.Finders.Queries
                         HideAddress = x.HideAddress,
                         RepeatType = (RepeatingType)x.RepeatType,
                         Status = (FinderPostStatus)x.Status,
-                        CreatedAt = x.CreatedAt
+                        CreatedAt = new DateTimeOffset(x.CreatedAt, TimeSpan.Zero)
                     })
                     .ToListAsync(cancellationToken);
 

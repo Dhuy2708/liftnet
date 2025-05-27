@@ -38,6 +38,11 @@ namespace LiftNet.Handler.Finders.Commands
                     return LiftNetRes.ErrorResponse("Post not found");
                 }
 
+                if (post.StartTime != null && post.StartTime < DateTime.UtcNow)
+                {
+                    return LiftNetRes.ErrorResponse("Post has been expired");
+                }
+
                 if (post.Status != (int)FinderPostStatus.Open)
                 {
                     return LiftNetRes.ErrorResponse("Post is not open for applications");
@@ -45,7 +50,7 @@ namespace LiftNet.Handler.Finders.Commands
 
                 var existingApplication = await _applicantRepo.GetQueryable()
                                                     .FirstOrDefaultAsync(x => x.PostId == request.PostId && 
-                                                                                x.TrainerId == request.UserId); 
+                                                                              x.TrainerId == request.UserId); 
 
                 if (existingApplication != null)
                 {

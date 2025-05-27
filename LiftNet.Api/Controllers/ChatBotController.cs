@@ -113,7 +113,10 @@ namespace LiftNet.Api.Controllers
                 {
                     message = message.Substring(1, message.Length - 2);
                 }
-
+                if (message == "DONE")
+                {
+                    return;
+                }
                 await Response.WriteAsync($"data: {message}");
                 await Response.Body.FlushAsync();
             }
