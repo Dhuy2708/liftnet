@@ -73,24 +73,26 @@ namespace LiftNet.Handler.Finders.Queries
                 );
 
                 var query = $@"
-                            WITH PostsWithDistance AS (
-                                SELECT 
-                                    p.*,
-                                    CAST(6371 * acos(
-                                        cos(radians({coachLat})) * cos(radians(p.Lat)) *
-                                        cos(radians(p.Lng) - radians({coachLng})) +
-                                        sin(radians({coachLat})) * sin(radians(p.Lat))
-                                    ) AS FLOAT) AS DistanceAway
-                                FROM FinderPosts p
-                                WHERE p.Status = {(int)FinderPostStatus.Open}
-                                {(cachedPostIds != null && cachedPostIds.Any() ? $"AND p.Id NOT IN ({string.Join(",", cachedPostIds.Select(id => $"'{id}'"))})" : "")}
-                            )
-                            SELECT *
-                            FROM PostsWithDistance
-                            WHERE ({maxDistanceValue} IS NULL OR DistanceAway <= {maxDistanceValue})
-                            ORDER BY DistanceAway, CreatedAt DESC
-                            OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY;
-                        ";
+                                WITH PostsWithDistance AS (
+                                    SELECT 
+                                        p.*,
+                                        CAST(6371 * acos(
+                                            cos(radians({coachLat})) * cos(radians(p.Lat)) *
+                                            cos(radians(p.Lng) - radians({coachLng})) +
+                                            sin(radians({coachLat})) * sin(radians(p.Lat))
+                                        ) AS FLOAT) AS DistanceAway
+                                    FROM FinderPosts p
+                                    WHERE p.Status = {(int)FinderPostStatus.Open}
+                                    {(cachedPostIds != null && cachedPostIds.Any() ? $"AND p.Id NOT IN ({string.Join(",", cachedPostIds.Select(id => $"'{id}'"))})" : "")}
+                                )
+                                SELECT *
+                                FROM PostsWithDistance p
+                                WHERE ({maxDistanceValue} IS NULL OR DistanceAway <= {maxDistanceValue}) AND 
+                                      p.Status = {(int)FinderPostStatus.Open} AND 
+                                      p.StartTime > '{DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss")}'
+                                ORDER BY DistanceAway, CreatedAt DESC
+                                OFFSET 0 ROWS FETCH NEXT 10 ROWS ONLY;
+                            ";
 
                 var posts = await _postRepo.FromRawSql(query).ToListAsync(cancellationToken);
                 if (posts.IsNullOrEmpty())
