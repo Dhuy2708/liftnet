@@ -55,19 +55,25 @@ namespace LiftNet.Handler.Finders.Queries
                 }
 
                 _logger.Info($"begin listing applied posts");
-                var entities = await _postRepo.GetQueryable()
+                var applicants = await _postRepo.GetQueryable()
                                           .Include(x => x.Post)
                                           .Where(x => x.TrainerId == trainerId &&
-                                                      x.Status == (int)FinderPostApplyingStatus.Applying)
-                                          .Select(x => x.Post)
+                                                      (x.Status == (int)FinderPostApplyingStatus.Applying ||
+                                                       x.Status == (int)FinderPostApplyingStatus.Accepted ||
+                                                       x.Status == (int)FinderPostApplyingStatus.Rejected ||
+                                                       x.Status == (int)FinderPostApplyingStatus.Canceled))
                                           .ToListAsync(cancellationToken);
-                if (entities.IsNullOrEmpty())
+                if (applicants.IsNullOrEmpty())
                 {
                     return LiftNetRes<ExploreFinderPostView>.SuccessResponse([]);
                 }
 
                 List<ExploreFinderPostView> results = [];
-                var posterIds = entities.Where(x => x.IsAnonymous == false)
+
+                var posts = applicants.Select(x => x.Post)
+                                            .Where(x => x != null)
+                                            .ToList();
+                var posterIds = posts.Where(x => x.IsAnonymous == false)
                                         .Select(x => x.UserId)
                                         .Distinct()
                                         .ToList();
@@ -75,7 +81,7 @@ namespace LiftNet.Handler.Finders.Queries
                 var userOverviewDict = (await _userService.Convert2Overviews(posterIds))
                                             .ToDictionary(k => k.Id, v => v);
 
-                foreach (var post in entities)
+                foreach (var post in posts)
                 {
                     var distanceAway = GeoUtil.CalculateDistance(
                                                 trainerAddress.Lat,
@@ -83,6 +89,11 @@ namespace LiftNet.Handler.Finders.Queries
                                                 post.Lat,
                                                 post.Lng
                                             );
+
+                    var applyingStatusInt = applicants.FirstOrDefault(x => x.PostId == post.Id)?.Status;
+                    var applyingStatus = applyingStatusInt != null ? (FinderPostApplyingStatus)applyingStatusInt.Value 
+                                                                   : FinderPostApplyingStatus.None;
+
                     var result = new ExploreFinderPostView
                     {
                         Id = post.Id,
@@ -98,7 +109,7 @@ namespace LiftNet.Handler.Finders.Queries
                         Lng = post.HideAddress ? null : post.Lng,
                         IsAnonymous = post.IsAnonymous,
                         HideAddress = post.HideAddress,
-                        ApplyingStatus = FinderPostApplyingStatus.Applying,
+                        ApplyingStatus = applyingStatus,
                         RepeatType = (RepeatingType)post.RepeatType,
                         Status = (FinderPostStatus)post.Status,
                         CreatedAt = post.CreatedAt,
@@ -108,6 +119,7 @@ namespace LiftNet.Handler.Finders.Queries
                     };
                     results.Add(result);
                 }
+                results = results.OrderByDescending(x => x.CreatedAt).ToList();
 
                 return LiftNetRes<ExploreFinderPostView>.SuccessResponse(results);
             }
