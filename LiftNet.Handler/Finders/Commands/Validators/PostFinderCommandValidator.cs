@@ -13,7 +13,9 @@ public class PostFinderCommandValidator : AbstractValidator<PostFinderCommand>
 
         RuleFor(x => x.StartTime)
             .LessThanOrEqualTo(x => x.EndTime)
-            .WithMessage("StartTime must be less than or equal to EndTime.");
+            .WithMessage("StartTime must be less than or equal to EndTime.")
+            .GreaterThanOrEqualTo(DateTime.UtcNow)
+            .WithMessage("StartTime must not be earlier than the current UTC time.");
 
         RuleFor(x => x.StartPrice)
             .LessThanOrEqualTo(x => x.EndPrice)
