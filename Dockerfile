@@ -31,7 +31,7 @@ COPY ["LiftNet.Ioc/LiftNet.Ioc.csproj", "LiftNet.Ioc/"]
 COPY ["LiftNet.ProvinceSDK/LiftNet.ProvinceSDK.csproj", "LiftNet.ProvinceSDK/"]
 COPY ["LiftNet.MapSDK/LiftNet.MapSDK.csproj", "LiftNet.MapSDK/"]
 COPY ["LiftNet.Cloudinary/LiftNet.Cloudinary.csproj", "LiftNet.Cloudinary/"]
-COPY ["LiftNet.RedisCache/LiftNet.RedisCache.csproj", "LiftNet.RedisCache/"]
+COPY ["LiftNet.Redis/LiftNet.Redis.csproj", "LiftNet.Redis/"]
 COPY ["LiftNet.MailService/LiftNet.MailService.csproj", "LiftNet.MailService/"]
 
 # data
