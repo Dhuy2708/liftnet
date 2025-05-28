@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LiftNet.Contract\LiftNet.Contract.csproj" />
-    <ProjectReference Include="..\LiftNet.Utility\LiftNet.Utility.csproj" />
+    <ProjectReference Include="..\..\Application\Common\LiftNet.Contract\LiftNet.Contract.csproj" />
+    <ProjectReference Include="..\..\Application\Common\LiftNet.Utility\LiftNet.Utility.csproj" />
   </ItemGroup>
 
 </Project>

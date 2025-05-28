@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LiftNet.Contract\LiftNet.Contract.csproj" />
+    <ProjectReference Include="..\..\..\Application\Common\LiftNet.Contract\LiftNet.Contract.csproj" />
     <ProjectReference Include="..\LiftNet.JobService\LiftNet.JobService.csproj" />
   </ItemGroup>
 

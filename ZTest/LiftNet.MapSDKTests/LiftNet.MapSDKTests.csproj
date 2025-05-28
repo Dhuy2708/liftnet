@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LiftNet.MapSDK\LiftNet.MapSDK.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\LiftNet.MapSDK\LiftNet.MapSDK.csproj" />
   </ItemGroup>
 
   <ItemGroup>
