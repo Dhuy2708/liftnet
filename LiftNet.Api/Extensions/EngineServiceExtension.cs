@@ -33,7 +33,7 @@ namespace LiftNet.Api.Extensions
             {
                 var engineUrl = Environment.GetEnvironmentVariable(EnvKeys.LOCAL_CHATBOT_ENGINE_URL);
 #if !DEBUG
-                var engineUrl = Environment.GetEnvironmentVariable(EnvKeys.CHATBOT_ENGINE_URL);
+                engineUrl = Environment.GetEnvironmentVariable(EnvKeys.CHATBOT_ENGINE_URL);
 #endif
                 if (string.IsNullOrEmpty(engineUrl))
                 {
