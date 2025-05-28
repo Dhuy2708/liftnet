@@ -15,11 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LiftNet.Contract\LiftNet.Contract.csproj" />
-    <ProjectReference Include="..\LiftNet.Domain\LiftNet.Domain.csproj" />
-    <ProjectReference Include="..\LiftNet.Logger\LiftNet.Logger.csproj" />
-    <ProjectReference Include="..\LiftNet.MapSDK\LiftNet.MapSDK.csproj" />
-    <ProjectReference Include="..\LiftNet.ServiceBus\LiftNet.ServiceBus.csproj" />
+    <ProjectReference Include="..\..\Application\Common\LiftNet.Contract\LiftNet.Contract.csproj" />
+    <ProjectReference Include="..\..\Application\Domain\LiftNet.Domain\LiftNet.Domain.csproj" />
+    <ProjectReference Include="..\..\Application\Domain\LiftNet.Logger\LiftNet.Logger.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Event\LiftNet.ServiceBus\LiftNet.ServiceBus.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\LiftNet.MapSDK\LiftNet.MapSDK.csproj" />
   </ItemGroup>
 
 </Project>

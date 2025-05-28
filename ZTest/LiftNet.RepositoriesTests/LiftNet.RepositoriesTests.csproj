@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LiftNet.Repositories\LiftNet.Repositories.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Data\LiftNet.Repositories\LiftNet.Repositories.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -36,26 +36,30 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LiftNet.AzureBlob\LiftNet.AzureBlob.csproj" />
-    <ProjectReference Include="..\LiftNet.Cloudinary\LiftNet.Cloudinary.csproj" />
-    <ProjectReference Include="..\LiftNet.Contract\LiftNet.Contract.csproj" />
-    <ProjectReference Include="..\LiftNet.CosmosDb\LiftNet.CosmosDb.csproj" />
-    <ProjectReference Include="..\LiftNet.Domain\LiftNet.Domain.csproj" />
-    <ProjectReference Include="..\LiftNet.Engine\LiftNet.Engine.csproj" />
-    <ProjectReference Include="..\LiftNet.Handler\LiftNet.Handler.csproj" />
-    <ProjectReference Include="..\LiftNet.Hub\LiftNet.Hub.csproj" />
-    <ProjectReference Include="..\LiftNet.Ioc\LiftNet.Ioc.csproj" />
-    <ProjectReference Include="..\LiftNet.Logger\LiftNet.Logger.csproj" />
-    <ProjectReference Include="..\LiftNet.MapSDK\LiftNet.MapSDK.csproj" />
-    <ProjectReference Include="..\LiftNet.Persistence\LiftNet.Persistence.csproj" />
-    <ProjectReference Include="..\LiftNet.Redis\LiftNet.Redis.csproj" />
-    <ProjectReference Include="..\LiftNet.Repositories\LiftNet.Repositories.csproj" />
-    <ProjectReference Include="..\LiftNet.ServiceBus\LiftNet.ServiceBus.csproj" />
-    <ProjectReference Include="..\LiftNet.Service\LiftNet.Service.csproj" />
-    <ProjectReference Include="..\LiftNet.SharedKenel\LiftNet.SharedKenel.csproj" />
-    <ProjectReference Include="..\LiftNet.Timer\LiftNet.Timer.csproj" />
-    <ProjectReference Include="..\LiftNet.Utility\LiftNet.Utility.csproj" />
-    <ProjectReference Include="..\LiftNet.WorkerService\LiftNet.WorkerService.csproj" />
+    <ProjectReference Include="..\..\Application\Common\LiftNet.Contract\LiftNet.Contract.csproj" />
+    <ProjectReference Include="..\..\Application\Common\LiftNet.Utility\LiftNet.Utility.csproj" />
+    <ProjectReference Include="..\..\Application\Domain\LiftNet.Domain\LiftNet.Domain.csproj" />
+    <ProjectReference Include="..\..\Application\Domain\LiftNet.Ioc\LiftNet.Ioc.csproj" />
+    <ProjectReference Include="..\..\Application\Domain\LiftNet.Logger\LiftNet.Logger.csproj" />
+    <ProjectReference Include="..\..\Application\Domain\LiftNet.Persistence\LiftNet.Persistence.csproj" />
+    <ProjectReference Include="..\..\Application\LiftNet.Engine\LiftNet.Engine.csproj" />
+    <ProjectReference Include="..\..\Application\LiftNet.Handler\LiftNet.Handler.csproj" />
+    <ProjectReference Include="..\..\Application\LiftNet.Hub\LiftNet.Hub.csproj" />
+    <ProjectReference Include="..\..\Application\LiftNet.Service\LiftNet.Service.csproj" />
+    <ProjectReference Include="..\..\Application\LiftNet.SharedKenel\LiftNet.SharedKenel.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Data\LiftNet.AzureBlob\LiftNet.AzureBlob.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Data\LiftNet.CosmosDb\LiftNet.CosmosDb.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Data\LiftNet.Repositories\LiftNet.Repositories.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Event\LiftNet.ServiceBus\LiftNet.ServiceBus.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Job\LiftNet.JobService\LiftNet.JobService.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Job\LiftNet.Job\LiftNet.Job.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\LiftNet.Cloudinary\LiftNet.Cloudinary.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\LiftNet.MailService\LiftNet.MailService.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\LiftNet.MapSDK\LiftNet.MapSDK.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\LiftNet.Redis\LiftNet.Redis.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\LiftNet.VNPay\LiftNet.VNPay.csproj" />
+    <ProjectReference Include="..\..\Worker\LiftNet.Timer\LiftNet.Timer.csproj" />
+    <ProjectReference Include="..\..\Worker\LiftNet.WorkerService\LiftNet.WorkerService.csproj" />
   </ItemGroup>
 
 </Project>

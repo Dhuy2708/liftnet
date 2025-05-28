@@ -7,11 +7,6 @@ using LiftNet.Domain.Enums.Indexes;
 using LiftNet.Domain.Indexes;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Utility.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LiftNet.CosmosDb.Services
 {

@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LiftNet.AzureBlob\LiftNet.AzureBlob.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Data\LiftNet.AzureBlob\LiftNet.AzureBlob.csproj" />
   </ItemGroup>
 
   <ItemGroup>
