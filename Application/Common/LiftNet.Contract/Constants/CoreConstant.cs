@@ -76,6 +76,14 @@ namespace LiftNet.Contract.Constants
         // chatbot engine
         public const string LOCAL_CHATBOT_ENGINE_URL = "LOCAL_CHATBOT_ENGINE_URL";
         public const string CHATBOT_ENGINE_URL = "CHATBOT_ENGINE_URL";
+
+        // vnpay
+        public const string VNP_TMNCODE = "VNP_TMNCODE";
+        public const string VNP_HASH_SECRET = "VNP_HASH_SECRET";
+        public const string VNP_SANDBOX_URL = "VNP_SANDBOX_URL";
+        public const string LOCAL_VNP_CALLBACK_URL = "LOCAL_VNP_CALLBACK_URL";
+        public const string VNP_CALLBACK_URL = "VNP_CALLBACK_URL";
+
     }
 
     public class RedisCacheKeys

@@ -20,6 +20,7 @@ using LiftNet.Timer.Service;
 using Microsoft.Azure.Cosmos;
 using Quartz;
 using StackExchange.Redis;
+using VNPAY.NET;
 
 namespace LiftNet.Api.Extensions
 {
@@ -124,6 +125,9 @@ namespace LiftNet.Api.Extensions
             services.AddScoped<IRedisSubService, RedisSubService>();
             #endregion
 
+            #region vnpay
+            services.RegisterVNPay();
+            #endregion
             return services;
         }
 
@@ -158,6 +162,30 @@ namespace LiftNet.Api.Extensions
             });
             services.AddSingleton<IEventBusService, EventBusService>();
             services.AddSingleton<IEventConsumer, EventConsumer>();
+            return services;
+        }
+
+        private static IServiceCollection RegisterVNPay(this IServiceCollection services)
+        {
+            var tmnCode = Environment.GetEnvironmentVariable(EnvKeys.VNP_TMNCODE);
+            var hashSecret = Environment.GetEnvironmentVariable(EnvKeys.VNP_HASH_SECRET);
+            var sandbox = Environment.GetEnvironmentVariable(EnvKeys.VNP_SANDBOX_URL);
+            var callBackUrl = Environment.GetEnvironmentVariable(EnvKeys.VNP_CALLBACK_URL);
+
+#if DEBUG
+            callBackUrl = Environment.GetEnvironmentVariable(EnvKeys.LOCAL_VNP_CALLBACK_URL);
+#endif
+
+            if (string.IsNullOrEmpty(tmnCode) || string.IsNullOrEmpty(hashSecret) || string.IsNullOrEmpty(sandbox) || string.IsNullOrEmpty(callBackUrl))
+            {
+                throw new ArgumentNullException("VNPay credentials not found.");
+            }
+            services.AddScoped<IVnpay>(x =>
+            {
+                var vnpay = new Vnpay();
+                vnpay.Initialize(tmnCode, hashSecret, sandbox, callBackUrl);    
+                return vnpay;
+            });
             return services;
         }
 

@@ -1,6 +1,10 @@
-﻿using MediatR;
+﻿using LiftNet.Domain.Response;
+using LiftNet.Handler.Wallets.Queries.Requests;
+using LiftNet.Utility.Extensions;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using VNPAY.NET;
 using VNPAY.NET.Enums;
 using VNPAY.NET.Models;
@@ -8,15 +12,14 @@ using VNPAY.NET.Utilities;
 
 namespace LiftNet.Api.Controllers
 {
-    [Route("api/VNPay")]
-    public class VNPayController : LiftNetControllerBase
+    public class PaymentController : LiftNetControllerBase
     {
         private IVnpay _vnpay => _serviceProvider.GetRequiredService<IVnpay>();
-        public VNPayController(IMediator mediator, IServiceProvider serviceProvider) : base(mediator, serviceProvider)
+        public PaymentController(IMediator mediator, IServiceProvider serviceProvider) : base(mediator, serviceProvider)
         {
         }
 
-        [HttpGet("createPaymentUrl")]
+        [HttpGet("vnpay/createPaymentUrl")]
         [Authorize]
         public ActionResult<string> CreatePaymentUrl(double moneyToPay, string description)
         {
@@ -46,7 +49,7 @@ namespace LiftNet.Api.Controllers
             }
         }
 
-        [HttpGet("IPN")]
+        [HttpGet("vnpay/IPN")]
         public IActionResult IpnAction()
         {
             if (Request.QueryString.HasValue)
@@ -70,7 +73,7 @@ namespace LiftNet.Api.Controllers
             return NotFound("Payment information not found.");
         }
 
-        [HttpGet("callBack")]
+        [HttpGet("vnpay/callBack")]
         public ActionResult<string> Callback()
         {
             if (Request.QueryString.HasValue)
