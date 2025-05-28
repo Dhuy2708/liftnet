@@ -3,87 +3,87 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Contract", "LiftNet.Contract\LiftNet.Contract.csproj", "{BAD0EAD1-5A7E-4BA6-AE0E-0A940725EC22}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Contract", "Application\Common\LiftNet.Contract\LiftNet.Contract.csproj", "{BAD0EAD1-5A7E-4BA6-AE0E-0A940725EC22}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Domain", "LiftNet.Domain\LiftNet.Domain.csproj", "{ADD023A9-6A30-49BC-9494-748348DF95BE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Domain", "Application\Domain\LiftNet.Domain\LiftNet.Domain.csproj", "{ADD023A9-6A30-49BC-9494-748348DF95BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Service", "LiftNet.Service\LiftNet.Service.csproj", "{556D0E11-DA3C-4EAF-9552-E069C90401FF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Service", "Application\LiftNet.Service\LiftNet.Service.csproj", "{556D0E11-DA3C-4EAF-9552-E069C90401FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Persistence", "LiftNet.Persistence\LiftNet.Persistence.csproj", "{E900A76D-228F-4762-A5EF-7B98E9A1F88A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Persistence", "Application\Domain\LiftNet.Persistence\LiftNet.Persistence.csproj", "{E900A76D-228F-4762-A5EF-7B98E9A1F88A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{F1874BBF-4C3E-4C56-90C0-EF6C5C1EC36D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{93289553-81C9-4402-8865-3D6191656260}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Api", "LiftNet.Api\LiftNet.Api.csproj", "{A1546264-2695-440D-92EE-A98470204396}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Api", "Api\LiftNet.Api\LiftNet.Api.csproj", "{A1546264-2695-440D-92EE-A98470204396}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Utility", "LiftNet.Utility\LiftNet.Utility.csproj", "{AE4BE31C-9714-4D7E-BD35-AA781AF20B70}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Utility", "Application\Common\LiftNet.Utility\LiftNet.Utility.csproj", "{AE4BE31C-9714-4D7E-BD35-AA781AF20B70}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{D0770C6B-F9E5-43C2-A364-5B37D2C347E1}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Job", "Job", "{E3216631-4397-4661-8ECB-FB97215D1E84}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Repositories", "LiftNet.Repositories\LiftNet.Repositories.csproj", "{8EECB153-38A5-4AE9-B22D-632479E58273}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Repositories", "Infrastructure\Data\LiftNet.Repositories\LiftNet.Repositories.csproj", "{8EECB153-38A5-4AE9-B22D-632479E58273}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{2CAE0459-C29B-46AC-B789-F8C94D4DA15D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.SharedKenel", "LiftNet.SharedKenel\LiftNet.SharedKenel.csproj", "{ECAE0B54-7A17-4DF8-AC53-62C8B41D81CF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.SharedKenel", "Application\LiftNet.SharedKenel\LiftNet.SharedKenel.csproj", "{ECAE0B54-7A17-4DF8-AC53-62C8B41D81CF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{54129E85-CF27-4CA3-A940-14FB5F245269}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.AzureBlob", "LiftNet.AzureBlob\LiftNet.AzureBlob.csproj", "{70C0B10D-D03E-4C1A-8220-392FA31C6D2B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.AzureBlob", "Infrastructure\Data\LiftNet.AzureBlob\LiftNet.AzureBlob.csproj", "{70C0B10D-D03E-4C1A-8220-392FA31C6D2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Logger", "LiftNet.Logger\LiftNet.Logger.csproj", "{E95242C0-B698-47E1-B5A0-ACCF25504392}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Logger", "Application\Domain\LiftNet.Logger\LiftNet.Logger.csproj", "{E95242C0-B698-47E1-B5A0-ACCF25504392}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Worker", "Worker", "{BA0CB11E-5A42-494D-A12B-6C31FDCC849D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Timer", "LiftNet.Timer\LiftNet.Timer.csproj", "{DF98EA3E-E17D-4F81-BEE4-F9154CB03F38}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Timer", "Worker\LiftNet.Timer\LiftNet.Timer.csproj", "{DF98EA3E-E17D-4F81-BEE4-F9154CB03F38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.WorkerService", "LiftNet.WorkerService\LiftNet.WorkerService.csproj", "{F386A170-8D50-4037-8EEC-B7FE2A6AED60}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.WorkerService", "Worker\LiftNet.WorkerService\LiftNet.WorkerService.csproj", "{F386A170-8D50-4037-8EEC-B7FE2A6AED60}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Handler", "LiftNet.Handler\LiftNet.Handler.csproj", "{854C8EFA-99BA-48BA-A038-5AB9426DBA0D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Handler", "Application\LiftNet.Handler\LiftNet.Handler.csproj", "{854C8EFA-99BA-48BA-A038-5AB9426DBA0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Ioc", "LiftNet.Ioc\LiftNet.Ioc.csproj", "{B6B5999C-3566-47E6-8AB5-F8B31F0E9CBF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Ioc", "Application\Domain\LiftNet.Ioc\LiftNet.Ioc.csproj", "{B6B5999C-3566-47E6-8AB5-F8B31F0E9CBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.CosmosDb", "LiftNet.CosmosDb\LiftNet.CosmosDb.csproj", "{EC80F328-FE08-41D3-9182-8765BC359C2A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.CosmosDb", "Infrastructure\Data\LiftNet.CosmosDb\LiftNet.CosmosDb.csproj", "{EC80F328-FE08-41D3-9182-8765BC359C2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.ProvinceSDK", "LiftNet.ProvinceSDK\LiftNet.ProvinceSDK.csproj", "{2506B451-7DB6-48E9-B127-2D068D614237}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.ProvinceSDK", "Infrastructure\LiftNet.ProvinceSDK\LiftNet.ProvinceSDK.csproj", "{2506B451-7DB6-48E9-B127-2D068D614237}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Job", "LiftNet.Job\LiftNet.Job.csproj", "{F6FC75A5-D757-41C2-BE58-3CD29F84220C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Job", "Infrastructure\Job\LiftNet.Job\LiftNet.Job.csproj", "{F6FC75A5-D757-41C2-BE58-3CD29F84220C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.JobService", "LiftNet.JobService\LiftNet.JobService.csproj", "{73EF9DE4-8F92-42C7-8AC8-6778A0481854}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.JobService", "Infrastructure\Job\LiftNet.JobService\LiftNet.JobService.csproj", "{73EF9DE4-8F92-42C7-8AC8-6778A0481854}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.MapSDK", "LiftNet.MapSDK\LiftNet.MapSDK.csproj", "{44EF6B42-06C2-42E2-9B64-CB333B2CA103}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.MapSDK", "Infrastructure\LiftNet.MapSDK\LiftNet.MapSDK.csproj", "{44EF6B42-06C2-42E2-9B64-CB333B2CA103}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.MapSDKTests", "LiftNet.MapSDKTests\LiftNet.MapSDKTests.csproj", "{B94FE4A4-36AA-406A-B706-6F378809ACF7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.MapSDKTests", "ZTest\LiftNet.MapSDKTests\LiftNet.MapSDKTests.csproj", "{B94FE4A4-36AA-406A-B706-6F378809ACF7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ZTest", "ZTest", "{2C73E9E1-993A-46AF-948E-8E7CD12641E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.ServiceBus", "LiftNet.ServiceBus\LiftNet.ServiceBus.csproj", "{6DA0818B-E1C8-4AB8-BCEE-698D20D4514A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.ServiceBus", "Infrastructure\Event\LiftNet.ServiceBus\LiftNet.ServiceBus.csproj", "{6DA0818B-E1C8-4AB8-BCEE-698D20D4514A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Cloudinary", "LiftNet.Cloudinary\LiftNet.Cloudinary.csproj", "{CBD8CADD-ED3C-4A4D-812B-37F30A1B123E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Cloudinary", "Infrastructure\LiftNet.Cloudinary\LiftNet.Cloudinary.csproj", "{CBD8CADD-ED3C-4A4D-812B-37F30A1B123E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Event", "Event", "{BF4819C9-5AFF-44D9-ADCC-CF6D21838A47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.MailService", "LiftNet.MailService\LiftNet.MailService.csproj", "{3292DCFB-CC86-4FC7-880D-C1FD1790A16C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.MailService", "Infrastructure\LiftNet.MailService\LiftNet.MailService.csproj", "{3292DCFB-CC86-4FC7-880D-C1FD1790A16C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.AzureBlobTests", "LiftNet.AzureBlobTests\LiftNet.AzureBlobTests.csproj", "{A1E24606-1530-408D-A8EC-C601B53ED42B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.AzureBlobTests", "ZTest\LiftNet.AzureBlobTests\LiftNet.AzureBlobTests.csproj", "{A1E24606-1530-408D-A8EC-C601B53ED42B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.CloudinaryTests", "LiftNet.CloudinaryTests\LiftNet.CloudinaryTests.csproj", "{6D3216E8-56F8-459C-B03A-1E470BBE41BC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.CloudinaryTests", "ZTest\LiftNet.CloudinaryTests\LiftNet.CloudinaryTests.csproj", "{6D3216E8-56F8-459C-B03A-1E470BBE41BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.CosmosDbTests", "LiftNet.CosmosDbTests\LiftNet.CosmosDbTests.csproj", "{8CB9E738-3E8D-43EF-827C-A1763D99E6AE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.CosmosDbTests", "ZTest\LiftNet.CosmosDbTests\LiftNet.CosmosDbTests.csproj", "{8CB9E738-3E8D-43EF-827C-A1763D99E6AE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{618ABA26-3FFF-4829-8F48-5F2A91FC9496}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Redis", "LiftNet.Redis\LiftNet.Redis.csproj", "{4439FCF0-236D-48B3-B65E-4740D9A8C69C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Redis", "Infrastructure\LiftNet.Redis\LiftNet.Redis.csproj", "{4439FCF0-236D-48B3-B65E-4740D9A8C69C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Hub", "LiftNet.Hub\LiftNet.Hub.csproj", "{F22C34F4-7821-43B6-A78B-2C1FDE4D5E18}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Hub", "Application\LiftNet.Hub\LiftNet.Hub.csproj", "{F22C34F4-7821-43B6-A78B-2C1FDE4D5E18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.RepositoriesTests", "LiftNet.RepositoriesTests\LiftNet.RepositoriesTests.csproj", "{DA23A373-4ED5-4285-8489-4A8066F60487}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.RepositoriesTests", "ZTest\LiftNet.RepositoriesTests\LiftNet.RepositoriesTests.csproj", "{DA23A373-4ED5-4285-8489-4A8066F60487}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Repos", "Repos", "{E283D0D0-14C0-4DEF-9874-37F72D6F914E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Engine", "LiftNet.Engine\LiftNet.Engine.csproj", "{59E756AD-5CBA-4A69-973A-1FA6C3BE2079}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiftNet.Engine", "Application\LiftNet.Engine\LiftNet.Engine.csproj", "{59E756AD-5CBA-4A69-973A-1FA6C3BE2079}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
