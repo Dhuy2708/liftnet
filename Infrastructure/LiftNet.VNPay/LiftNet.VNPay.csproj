@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="VNPAY.NET" Version="8.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Application\Common\LiftNet.Contract\LiftNet.Contract.csproj" />
     <ProjectReference Include="..\..\Application\Common\LiftNet.Utility\LiftNet.Utility.csproj" />
   </ItemGroup>

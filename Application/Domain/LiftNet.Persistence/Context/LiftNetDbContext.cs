@@ -29,7 +29,10 @@ namespace LiftNet.Persistence.Context
         public DbSet<AppointmentParticipant> AppointmentParticipants { get; set; }
         public DbSet<SocialConnection> SocialConnections { get; set; }
         public DbSet<CoachExtension> CoachExtensions { get; set; }
+
+        // transaction
         public DbSet<Wallet> Wallets { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         // finder
         public DbSet<FinderPost> FinderPosts { get; set; }
