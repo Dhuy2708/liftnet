@@ -39,6 +39,24 @@ namespace LiftNet.Api.Controllers
         [HttpGet("paymentHistories")]
         [Authorize]
         [ProducesResponseType(typeof(LiftNetRes<double>), (int)HttpStatusCode.OK)]
-
+        public async Task<IActionResult> GetPaymentHistories([FromQuery] int pageNumber)
+        {
+            return Ok();
+            //if (UserId.IsNullOrEmpty())
+            //{
+            //    return Unauthorized();
+            //}
+            //var request = new GetPaymentHistoriesQuery
+            //{
+            //    UserId = UserId,
+            //    PageNumber = pageNumber
+            //};
+            //var result = await _mediator.Send(request);
+            //if (result.Success)
+            //{
+            //    return Ok(result);
+            //}
+            //return StatusCode(500, result);
+        }
     }
 }

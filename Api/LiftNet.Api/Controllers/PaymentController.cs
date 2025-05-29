@@ -1,10 +1,17 @@
-﻿using LiftNet.Domain.Response;
+﻿using CloudinaryDotNet;
+using LiftNet.Contract.Enums.Payment;
+using LiftNet.Contract.Interfaces.IRepos;
+using LiftNet.Domain.Entities;
+using LiftNet.Domain.Response;
 using LiftNet.Handler.Wallets.Queries.Requests;
 using LiftNet.Utility.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 using System.Net;
+using System.Threading.Tasks;
 using VNPAY.NET;
 using VNPAY.NET.Enums;
 using VNPAY.NET.Models;
@@ -15,31 +22,49 @@ namespace LiftNet.Api.Controllers
     public class PaymentController : LiftNetControllerBase
     {
         private IVnpay _vnpay => _serviceProvider.GetRequiredService<IVnpay>();
+        private ITransactionRepo _transactionRepo => _serviceProvider.GetRequiredService<ITransactionRepo>();
+
         public PaymentController(IMediator mediator, IServiceProvider serviceProvider) : base(mediator, serviceProvider)
         {
         }
 
         [HttpGet("vnpay/createPaymentUrl")]
         [Authorize]
-        public ActionResult<string> CreatePaymentUrl(double moneyToPay, string description)
+        public async Task<ActionResult<string>> CreatePaymentUrl(double moneyToPay, string description)
         {
             try
             {
-                var ipAddress = NetworkHelper.GetIpAddress(HttpContext); 
+                var ipAddress = NetworkHelper.GetIpAddress(HttpContext);
 
+                var now = DateTime.UtcNow;
+                var paymentId = now.Ticks;
                 var request = new PaymentRequest
                 {
-                    PaymentId = DateTime.Now.Ticks,
+                    PaymentId = paymentId,
                     Money = moneyToPay,
                     Description = description,
                     IpAddress = ipAddress,
                     BankCode = BankCode.ANY,
-                    CreatedDate = DateTime.UtcNow, 
+                    CreatedDate = now, 
                     Currency = Currency.VND,
-                    Language = DisplayLanguage.English 
+                    Language = DisplayLanguage.English
                 };
 
                 var paymentUrl = _vnpay.GetPaymentUrl(request);
+
+                var transaction = new Transaction()
+                {
+                    PaymentId = paymentId,
+                    UserId = UserId,
+                    Amount = moneyToPay,
+                    Description = description,
+                    Type = (int)PaymentType.Topup,
+                    PaymentMethod = (int)PaymentMethod.VnPay,
+                    Status = (int)PaymentStatus.Pending,
+                    CreatedAt = now,
+                    TimeToLive = now.AddMinutes(15),
+                };
+                await _transactionRepo.Create(transaction);
 
                 return Created(paymentUrl, paymentUrl);
             }
@@ -51,7 +76,7 @@ namespace LiftNet.Api.Controllers
 
         [HttpGet("vnpay/IPN")]
         public IActionResult IpnAction()
-        {
+        { 
             if (Request.QueryString.HasValue)
             {
                 try
@@ -74,13 +99,17 @@ namespace LiftNet.Api.Controllers
         }
 
         [HttpGet("vnpay/callBack")]
-        public ActionResult<string> Callback()
+        public async Task<ActionResult<string>> Callback()
         {
             if (Request.QueryString.HasValue)
             {
+                Dictionary<string, string> dictionary = Request.Query.Where<KeyValuePair<string, StringValues>>((KeyValuePair<string, StringValues> kv) => !string.IsNullOrEmpty(kv.Key) && kv.Key.StartsWith("vnp_")).ToDictionary((KeyValuePair<string, StringValues> kv) => kv.Key, (KeyValuePair<string, StringValues> kv) => kv.Value.ToString());
+                var amount = (long.Parse(dictionary.GetValueOrDefault("vnp_Amount", "0"))) / 100;
+                
                 try
                 {
                     var paymentResult = _vnpay.GetPaymentResult(Request.Query);
+                    await UpdateTransactionAsync(paymentResult, amount);
                     var resultDescription = $"{paymentResult.PaymentResponse.Description}. {paymentResult.TransactionStatus.Description}.";
 
                     if (paymentResult.IsSuccess)
@@ -97,6 +126,36 @@ namespace LiftNet.Api.Controllers
             }
 
             return NotFound("Payment information not found.");
+        }
+
+        private async Task<int> UpdateTransactionAsync(PaymentResult? paymentResult, double amount)
+        {
+            if (paymentResult == null)
+            {
+                return 0;
+            }
+
+            var paymentId = paymentResult.PaymentId;
+            var description = paymentResult.Description;
+
+            var transaction = await _transactionRepo.GetQueryable()
+                                              .FirstOrDefaultAsync(x => x.PaymentId == paymentId &&
+                                                                   x.Amount == amount &&
+                                                                   x.Type == (int)PaymentType.Topup &&
+                                                                   x.Description == description);
+            if (transaction == null)
+            {
+                return 0;
+            }
+
+            transaction.TransactionId = paymentResult.VnpayTransactionId.ToString();
+            transaction.Status = paymentResult.IsSuccess ? (int)PaymentStatus.Success
+                                                         : (int)PaymentStatus.Failed;
+            transaction.CreatedAt = DateTime.UtcNow;
+            transaction.TimeToLive = null;
+            var result = await _transactionRepo.SaveChangesAsync();
+
+            return result;
         }
     }
 }

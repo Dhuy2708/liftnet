@@ -17,10 +17,15 @@ namespace LiftNet.Domain.Entities
             get; set;
         } = Guid.NewGuid().ToString();
 
-        public string? TransactionId
+        public long? PaymentId
         {
             get; set;
-        } = string.Empty;
+        }
+
+        public string? TransactionId // for external payment system
+        {
+            get; set;
+        }
 
         [ForeignKey(nameof(User))]
         public string UserId
@@ -38,7 +43,32 @@ namespace LiftNet.Domain.Entities
             get; set;
         } = string.Empty;
 
+        public int Type
+        {
+            get; set;
+        } // 1: Topup, 2: Transfer, 3: Withdraw
+
+        public int? PaymentMethod
+        {
+            get; set;
+        }
+
         public int Status
+        {
+            get; set;
+        }
+
+        public string? Additional
+        {
+            get; set;
+        }
+
+        public DateTime CreatedAt
+        {
+            get; set;
+        } = DateTime.UtcNow;
+
+        public DateTime? TimeToLive
         {
             get; set;
         }
