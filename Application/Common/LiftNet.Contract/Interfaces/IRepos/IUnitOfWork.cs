@@ -22,6 +22,7 @@ namespace LiftNet.Contract.Interfaces.IRepos
         IConversationRepo ConversationRepo { get; }
         IConversationUserRepo ConversationUserRepo { get; }
         IWalletRepo WalletRepo { get; }
+        ITransactionRepo TransactionRepo { get; }
         IFinderPostRepo FinderPostRepo { get; }
         IFinderPostApplicantRepo FinderPostApplicantRepo { get; }
         IChatBotConversationRepo ChatBotConversationRepo { get; }

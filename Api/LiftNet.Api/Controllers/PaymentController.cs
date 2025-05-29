@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
+using StackExchange.Redis;
 using System.Net;
 using System.Threading.Tasks;
 using VNPAY.NET;
@@ -22,7 +23,18 @@ namespace LiftNet.Api.Controllers
     public class PaymentController : LiftNetControllerBase
     {
         private IVnpay _vnpay => _serviceProvider.GetRequiredService<IVnpay>();
-        private ITransactionRepo _transactionRepo => _serviceProvider.GetRequiredService<ITransactionRepo>();
+        private IUnitOfWork _uow => _serviceProvider.GetRequiredService<IUnitOfWork>();
+        private string UIBaseUrl
+        {
+            get
+            {
+                var url = Environment.GetEnvironmentVariable("UI_URL");
+#if DEBUG
+                url = "http://localhost:5173";
+#endif
+                return url;
+            }
+        }
 
         public PaymentController(IMediator mediator, IServiceProvider serviceProvider) : base(mediator, serviceProvider)
         {
@@ -64,8 +76,8 @@ namespace LiftNet.Api.Controllers
                     CreatedAt = now,
                     TimeToLive = now.AddMinutes(15),
                 };
-                await _transactionRepo.Create(transaction);
-
+                await _uow.TransactionRepo.Create(transaction);
+                await _uow.CommitAsync();
                 return Created(paymentUrl, paymentUrl);
             }
             catch (Exception ex)
@@ -110,14 +122,12 @@ namespace LiftNet.Api.Controllers
                 {
                     var paymentResult = _vnpay.GetPaymentResult(Request.Query);
                     await UpdateTransactionAsync(paymentResult, amount);
-                    var resultDescription = $"{paymentResult.PaymentResponse.Description}. {paymentResult.TransactionStatus.Description}.";
-
                     if (paymentResult.IsSuccess)
                     {
-                        return Ok(resultDescription);
+                        return Redirect(UIBaseUrl + $"/payment-callback?orderId={paymentResult.PaymentId}&status={(int)PaymentStatus.Success}");
                     }
 
-                    return BadRequest(resultDescription);
+                    return Redirect(UIBaseUrl + $"/payment-callback?orderId={paymentResult.PaymentId}&status={(int)PaymentStatus.Failed}");
                 }
                 catch (Exception ex)
                 {
@@ -138,23 +148,43 @@ namespace LiftNet.Api.Controllers
             var paymentId = paymentResult.PaymentId;
             var description = paymentResult.Description;
 
-            var transaction = await _transactionRepo.GetQueryable()
+            var transaction = await _uow.TransactionRepo.GetQueryable()
                                               .FirstOrDefaultAsync(x => x.PaymentId == paymentId &&
                                                                    x.Amount == amount &&
                                                                    x.Type == (int)PaymentType.Topup &&
                                                                    x.Description == description);
-            if (transaction == null)
+            if (transaction == null || transaction.Status != (int)PaymentStatus.Pending)
             {
                 return 0;
             }
+
+            await _uow.BeginTransactionAsync();
 
             transaction.TransactionId = paymentResult.VnpayTransactionId.ToString();
             transaction.Status = paymentResult.IsSuccess ? (int)PaymentStatus.Success
                                                          : (int)PaymentStatus.Failed;
             transaction.CreatedAt = DateTime.UtcNow;
             transaction.TimeToLive = null;
-            var result = await _transactionRepo.SaveChangesAsync();
+            await _uow.TransactionRepo.Update(transaction);
+            
+            var wallet = await _uow.WalletRepo.GetQueryable()
+                                              .FirstOrDefaultAsync(x => x.UserId == transaction.UserId);
+            if (wallet != null)
+            {
+                wallet.Balance += amount / 1000;
+                await _uow.WalletRepo.Update(wallet);
+            }
+            else
+            {
+                wallet = new Wallet()
+                {
+                    UserId = transaction.UserId,
+                    Balance = amount / 1000
+                };
+                await _uow.WalletRepo.Create(wallet);
+            }
 
+            var result = await _uow.CommitAsync();
             return result;
         }
     }

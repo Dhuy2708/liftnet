@@ -214,6 +214,17 @@ namespace LiftNet.Repositories.Core
                 return _chatBotMessageRepo;
             }
         }
+
+        private ITransactionRepo? _transactionRepo = null;
+        public ITransactionRepo TransactionRepo
+        {
+            get
+            {
+                _transactionRepo ??= _serviceProvider.GetRequiredService<ITransactionRepo>();
+                _transactionRepo.AutoSave = false;
+                return _transactionRepo;
+            }
+        }
         #endregion
 
         public async Task BeginTransactionAsync()
