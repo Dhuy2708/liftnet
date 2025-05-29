@@ -8,14 +8,13 @@ namespace LiftNet.Utility.Utils
 {
     public static class DateTimeUtil
     {
-        public static DateTimeOffset ToOffSet(this DateTime dateTime, string timeZoneId = "UTC")
+        public static DateTimeOffset ToOffSet(this DateTime dateTime, TimeSpan? timeSpan = null)
         {
-            if (string.IsNullOrEmpty(timeZoneId))
+            if (timeSpan == null)
             {
-                timeZoneId = "UTC";
+                timeSpan = TimeSpan.Zero;
             }
-            var timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
-            return TimeZoneInfo.ConvertTime(dateTime, timeZone);
+            return new DateTimeOffset(dateTime, timeSpan.Value);
         }
 
         public static DateTimeOffset? ToOffSet(this DateTime? dateTime, TimeSpan? timeSpan = null)

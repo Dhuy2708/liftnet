@@ -94,6 +94,12 @@ namespace LiftNet.Handler.Finders.Queries
                     var applyingStatus = applyingStatusInt != null ? (FinderPostApplyingStatus)applyingStatusInt.Value 
                                                                    : FinderPostApplyingStatus.None;
 
+                    if ((applyingStatus is FinderPostApplyingStatus.Applying || 
+                        applyingStatus is FinderPostApplyingStatus.Accepted) &&
+                        post.StartTime < DateTime.UtcNow)
+                    {
+                        applyingStatus = FinderPostApplyingStatus.Canceled;
+                    }
                     var result = new ExploreFinderPostView
                     {
                         Id = post.Id,
@@ -111,7 +117,8 @@ namespace LiftNet.Handler.Finders.Queries
                         HideAddress = post.HideAddress,
                         ApplyingStatus = applyingStatus,
                         RepeatType = (RepeatingType)post.RepeatType,
-                        Status = (FinderPostStatus)post.Status,
+                        Status = post.StartTime < DateTime.UtcNow ? FinderPostStatus.Closed:
+                                            (FinderPostStatus)post.Status,
                         CreatedAt = post.CreatedAt,
                         Poster = post.IsAnonymous
                            ? null
