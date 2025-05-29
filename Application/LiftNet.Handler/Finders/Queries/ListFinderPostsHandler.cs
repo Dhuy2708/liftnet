@@ -60,20 +60,20 @@ namespace LiftNet.Handler.Finders.Queries
                 }
 
                 var statusFilter = request.Conditions.FindCondition("status");
-                if (statusFilter != null && !string.IsNullOrEmpty(statusFilter.Values.FirstOrDefault()))
+                if (statusFilter != null && 
+                    !string.IsNullOrEmpty(statusFilter.Values.FirstOrDefault()) &&
+                    int.TryParse(statusFilter.Values.First(), out int status))
                 {
-                    if (int.TryParse(statusFilter.Values.First(), out int status))
+                    if (status == (int)FinderPostStatus.Open || 
+                        status == (int)FinderPostStatus.Matched)
                     {
-                        if (status == (int)FinderPostStatus.Closed)
-                        {
-                            query = query.Where(x => x.Status == status ||
-                                                     x.StartTime < DateTime.UtcNow);
-                        }
-                        else if (status == (int)FinderPostStatus.Open)
-                        {
-                            query = query.Where(x => x.Status == status &&
-                                                     x.StartTime > DateTime.UtcNow);
-                        }
+                        query = query.Where(x => x.Status == status &&
+                                                 x.StartTime > DateTime.UtcNow);
+                    }
+                    else if (status == (int)FinderPostStatus.Closed)
+                    {
+                        query = query.Where(x => x.Status == status ||
+                                                 x.StartTime < DateTime.UtcNow);
                     }
                 }
 

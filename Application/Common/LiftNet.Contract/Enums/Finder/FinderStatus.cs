@@ -11,6 +11,7 @@ namespace LiftNet.Contract.Enums.Finder
         None = 0,
         Open = 1,
         Closed = 2,
+        Matched = 3,
     }
 
     public enum FinderPostApplyingStatus

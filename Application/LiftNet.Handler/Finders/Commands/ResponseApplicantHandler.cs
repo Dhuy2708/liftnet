@@ -59,7 +59,7 @@ namespace LiftNet.Handler.Finders.Commands
                 if (request.Status == FinderPostResponseType.Accept)
                 {
                     applicant.Status = (int)FinderPostApplyingStatus.Accepted;
-                    applicant.Post.Status = (int)FinderPostStatus.Closed;
+                    applicant.Post.Status = (int)FinderPostStatus.Matched;
 
                     var otherApplicants = await _applicantRepo.GetQueryable()
                         .Where(x => x.PostId == applicant.PostId
