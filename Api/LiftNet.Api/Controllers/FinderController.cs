@@ -25,7 +25,7 @@ namespace LiftNet.Api.Controllers
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> PostFinderRequest([FromBody] PostFinderRequest request)
         {
-            var command = new PostFinderCommand
+            var command = new CreateFinderPostCommand
             {
                 UserId = UserId,
                 LocationId = request.LocationId,

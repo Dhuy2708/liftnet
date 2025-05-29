@@ -225,6 +225,17 @@ namespace LiftNet.Repositories.Core
                 return _transactionRepo;
             }
         }
+
+        private IFinderPostSeenStatusRepo? _finderPostSeenStatusRepo = null;
+        public IFinderPostSeenStatusRepo FinderPostSeenStatusRepo
+        {
+            get
+            {
+                _finderPostSeenStatusRepo ??= _serviceProvider.GetRequiredService<IFinderPostSeenStatusRepo>();
+                _finderPostSeenStatusRepo.AutoSave = false;
+                return _finderPostSeenStatusRepo;
+            }
+        }
         #endregion
 
         public async Task BeginTransactionAsync()

@@ -13,19 +13,16 @@ namespace LiftNet.Handler.Finders.Commands
     {
         private readonly ILiftLogger<ApplyFinderPostHandler> _logger;
         private readonly IFinderPostRepo _postRepo;
-        private readonly IFinderPostApplicantRepo _applicantRepo;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _uow;
 
         public ApplyFinderPostHandler(
             ILiftLogger<ApplyFinderPostHandler> logger,
             IFinderPostRepo postRepo,
-            IFinderPostApplicantRepo applicantRepo,
             IUnitOfWork unitOfWork)
         {
             _logger = logger;
             _postRepo = postRepo;
-            _applicantRepo = applicantRepo;
-            _unitOfWork = unitOfWork;
+            _uow = unitOfWork;
         }
 
         public async Task<LiftNetRes> Handle(ApplyFinderPostCommand request, CancellationToken cancellationToken)
@@ -48,7 +45,9 @@ namespace LiftNet.Handler.Finders.Commands
                     return LiftNetRes.ErrorResponse("Post is not open for applications");
                 }
 
-                var existingApplication = await _applicantRepo.GetQueryable()
+                await _uow.BeginTransactionAsync();
+
+                var existingApplication = await _uow.FinderPostApplicantRepo.GetQueryable()
                                                     .FirstOrDefaultAsync(x => x.PostId == request.PostId && 
                                                                               x.TrainerId == request.UserId); 
 
@@ -67,15 +66,44 @@ namespace LiftNet.Handler.Finders.Commands
                     ModifiedAt = DateTime.UtcNow,
                 };
 
-                await _applicantRepo.Create(application);
-                await _unitOfWork.CommitAsync();
+                await _uow.FinderPostApplicantRepo.Create(application);
 
+                await UpdateSeenStatus(post.UserId, request.PostId);
+                await _uow.CommitAsync();
                 return LiftNetRes.SuccessResponse();
             }
             catch (Exception ex)
             {
+                await _uow.RollbackAsync();
                 _logger.Error(ex, "Error occurred while applying to finder post");
                 return LiftNetRes.ErrorResponse("Error occurred while applying to finder post");
+            }
+        }
+
+        private async Task UpdateSeenStatus(string posterId, string postId)
+        {
+            var queryable = _uow.FinderPostSeenStatusRepo.GetQueryable();
+            var seenStatus = await queryable
+                                    .FirstOrDefaultAsync(x => x.UserId == posterId &&
+                                                              x.FinderPostId == postId);
+
+            if (seenStatus != null)
+            {
+                seenStatus.NotiCount += 1;
+                seenStatus.LastUpdate = DateTime.UtcNow;
+                await _uow.FinderPostSeenStatusRepo.Update(seenStatus);
+            }
+            else
+            {
+                seenStatus = new FinderPostSeenStatus
+                {
+                    UserId = posterId,
+                    FinderPostId = postId,
+                    NotiCount = 1,
+                    LastSeen = null,
+                    LastUpdate = DateTime.UtcNow
+                };
+                await _uow.FinderPostSeenStatusRepo.Create(seenStatus);
             }
         }
     }

@@ -82,6 +82,7 @@ namespace LiftNet.Api.Controllers
             }
             catch (Exception ex)
             {
+                await _uow.RollbackAsync();
                 return BadRequest(ex.Message);
             }
         }
