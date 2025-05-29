@@ -18,18 +18,17 @@ namespace LiftNet.Utility.Utils
             return TimeZoneInfo.ConvertTime(dateTime, timeZone);
         }
 
-        public static DateTimeOffset? ToOffSet(this DateTime? dateTime, string timeZoneId = "UTC")
+        public static DateTimeOffset? ToOffSet(this DateTime? dateTime, TimeSpan? timeSpan = null)
         {
             if (dateTime == null)
             {
                 return null;
             }
-            if (string.IsNullOrEmpty(timeZoneId))
+            if (timeSpan == null)
             {
-                timeZoneId = "UTC";
+                timeSpan = TimeSpan.Zero;
             }
-            var timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
-            return TimeZoneInfo.ConvertTime(dateTime.Value, timeZone);
+            return new DateTimeOffset(dateTime.Value, timeSpan.Value);
         }
     }
 }

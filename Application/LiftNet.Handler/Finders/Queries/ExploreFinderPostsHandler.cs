@@ -133,8 +133,8 @@ namespace LiftNet.Handler.Finders.Queries
                         Title = post.Title,
                         DistanceAway = distanceAway,
                         Description = post.Description,
-                        StartTime = post.StartTime,
-                        EndTime = post.EndTime,
+                        StartTime = post.StartTime.ToOffSet(),
+                        EndTime = post.EndTime.ToOffSet(),
                         StartPrice = post.StartPrice,
                         EndPrice = post.EndPrice,
                         PlaceName = post.HideAddress ? null : post.PlaceName,
@@ -145,7 +145,7 @@ namespace LiftNet.Handler.Finders.Queries
                         ApplyingStatus = postStatusDict.GetValueOrDefault(post.Id, FinderPostApplyingStatus.None),
                         RepeatType = (RepeatingType)post.RepeatType,
                         Status = (FinderPostStatus)post.Status,
-                        CreatedAt = post.CreatedAt,
+                        CreatedAt = post.CreatedAt.ToOffSet(),
                         Poster = post.IsAnonymous
                             ? null
                             : userDict.GetValueOrDefault<string, User>(post.UserId)?.ToOverview(userRoleDict)
