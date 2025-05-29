@@ -94,14 +94,20 @@ namespace LiftNet.Handler.Finders.Queries
                     var applyingStatus = applyingStatusInt != null ? (FinderPostApplyingStatus)applyingStatusInt.Value 
                                                                    : FinderPostApplyingStatus.None;
 
+                    if ((applyingStatus is FinderPostApplyingStatus.Applying || 
+                        applyingStatus is FinderPostApplyingStatus.Accepted) &&
+                        post.StartTime < DateTime.UtcNow)
+                    {
+                        applyingStatus = FinderPostApplyingStatus.Canceled;
+                    }
                     var result = new ExploreFinderPostView
                     {
                         Id = post.Id,
                         Title = post.Title,
                         DistanceAway = distanceAway,
                         Description = post.Description,
-                        StartTime = post.StartTime,
-                        EndTime = post.EndTime,
+                        StartTime = post.StartTime.ToOffSet(),
+                        EndTime = post.EndTime.ToOffSet(),
                         StartPrice = post.StartPrice,
                         EndPrice = post.EndPrice,
                         PlaceName = post.HideAddress ? null : post.PlaceName,
@@ -109,10 +115,14 @@ namespace LiftNet.Handler.Finders.Queries
                         Lng = post.HideAddress ? null : post.Lng,
                         IsAnonymous = post.IsAnonymous,
                         HideAddress = post.HideAddress,
-                        ApplyingStatus = applyingStatus,
+                        ApplyingStatus = (post.StartTime < DateTime.UtcNow || 
+                                          post.Status == (int)FinderPostStatus.Closed) 
+                                                    ? FinderPostApplyingStatus.Canceled 
+                                                    : applyingStatus,
                         RepeatType = (RepeatingType)post.RepeatType,
-                        Status = (FinderPostStatus)post.Status,
-                        CreatedAt = post.CreatedAt,
+                        Status = post.StartTime < DateTime.UtcNow ? FinderPostStatus.Closed:
+                                            (FinderPostStatus)post.Status,
+                        CreatedAt = post.CreatedAt.ToOffSet(),
                         Poster = post.IsAnonymous
                            ? null
                            : userOverviewDict.GetValueOrDefault<string, UserOverview>(post.UserId)
