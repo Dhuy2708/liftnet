@@ -75,7 +75,17 @@ namespace LiftNet.Contract.Views.Finders
             get; set;
         }
 
+        public int NotiCount
+        {
+            get; set;
+        }
+
         public DateTimeOffset CreatedAt
+        {
+            get; set;
+        }
+
+        public DateTimeOffset LastModified
         {
             get; set;
         }

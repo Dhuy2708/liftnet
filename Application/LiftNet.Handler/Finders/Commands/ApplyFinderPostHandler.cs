@@ -67,8 +67,11 @@ namespace LiftNet.Handler.Finders.Commands
                 };
 
                 await _uow.FinderPostApplicantRepo.Create(application);
+                var updateTime = DateTime.UtcNow;
+                await UpdateSeenStatus(post.UserId, request.PostId, updateTime);
+                post.ModifiedAt = updateTime;
+                await _uow.FinderPostRepo.Update(post);
 
-                await UpdateSeenStatus(post.UserId, request.PostId);
                 await _uow.CommitAsync();
                 return LiftNetRes.SuccessResponse();
             }
@@ -80,7 +83,7 @@ namespace LiftNet.Handler.Finders.Commands
             }
         }
 
-        private async Task UpdateSeenStatus(string posterId, string postId)
+        private async Task UpdateSeenStatus(string posterId, string postId, DateTime updateTime)
         {
             var queryable = _uow.FinderPostSeenStatusRepo.GetQueryable();
             var seenStatus = await queryable
@@ -90,7 +93,7 @@ namespace LiftNet.Handler.Finders.Commands
             if (seenStatus != null)
             {
                 seenStatus.NotiCount += 1;
-                seenStatus.LastUpdate = DateTime.UtcNow;
+                seenStatus.LastUpdate = updateTime;
                 await _uow.FinderPostSeenStatusRepo.Update(seenStatus);
             }
             else
@@ -101,7 +104,7 @@ namespace LiftNet.Handler.Finders.Commands
                     FinderPostId = postId,
                     NotiCount = 1,
                     LastSeen = null,
-                    LastUpdate = DateTime.UtcNow
+                    LastUpdate = updateTime
                 };
                 await _uow.FinderPostSeenStatusRepo.Create(seenStatus);
             }

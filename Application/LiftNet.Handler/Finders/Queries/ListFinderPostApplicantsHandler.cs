@@ -24,19 +24,21 @@ namespace LiftNet.Handler.Finders.Queries
         private readonly ILiftLogger<ListFinderPostApplicantsHandler> _logger;
         private readonly IFinderPostRepo _postRepo;
         private readonly IFinderPostApplicantRepo _applicantRepo;
+        private readonly IFinderPostSeenStatusRepo _seenStatusRepo;
         private readonly IUserRepo _userRepo;
         private readonly IUserService _userService;
 
-        public ListFinderPostApplicantsHandler(
-                        ILiftLogger<ListFinderPostApplicantsHandler> logger,
-                        IFinderPostRepo postRepo,
-                        IFinderPostApplicantRepo applicantRepo,
-                        IUserRepo userRepo,
-                        IUserService userService)
+        public ListFinderPostApplicantsHandler(ILiftLogger<ListFinderPostApplicantsHandler> logger,
+                                               IFinderPostRepo postRepo, 
+                                               IFinderPostApplicantRepo applicantRepo, 
+                                               IFinderPostSeenStatusRepo seenStatusRepo,
+                                               IUserRepo userRepo, 
+                                               IUserService userService)
         {
             _logger = logger;
             _postRepo = postRepo;
             _applicantRepo = applicantRepo;
+            _seenStatusRepo = seenStatusRepo;
             _userRepo = userRepo;
             _userService = userService;
         }
@@ -85,12 +87,37 @@ namespace LiftNet.Handler.Finders.Queries
                     Trainer = trainerOverviewDict.GetValueOrDefault<string, UserOverview>(applicant.TrainerId, null)
                 }).ToList();
 
+                await UpdateSeenStatus(request.UserId, request.PostId);
                 return LiftNetRes<FinderPostApplicantView>.SuccessResponse(applicantViews);
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, "Error occurred while listing finder post applicants");
                 return LiftNetRes<FinderPostApplicantView>.ErrorResponse("Error occurred while listing finder post applicants");
+            }
+        }
+
+        private async Task UpdateSeenStatus(string userId, string postId)
+        {
+            var seenStatus = await _seenStatusRepo.GetQueryable()
+                                                  .FirstOrDefaultAsync(x => x.UserId == userId &&
+                                                                            x.FinderPostId == postId);
+            if (seenStatus == null)
+            {
+                seenStatus = new FinderPostSeenStatus
+                {
+                    UserId = userId,
+                    FinderPostId = postId,
+                    NotiCount = 0,
+                    LastSeen = DateTime.UtcNow,
+                };
+                await _seenStatusRepo.Create(seenStatus);
+            }
+            else
+            {
+                seenStatus.NotiCount = 0;
+                seenStatus.LastSeen = DateTime.UtcNow;
+                await _seenStatusRepo.Update(seenStatus);
             }
         }
     }
