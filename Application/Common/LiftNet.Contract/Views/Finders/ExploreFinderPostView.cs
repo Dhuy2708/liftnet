@@ -30,12 +30,12 @@ namespace LiftNet.Contract.Views.Finders
             get; set;
         }
 
-        public DateTime? StartTime
+        public DateTimeOffset? StartTime
         {
             get; set;
         }
 
-        public DateTime? EndTime
+        public DateTimeOffset? EndTime
         {
             get; set;
         }
@@ -97,7 +97,7 @@ namespace LiftNet.Contract.Views.Finders
             get; set;
         }
 
-        public DateTime CreatedAt
+        public DateTimeOffset CreatedAt
         {
             get; set;
         }

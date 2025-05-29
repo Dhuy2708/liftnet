@@ -54,9 +54,10 @@ namespace LiftNet.Handler.Finders.Queries
                 var query = _postRepo.GetQueryable()
                                      .Where(x => x.UserId == request.UserId);
 
+                int status = (int)FinderPostStatus.Open;
                 if (request.Conditions.FindCondition("status") == null)
                 {
-                    query = query.Where(x => x.Status == (int)FinderPostStatus.Open &&
+                    query = query.Where(x => x.Status == status &&
                                              x.StartTime > DateTime.UtcNow);
                 }
 
@@ -69,7 +70,7 @@ namespace LiftNet.Handler.Finders.Queries
                 var statusFilter = request.Conditions.FindCondition("status");
                 if (statusFilter != null && 
                     !string.IsNullOrEmpty(statusFilter.Values.FirstOrDefault()) &&
-                    int.TryParse(statusFilter.Values.First(), out int status))
+                    int.TryParse(statusFilter.Values.First(), out status))
                 {
                     if (status == (int)FinderPostStatus.Open || 
                         status == (int)FinderPostStatus.Matched)
@@ -115,19 +116,19 @@ namespace LiftNet.Handler.Finders.Queries
                                                           .Where(x => x.UserId == request.UserId &&
                                                                       itemIds.Contains(x.FinderPostId))
                                                           .ToDictionaryAsync(k => k.FinderPostId, v => v.NotiCount);
-
                 items.ForEach(i =>
                 {
                     i.NotiCount = postNotiCountDict.GetValueOrDefault(i.Id, 0);
+                    i.Status = (FinderPostStatus)status;
                 });
 
                 items = items.OrderByDescending(x => x.LastModified).ToList();
 
                 return PaginatedLiftNetRes<FinderPostView>.SuccessResponse(
                     items,
-                    totalCount,
                     request.Conditions.PageNumber,
-                    request.Conditions.PageSize);
+                    request.Conditions.PageSize,
+                    totalCount);
             }
             catch (Exception ex)
             {
