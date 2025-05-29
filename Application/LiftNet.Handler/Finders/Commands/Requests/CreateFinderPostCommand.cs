@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Finders.Commands.Requests
 {
-    public class PostFinderCommand : IRequest<LiftNetRes>
+    public class CreateFinderPostCommand : IRequest<LiftNetRes>
     {
         public string UserId
         {

@@ -37,6 +37,7 @@ namespace LiftNet.Persistence.Context
         // finder
         public DbSet<FinderPost> FinderPosts { get; set; }
         public DbSet<FinderPostApplicant> FinderPostApplicants { get; set; }
+        public DbSet<FinderPostSeenStatus> FinderPostSeenStatuses { get; set; }
 
         // chat
         public DbSet<Conversation> Conversations { get; set; }

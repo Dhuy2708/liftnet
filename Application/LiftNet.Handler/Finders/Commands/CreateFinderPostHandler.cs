@@ -15,20 +15,20 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Finders.Commands
 {
-    public class PostFinderHandler : IRequestHandler<PostFinderCommand, LiftNetRes>
+    public class CreateFinderPostHandler : IRequestHandler<CreateFinderPostCommand, LiftNetRes>
     {
-        private readonly ILiftLogger<PostFinderHandler> _logger;
+        private readonly ILiftLogger<CreateFinderPostHandler> _logger;
         private readonly IFinderPostRepo _postRepo;
         private readonly IGeoService _geoService;
 
-        public PostFinderHandler(ILiftLogger<PostFinderHandler> logger, IFinderPostRepo postRepo, IGeoService geoService)
+        public CreateFinderPostHandler(ILiftLogger<CreateFinderPostHandler> logger, IFinderPostRepo postRepo, IGeoService geoService)
         {
             _logger = logger;
             _postRepo = postRepo;
             _geoService = geoService;
         }
 
-        public async Task<LiftNetRes> Handle(PostFinderCommand request, CancellationToken cancellationToken)
+        public async Task<LiftNetRes> Handle(CreateFinderPostCommand request, CancellationToken cancellationToken)
         {
             await new PostFinderCommandValidator().ValidateAndThrowAsync(request);
             try
