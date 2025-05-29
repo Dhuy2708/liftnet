@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Domain.Entities
 {
+    // to-do: seen feature
     [Table("Appointments")]
     public sealed class Appointment : IEntity
     {

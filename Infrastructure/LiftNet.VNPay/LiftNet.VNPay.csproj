@@ -15,4 +15,8 @@
     <ProjectReference Include="..\..\Application\Common\LiftNet.Utility\LiftNet.Utility.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Core\" />
+  </ItemGroup>
+
 </Project>
