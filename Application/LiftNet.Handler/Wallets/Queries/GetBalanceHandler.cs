@@ -15,24 +15,22 @@ namespace LiftNet.Handler.Wallets.Queries
     public class GetBalanceHandler : IRequestHandler<GetBalanceQuery, LiftNetRes<double>>
     {
         private readonly ILiftLogger<GetBalanceHandler> _logger;
-        private readonly ITransactionRepo _transactionRepo;
+        private readonly IWalletRepo _walletRepo;
 
-        public GetBalanceHandler(ILiftLogger<GetBalanceHandler> logger, ITransactionRepo transactionRepo)
+        public GetBalanceHandler(ILiftLogger<GetBalanceHandler> logger, IWalletRepo walletRepo)
         {
             _logger = logger;
-            _transactionRepo = transactionRepo;
+            _walletRepo = walletRepo;
         }
 
         public async Task<LiftNetRes<double>> Handle(GetBalanceQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                var queryable = _transactionRepo.GetQueryable();
-
-                var balance = await queryable
-                                        .Where(t => t.UserId == request.UserId)
-                                        .SumAsync(t => t.Amount);
-
+                var wallet = await _walletRepo.GetQueryable()
+                                           .AsNoTracking()
+                                           .FirstOrDefaultAsync(x => x.UserId == request.UserId);
+                var balance = wallet?.Balance ?? 0.0;
                 return LiftNetRes<double>.SuccessResponse(balance);
             }
             catch (Exception ex)

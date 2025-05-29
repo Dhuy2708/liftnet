@@ -24,7 +24,7 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
-        public int Balance
+        public double Balance
         {
             get; set;
         }
