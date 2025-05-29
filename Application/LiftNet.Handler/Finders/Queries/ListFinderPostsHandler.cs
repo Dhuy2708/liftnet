@@ -21,12 +21,19 @@ namespace LiftNet.Handler.Finders.Queries
         private readonly IGeoService _geoService;
         private readonly IFinderPostRepo _postRepo;
         private readonly IUserRepo _userRepo;
+        private readonly IFinderPostSeenStatusRepo _seenStatusRepo;
 
-        public ListFinderPostsHandler(ILiftLogger<ListFinderPostsHandler> logger, IFinderPostRepo postRepo, IUserRepo userRepo)
+        public ListFinderPostsHandler(ILiftLogger<ListFinderPostsHandler> logger, 
+                                      IGeoService geoService, 
+                                      IFinderPostRepo postRepo, 
+                                      IUserRepo userRepo, 
+                                      IFinderPostSeenStatusRepo seenStatusRepo)
         {
             _logger = logger;
+            _geoService = geoService;
             _postRepo = postRepo;
             _userRepo = userRepo;
+            _seenStatusRepo = seenStatusRepo;
         }
 
         public async Task<PaginatedLiftNetRes<FinderPostView>> Handle(ListFinderPostsQuery request, CancellationToken cancellationToken)
@@ -98,9 +105,23 @@ namespace LiftNet.Handler.Finders.Queries
                         HideAddress = x.HideAddress,
                         RepeatType = (RepeatingType)x.RepeatType,
                         Status = (FinderPostStatus)x.Status,
-                        CreatedAt = new DateTimeOffset(x.CreatedAt, TimeSpan.Zero)
+                        CreatedAt = new DateTimeOffset(x.CreatedAt, TimeSpan.Zero),
+                        LastModified = new DateTimeOffset(x.ModifiedAt, TimeSpan.Zero)
                     })
                     .ToListAsync(cancellationToken);
+
+                var itemIds = items.Select(x => x.Id).ToList();
+                var postNotiCountDict = await _seenStatusRepo.GetQueryable()
+                                                          .Where(x => x.UserId == request.UserId &&
+                                                                      itemIds.Contains(x.FinderPostId))
+                                                          .ToDictionaryAsync(k => k.FinderPostId, v => v.NotiCount);
+
+                items.ForEach(i =>
+                {
+                    i.NotiCount = postNotiCountDict.GetValueOrDefault(i.Id, 0);
+                });
+
+                items = items.OrderByDescending(x => x.LastModified).ToList();
 
                 return PaginatedLiftNetRes<FinderPostView>.SuccessResponse(
                     items,
