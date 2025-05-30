@@ -1,4 +1,6 @@
-﻿using LiftNet.Contract.Enums.Appointment;
+﻿using LiftNet.Contract.Dtos.Transaction;
+using LiftNet.Contract.Enums.Appointment;
+using LiftNet.Contract.Enums.Payment;
 using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
@@ -9,6 +11,7 @@ using LiftNet.SharedKenel.Extensions;
 using LiftNet.Utility.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,6 +22,7 @@ namespace LiftNet.Handler.Appointments.Commands
     {
         private readonly IUnitOfWork _uow;
         private readonly ILiftLogger<AppointmentActionHandler> _logger;
+        private Wallet Wallet;
 
         public AppointmentActionHandler(IUnitOfWork uow, ILiftLogger<AppointmentActionHandler> logger)
         {
@@ -29,72 +33,90 @@ namespace LiftNet.Handler.Appointments.Commands
         public async Task<LiftNetRes> Handle(AppointmentActionCommand request, CancellationToken cancellationToken)
         {
             await new AppointmentActionValidator().ValidateAndThrowAsync(request);
-            
-            _logger.Info("begin to handle appointment action command");
-            var appointmentRepo = _uow.AppointmentRepo;
-            var participantRepo = _uow.AppointmentParticipantRepo;
-            
-            var appointment = await appointmentRepo.GetQueryable()
-                .Include(x => x.Participants)
-                .FirstOrDefaultAsync(x => x.Id == request.AppointmentId);
 
-            if (appointment == null)
+            try
             {
-                _logger.Error("appointment not found");
-                return LiftNetRes.ErrorResponse("Appointment not found");
-            }
+                _logger.Info("begin to handle appointment action command");
+                var appointmentRepo = _uow.AppointmentRepo;
+                var participantRepo = _uow.AppointmentParticipantRepo;
 
-            var participant = appointment.Participants.FirstOrDefault(p => p.UserId == request.UserId);
-            if (participant == null)
-            {
-                _logger.Error("user is not a participant of this appointment");
-                return LiftNetRes.ErrorResponse("You are not a participant of this appointment");
-            }
+                var appointment = await appointmentRepo.GetQueryable()
+                    .Include(x => x.Participants)
+                    .FirstOrDefaultAsync(x => x.Id == request.AppointmentId);
 
-            if (appointment.StartTime < DateTime.UtcNow)
-            {
-                _logger.Error("appointment has already started");
-                return LiftNetRes.ErrorResponse("This appointment is expired");
-            }
-
-            if (!await CheckBalance(request.UserId, appointment.Price))
-            {
-                return LiftNetRes.ErrorResponse("You do not have enough balance to");
-            }
-
-            appointment.Modified = DateTime.UtcNow;
-
-            if (request.Action is AppointmentActionRequestType.Accept)
-            {
-                participant.Status = (int)AppointmentParticipantStatus.Accepted;
-            }
-            else if (request.Action is AppointmentActionRequestType.Reject)
-            {
-                if (participant.Status != (int)AppointmentParticipantStatus.Pending)
+                if (appointment == null)
                 {
-                    _logger.Error("participant status is not pending");
-                    return LiftNetRes.ErrorResponse("Your status is not pending to reject");
+                    _logger.Error("appointment not found");
+                    return LiftNetRes.ErrorResponse("Appointment not found");
                 }
-                participant.Status = (int)AppointmentParticipantStatus.Rejected;
-            }
-            else if(request.Action is AppointmentActionRequestType.Cancel)
-            {
-                if (participant.Status != (int)AppointmentParticipantStatus.Accepted)
+                if (appointment.BookerId.IsNullOrEmpty())
                 {
-                    _logger.Error("participant status is not accepted");
-                    return LiftNetRes.ErrorResponse("Your status is not accepted to cancel");
+                    return LiftNetRes.ErrorResponse("Cant find booker of this appointment");
                 }
-                participant.Status = (int)AppointmentParticipantStatus.Canceled;
+                var participant = appointment.Participants.FirstOrDefault(p => p.UserId == request.UserId);
+                if (participant == null)
+                {
+                    _logger.Error("user is not a participant of this appointment");
+                    return LiftNetRes.ErrorResponse("You are not a participant of this appointment");
+                }
+                if (appointment.BookerId.Eq(request.UserId))
+                {
+                    return LiftNetRes.ErrorResponse("Bookers cannot response to their appointment");
+                }
+                if (appointment.StartTime < DateTime.UtcNow)
+                {
+                    _logger.Error("appointment has already started");
+                    return LiftNetRes.ErrorResponse("This appointment is expired");
+                }
+
+                await InitWallet(request.UserId);
+                appointment.Modified = DateTime.UtcNow;
+
+                if (request.Action is AppointmentActionRequestType.Accept)
+                {
+
+                    if (!CheckBalance(request.UserId, appointment.Price))
+                    {
+                        return LiftNetRes.ErrorResponse("You do not have enough balance to accept this appointment");
+                    }
+                    await HandleTransaction(appointment, appointment.BookerId!, request.UserId, request.Action);
+                    participant.Status = (int)AppointmentParticipantStatus.Accepted;
+                }
+                else if (request.Action is AppointmentActionRequestType.Reject)
+                {
+                    if (participant.Status != (int)AppointmentParticipantStatus.Pending)
+                    {
+                        _logger.Error("participant status is not pending");
+                        return LiftNetRes.ErrorResponse("Your status is not pending to reject");
+                    }
+                    participant.Status = (int)AppointmentParticipantStatus.Rejected;
+                }
+                else if (request.Action is AppointmentActionRequestType.Cancel)
+                {
+                    if (participant.Status != (int)AppointmentParticipantStatus.Accepted)
+                    {
+                        _logger.Error("participant status is not accepted");
+                        return LiftNetRes.ErrorResponse("Your status is not accepted to cancel");
+                    }
+                    await HandleTransaction(appointment, appointment.BookerId!, request.UserId, request.Action);
+                    participant.Status = (int)AppointmentParticipantStatus.Canceled;
+                }
+                else
+                {
+                    _logger.Error("invalid action");
+                    return LiftNetRes.ErrorResponse("Invalid action");
+                }
+                await UpdateSeenStatus(appointment, request.UserId);
+                await _uow.CommitAsync();
+                _logger.Info("appointment action handled successfully");
+                return LiftNetRes.SuccessResponse("Appointment action handled successfully");
             }
-            else
+            catch (Exception e)
             {
-                _logger.Error("invalid action");
-                return LiftNetRes.ErrorResponse("Invalid action");
+                await _uow.RollbackAsync();
+                _logger.Error(e, "Error handling appointment action command");
+                return LiftNetRes.ErrorResponse("An error occurred while processing your request.");
             }
-            await UpdateSeenStatus(appointment, request.UserId);
-            await _uow.CommitAsync();
-            _logger.Info("appointment action handled successfully");
-            return LiftNetRes.SuccessResponse("Appointment action handled successfully");
         }
 
         private async Task UpdateSeenStatus(Appointment appointment, string callerId)
@@ -135,11 +157,58 @@ namespace LiftNet.Handler.Appointments.Commands
             }
         }
 
-        private async Task<bool> CheckBalance(string userId, int appointmentPrice)
+        private async Task InitWallet(string userId)
         {
-            var balance = (await _uow.WalletRepo.GetQueryable()
-                                         .FirstOrDefaultAsync(x => x.UserId == userId))?.Balance ?? 0;
-            return balance >= appointmentPrice;
+            var wallet = await _uow.WalletRepo.GetQueryable()
+                                         .FirstOrDefaultAsync(x => x.UserId == userId);
+            if (wallet == null)
+            {
+                var newWallet = new Wallet()
+                {
+                    UserId = userId,
+                    Balance = 0
+                };
+                await _uow.WalletRepo.Create(newWallet);
+                await _uow.CommitAsync();
+                throw new ApplicationException();
+            }
+            this.Wallet = wallet;
+        }
+
+        private bool CheckBalance(string userId, int appointmentPrice)
+        {
+            return Wallet.Balance >= appointmentPrice;
+        }
+
+        private async Task HandleTransaction(Appointment appointment, string bookerId, string callerId, AppointmentActionRequestType type)
+        {
+            if (appointment.Price == 0)
+            {
+                return;
+            }
+            var transferAmount = 0;
+            if (type is AppointmentActionRequestType.Accept)
+            {
+                transferAmount = -appointment.Price;
+            }
+            else if (type is AppointmentActionRequestType.Cancel)
+            {
+                transferAmount = appointment.Price;
+            }
+            Wallet.Balance += transferAmount;
+
+            var transaction = new LiftNetTransaction()
+            {
+                UserId = callerId,
+                Amount = transferAmount,
+                Description = "Payment for appointment " + appointment.Name,
+                Status = (int)PaymentStatus.Success,
+                FromUserId = callerId,
+                ToUserId = null, // go to the fund hold
+                CreatedAt = DateTime.UtcNow,
+            };
+            await _uow.WalletRepo.Update(Wallet);
+            await _uow.LiftNetTransactionRepo.Create(transaction);
         }
     }
 }
