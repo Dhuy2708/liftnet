@@ -47,14 +47,14 @@ namespace LiftNet.Handler.Appointments.Queries
             return LiftNetRes<AppointmentDetailView>.SuccessResponse(appointment.ToDetailView(request.UserId.Eq(appointment.BookerId!), status: status));
         }
 
-        private AppointmentStatus GetCurrentUserStatusFromAppointment(Appointment appointment, string userId)
+        private AppointmentParticipantStatus GetCurrentUserStatusFromAppointment(Appointment appointment, string userId)
         {
             var participant = appointment?.Participants?.FirstOrDefault(x => x.UserId == userId);
             if (participant != null)
             {
-                return (AppointmentStatus)participant.Status;
+                return (AppointmentParticipantStatus)participant.Status;
             }
-            return AppointmentStatus.None;
+            return AppointmentParticipantStatus.None;
         }
     }
 }

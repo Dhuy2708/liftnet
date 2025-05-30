@@ -49,11 +49,11 @@ namespace LiftNet.Handler.Appointments.Commands
             {
                 if (part.IsBooker)
                 {
-                    part.Status = (int)AppointmentStatus.Accepted;
+                    part.Status = (int)AppointmentParticipantStatus.Accepted;
                 }
                 else
                 {
-                    part.Status = (int)AppointmentStatus.Pending;
+                    part.Status = (int)AppointmentParticipantStatus.Pending;
                 }
             }
             entity.Created = DateTime.UtcNow;

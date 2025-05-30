@@ -15,7 +15,7 @@ namespace LiftNet.Utility.Mappers
 {
     public static class AppointmentMapper
     {
-        public static AppointmentDetailView ToDetailView(this Appointment entity, bool editable = false, AppointmentStatus status = AppointmentStatus.None)
+        public static AppointmentDetailView ToDetailView(this Appointment entity, bool editable = false, AppointmentParticipantStatus status = AppointmentParticipantStatus.None)
         {
             var bookerPart = entity.Participants.FirstOrDefault(x => x.IsBooker);
             if (bookerPart != null)
@@ -37,7 +37,7 @@ namespace LiftNet.Utility.Mappers
                     Avatar = booker!.Avatar,
                     FirstName = booker!.FirstName,
                     LastName = booker!.LastName,
-                    Status = (AppointmentStatus)bookerPart!.Status
+                    Status = (AppointmentParticipantStatus)bookerPart!.Status
                 },
                 OtherParticipants = entity.Participants?
                         .Select(x =>
@@ -54,7 +54,7 @@ namespace LiftNet.Utility.Mappers
                                 Avatar = overViewUser.Avatar,
                                 FirstName = overViewUser.FirstName,
                                 LastName = overViewUser.LastName,
-                                Status = (AppointmentStatus)x.Status
+                                Status = (AppointmentParticipantStatus)x.Status
                             };
                         })
                         .ToList() ?? [],
@@ -115,7 +115,7 @@ namespace LiftNet.Utility.Mappers
             };
         }
 
-        public static AppointmentOverview ToOverview(this AppointmentDto dto, AppointmentStatus status = AppointmentStatus.None)
+        public static AppointmentOverview ToOverview(this AppointmentDto dto, AppointmentParticipantStatus status = AppointmentParticipantStatus.None)
         {
             var startTime = new DateTimeOffset(dto.StartTime, TimeSpan.Zero);
             var endTime = new DateTimeOffset(dto.EndTime, TimeSpan.Zero);
@@ -148,6 +148,21 @@ namespace LiftNet.Utility.Mappers
                     endTime = startTime + duration;
                 }
             }
+
+            var appointmentStatus = AppointmentStatus.None;
+            if (startTime > DateTime.UtcNow)
+            {
+                appointmentStatus = AppointmentStatus.Upcomming;
+            }
+            if (startTime <= DateTime.UtcNow && endTime >= DateTime.UtcNow)
+            {
+                appointmentStatus = AppointmentStatus.InProgress;
+            }
+            if (endTime < DateTime.UtcNow)
+            {
+                appointmentStatus = AppointmentStatus.Expired;
+            }
+
             return new AppointmentOverview
             {
                 Id = dto.Id,
@@ -158,14 +173,15 @@ namespace LiftNet.Utility.Mappers
                 Location = dto.PlaceDetail,
                 StartTime = startTime,
                 EndTime = endTime,
-                Status = status,
+                Status =  status,
+                AppointmentStatus = appointmentStatus,
                 RepeatingType = dto.RepeatingType,
                 Created = new DateTimeOffset(dto.Created, TimeSpan.Zero),
                 Modified = new DateTimeOffset(dto.Modified, TimeSpan.Zero),
             };
         }
 
-        public static AppointmentOverview ToOverview(this Appointment entity, AppointmentStatus status = AppointmentStatus.None)
+        public static AppointmentOverview ToOverview(this Appointment entity, AppointmentParticipantStatus status = AppointmentParticipantStatus.None)
         {
             var view = entity.ToDto().ToOverview(status);
             return view;

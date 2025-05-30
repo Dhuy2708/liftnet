@@ -42,7 +42,11 @@ namespace LiftNet.Contract.Views.Appointments
         {
             get; set;
         }
-        public AppointmentStatus Status
+        public AppointmentParticipantStatus Status
+        {
+            get; set;
+        }
+        public AppointmentStatus AppointmentStatus
         {
             get; set;
         }
