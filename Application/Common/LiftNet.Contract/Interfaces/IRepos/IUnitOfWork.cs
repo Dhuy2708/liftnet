@@ -11,6 +11,7 @@ namespace LiftNet.Contract.Interfaces.IRepos
     {
         IAppointmentRepo AppointmentRepo { get; }
         IAppointmentParticipantRepo AppointmentParticipantRepo { get; }
+        IAppointmentSeenStatusRepo AppointmentSeenStatusRepo { get; }
         ISocialConnectionRepo SocialConnectionRepo { get;}
         IUserRepo UserRepo { get;}
         IProvinceRepo ProvinceRepo { get;}

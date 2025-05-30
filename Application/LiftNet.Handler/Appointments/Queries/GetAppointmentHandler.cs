@@ -23,11 +23,15 @@ namespace LiftNet.Handler.Appointments.Queries
     {
         private readonly ILiftLogger<GetAppointmentHandler> _logger;
         private readonly IAppointmentRepo _appointmentRepo;
+        private readonly IAppointmentSeenStatusRepo _seenStatusRepo;
 
-        public GetAppointmentHandler(IAppointmentRepo appointmentRepo, ILiftLogger<GetAppointmentHandler> logger)
+        public GetAppointmentHandler(ILiftLogger<GetAppointmentHandler> logger, 
+                                     IAppointmentRepo appointmentRepo, 
+                                     IAppointmentSeenStatusRepo seenStatusRepo)
         {
-            _appointmentRepo = appointmentRepo;
             _logger = logger;
+            _appointmentRepo = appointmentRepo;
+            _seenStatusRepo = seenStatusRepo;
         }
 
         public async Task<LiftNetRes<AppointmentDetailView>> Handle(GetAppointmentQuery request, CancellationToken cancellationToken)
@@ -44,6 +48,8 @@ namespace LiftNet.Handler.Appointments.Queries
                 throw new NotFoundException("Appointment not found");
             }
             var status = GetCurrentUserStatusFromAppointment(appointment, request.UserId);
+
+            await ResetSeenStatus(appointment, request.UserId);
             return LiftNetRes<AppointmentDetailView>.SuccessResponse(appointment.ToDetailView(request.UserId.Eq(appointment.BookerId!), status: status));
         }
 
@@ -55,6 +61,33 @@ namespace LiftNet.Handler.Appointments.Queries
                 return (AppointmentParticipantStatus)participant.Status;
             }
             return AppointmentParticipantStatus.None;
+        }
+
+        private async Task ResetSeenStatus(Appointment appointment, string callerId)
+        {
+            var queryable = _seenStatusRepo.GetQueryable();
+
+            var seenStatus = await queryable.FirstOrDefaultAsync(x => x.AppointmentId == appointment.Id &&
+                                                                  x.UserId == callerId);
+
+            if (seenStatus != null)
+            {
+                seenStatus.NotiCount = 0;
+                seenStatus.LastSeen = DateTime.UtcNow;
+                await _seenStatusRepo.Update(seenStatus);
+            }
+            else
+            {
+                var newSeenStatus = new AppointmentSeenStatus
+                {
+                    UserId = callerId,
+                    AppointmentId = appointment.Id,
+                    NotiCount = 0,
+                    LastSeen = DateTime.UtcNow,
+                    LastUpdate = appointment.Modified
+                };
+                await _seenStatusRepo.Create(newSeenStatus);
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ using LiftNet.Domain.Indexes;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Appointments.Commands.Requests;
+using LiftNet.Utility.Extensions;
 using LiftNet.Utility.Mappers;
 using LiftNet.Utility.Utils;
 using MediatR;
@@ -24,21 +25,24 @@ namespace LiftNet.Handler.Appointments.Commands
     {
         private readonly ILiftLogger<BookAppointmentHandler> _logger;
         private readonly IAppointmentRepo _appointmentRepo;
+        private readonly IAppointmentSeenStatusRepo _seenRepo;
         private readonly IEventIndexService _indexService;
         private readonly IRoleService _roleService;
         private readonly IUserService _userService;
 
-        public BookAppointmentHandler(IAppointmentRepo appointmentRepo, 
+        public BookAppointmentHandler(ILiftLogger<BookAppointmentHandler> logger,
+                                      IAppointmentRepo appointmentRepo, 
+                                      IAppointmentSeenStatusRepo seenRepo, 
                                       IEventIndexService indexService, 
-                                      IUserService userService,
-                                      ILiftLogger<BookAppointmentHandler> logger,
-                                      IRoleService roleService)
+                                      IRoleService roleService, 
+                                      IUserService userService)
         {
-            _appointmentRepo = appointmentRepo;
-            _indexService = indexService;
-            _userService = userService;
-            _roleService = roleService;
             _logger = logger;
+            _appointmentRepo = appointmentRepo;
+            _seenRepo = seenRepo;
+            _indexService = indexService;
+            _roleService = roleService;
+            _userService = userService;
         }
 
         public async Task<LiftNetRes> Handle(BookAppointmentCommand request, CancellationToken cancellationToken)
@@ -59,7 +63,7 @@ namespace LiftNet.Handler.Appointments.Commands
             entity.Created = DateTime.UtcNow;
             entity.Modified = DateTime.UtcNow;
             var result = await _appointmentRepo.Create(entity);
-
+            await AsignNotiCount(entity.Participants.Select(x => x.UserId).ToList(), entity.Id, request.CallerId);   
             if (result == 0)
             {
                 return LiftNetRes.ErrorResponse($"Create appointment {request.Appointment.Name} failed");
@@ -99,6 +103,23 @@ namespace LiftNet.Handler.Appointments.Commands
             }
             _logger.Info("create appointment successfully");
             return LiftNetRes.SuccessResponse($"Create appointment {request.Appointment.Name} successfully");
+        }
+
+        private async Task AsignNotiCount(List<string> participantIds, string appointmentId, string callerId)
+        {
+            List<AppointmentSeenStatus> entitiesToCreate = [];
+            foreach (var participantId in participantIds)
+            {
+                var seenStatus = new AppointmentSeenStatus()
+                {
+                    AppointmentId = appointmentId,
+                    UserId = participantId,
+                    NotiCount = participantId.Eq(callerId) ? 0 : 1,
+                    LastUpdate = DateTime.UtcNow
+                };
+                entitiesToCreate.Add(seenStatus);
+            }
+            await _seenRepo.CreateRange(entitiesToCreate);
         }
     }
 }

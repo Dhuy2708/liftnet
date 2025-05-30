@@ -24,11 +24,15 @@ namespace LiftNet.Handler.Appointments.Queries
     public class ListAppointmentHandler : IRequestHandler<ListAppointmentsQuery, PaginatedLiftNetRes<AppointmentOverview>>
     {
         private readonly IAppointmentRepo _appointmentRepo;
+        private readonly IAppointmentSeenStatusRepo _seenStatusRepo;
         private readonly ILiftLogger<ListAppointmentHandler> _logger;
 
-        public ListAppointmentHandler(IAppointmentRepo appointmentRepo, ILiftLogger<ListAppointmentHandler> logger)
+        public ListAppointmentHandler(IAppointmentRepo appointmentRepo, 
+                                      IAppointmentSeenStatusRepo seenStatusRepo, 
+                                      ILiftLogger<ListAppointmentHandler> logger)
         {
             _appointmentRepo = appointmentRepo;
+            _seenStatusRepo = seenStatusRepo;
             _logger = logger;
         }
 
@@ -56,9 +60,33 @@ namespace LiftNet.Handler.Appointments.Queries
             var appointments = await query.ToListAsync();
 
             var appointmentDtos = appointments.Select(x => x.ToOverview(GetCurrentUserStatusFromAppointment(x, request.UserId))).ToList();
-
+            await AssignNotiCount(appointmentDtos, request.UserId);
             _logger.Info("list appointment overviews successfully");
             return PaginatedLiftNetRes<AppointmentOverview>.SuccessResponse(appointmentDtos, conditions.PageNumber, conditions.PageSize, count);
+        }
+
+        private async Task AssignNotiCount(List<AppointmentOverview> appointments, string callerId)
+        {
+            if (appointments == null || appointments.Count == 0)
+            {
+                return;
+            }
+            var appointmentIds = appointments.Select(x => x.Id).ToList();
+            var seenStatuses = await _seenStatusRepo.GetQueryable()
+                                    .Where(x => appointmentIds.Contains(x.AppointmentId) &&
+                                                x.UserId == callerId)
+                                    .ToDictionaryAsync(k => k.AppointmentId, v => v.NotiCount);
+            foreach (var appointment in appointments)
+            {
+                if (seenStatuses.TryGetValue(appointment.Id, out var notiCount))
+                {
+                    appointment.NotiCount = notiCount;
+                }
+                else
+                {
+                    appointment.NotiCount = 0;
+                }
+            }
         }
 
         private AppointmentParticipantStatus GetCurrentUserStatusFromAppointment(Appointment appointment, string userId)
@@ -126,7 +154,7 @@ namespace LiftNet.Handler.Appointments.Queries
         {
             if (sortCond == null)
             {
-                return queryable;
+                return queryable.OrderByDescending(x => x.Modified);
             }
             switch (sortCond.Type)
             {
