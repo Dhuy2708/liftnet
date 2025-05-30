@@ -47,7 +47,7 @@ namespace LiftNet.Contract.Views.Appointments
         {
             get; set;
         }
-        public AppointmentStatus Status
+        public AppointmentParticipantStatus Status
         {
             get; set;
         }
@@ -67,7 +67,7 @@ namespace LiftNet.Contract.Views.Appointments
 
     public class UserViewInAppointmentDetail : UserOverview
     {
-        public AppointmentStatus Status
+        public AppointmentParticipantStatus Status
         {
             get; set;
         }

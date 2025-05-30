@@ -61,14 +61,14 @@ namespace LiftNet.Handler.Appointments.Queries
             return PaginatedLiftNetRes<AppointmentOverview>.SuccessResponse(appointmentDtos, conditions.PageNumber, conditions.PageSize, count);
         }
 
-        private AppointmentStatus GetCurrentUserStatusFromAppointment(Appointment appointment, string userId)
+        private AppointmentParticipantStatus GetCurrentUserStatusFromAppointment(Appointment appointment, string userId)
         {
             var participant = appointment?.Participants?.FirstOrDefault(x => x.UserId == userId);
             if (participant != null)
             {
-                return (AppointmentStatus)participant.Status;
+                return (AppointmentParticipantStatus)participant.Status;
             }
-            return AppointmentStatus.None;
+            return AppointmentParticipantStatus.None;
         }
 
         private IQueryable<Appointment> BuildQuery(IQueryable<Appointment> queryable, QueryCondition conditions, string userId)
@@ -88,6 +88,23 @@ namespace LiftNet.Handler.Appointments.Queries
             if (statusInt.HasValue)
             {
                 queryable = queryable.Where(x => x.Participants.Any(p => p.UserId == userId && p.Status == statusInt));
+            }
+
+            var appointmentStatusInt = conditions.GetValue<int>("appointmentStatus");
+            if (appointmentStatusInt.HasValue)
+            {
+                switch (appointmentStatusInt.Value)
+                {
+                    case (int)AppointmentStatus.Upcomming:
+                        queryable = queryable.Where(x => x.StartTime > DateTime.UtcNow);
+                        break;
+                    case (int)AppointmentStatus.InProgress:
+                        queryable = queryable.Where(x => x.StartTime <= DateTime.UtcNow && x.EndTime >= DateTime.UtcNow);
+                        break;
+                    case (int)AppointmentStatus.Expired:
+                        queryable = queryable.Where(x => x.EndTime < DateTime.UtcNow);
+                        break;
+                }
             }
 
             var startTime = conditions.GetValue<DateTime>("starttime");

@@ -53,25 +53,25 @@ namespace LiftNet.Handler.Appointments.Commands
 
             if (request.Action is AppointmentActionRequestType.Accept)
             {
-                participant.Status = (int)AppointmentStatus.Accepted;
+                participant.Status = (int)AppointmentParticipantStatus.Accepted;
             }
             else if (request.Action is AppointmentActionRequestType.Reject)
             {
-                if (participant.Status != (int)AppointmentStatus.Pending)
+                if (participant.Status != (int)AppointmentParticipantStatus.Pending)
                 {
                     _logger.Error("participant status is not pending");
                     return LiftNetRes.ErrorResponse("Your status is not pending to reject");
                 }
-                participant.Status = (int)AppointmentStatus.Rejected;
+                participant.Status = (int)AppointmentParticipantStatus.Rejected;
             }
             else if(request.Action is AppointmentActionRequestType.Cancel)
             {
-                if (participant.Status != (int)AppointmentStatus.Accepted)
+                if (participant.Status != (int)AppointmentParticipantStatus.Accepted)
                 {
                     _logger.Error("participant status is not accepted");
                     return LiftNetRes.ErrorResponse("Your status is not accepted to cancel");
                 }
-                participant.Status = (int)AppointmentStatus.Canceled;
+                participant.Status = (int)AppointmentParticipantStatus.Canceled;
             }
             else
             {

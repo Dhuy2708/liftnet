@@ -6,13 +6,21 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Contract.Enums.Appointment
 {
-    public enum AppointmentStatus
+    public enum AppointmentParticipantStatus
     {
         None = 0,
         Pending = 1, // waiting for response
         Accepted = 2,
         Rejected = 3,
         Canceled = 4, // reject after accepted -> canceled
+    }
+
+    public enum AppointmentStatus
+    {
+        None = 0,
+        Upcomming = 1,
+        InProgress = 2,
+        Expired = 3,
     }
 
     public enum RepeatingType

@@ -213,7 +213,7 @@ namespace LiftNet.Api.Controllers
             return StatusCode(500, result);
         }
 
-        [HttpGet("applied/detail")]
+        [HttpGet("applyMessage")]
         [Authorize(Policy = LiftNetPolicies.Coach)]
         [ProducesResponseType(typeof(LiftNetRes<AppliedFinderPostMessage>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> AppliedFinderPostDetail([FromQuery] string postId)
