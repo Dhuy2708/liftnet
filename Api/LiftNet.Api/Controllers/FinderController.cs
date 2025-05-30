@@ -212,5 +212,31 @@ namespace LiftNet.Api.Controllers
             }
             return StatusCode(500, result);
         }
+
+        [HttpGet("applied/detail")]
+        [Authorize(Policy = LiftNetPolicies.Coach)]
+        [ProducesResponseType(typeof(LiftNetRes<AppliedFinderPostMessage>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> AppliedFinderPostDetail([FromQuery] string postId)
+        {
+            if (string.IsNullOrEmpty(UserId))
+            {
+                return Unauthorized();
+            }
+            if (string.IsNullOrEmpty(postId))
+            {
+                return BadRequest("Post ID is required");
+            }
+            var request = new GetAppliedMessageQuery
+            {
+                UserId = UserId,
+                PostId = postId
+            };
+            var result = await _mediator.Send(request);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
     }
 }
