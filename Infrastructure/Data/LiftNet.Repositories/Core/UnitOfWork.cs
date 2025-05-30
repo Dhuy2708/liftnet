@@ -247,6 +247,17 @@ namespace LiftNet.Repositories.Core
                 return _appointmentSeenStatusRepo;
             }
         }
+
+        private ILiftNetTransactionRepo? _liftNetTransactionRepo = null;
+        public ILiftNetTransactionRepo LiftNetTransactionRepo
+        {
+            get
+            {
+                _liftNetTransactionRepo ??= _serviceProvider.GetRequiredService<ILiftNetTransactionRepo>();
+                _liftNetTransactionRepo.AutoSave = false;
+                return _liftNetTransactionRepo;
+            }
+        }
         #endregion
 
         public async Task BeginTransactionAsync()
