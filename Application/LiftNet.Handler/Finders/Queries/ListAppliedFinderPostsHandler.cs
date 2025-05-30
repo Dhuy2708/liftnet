@@ -73,10 +73,9 @@ namespace LiftNet.Handler.Finders.Queries
                 var posts = applicants.Select(x => x.Post)
                                             .Where(x => x != null)
                                             .ToList();
-                var posterIds = posts.Where(x => x.IsAnonymous == false)
-                                        .Select(x => x.UserId)
-                                        .Distinct()
-                                        .ToList();
+                var posterIds = posts.Select(x => x.UserId)
+                                     .Distinct()
+                                     .ToList();
 
                 var userOverviewDict = (await _userService.Convert2Overviews(posterIds))
                                             .ToDictionary(k => k.Id, v => v);
@@ -100,6 +99,23 @@ namespace LiftNet.Handler.Finders.Queries
                     {
                         applyingStatus = FinderPostApplyingStatus.Canceled;
                     }
+                    if (post.StartTime < DateTime.UtcNow ||
+                        post.Status == (int)FinderPostStatus.Closed)
+                    {
+                        applyingStatus = FinderPostApplyingStatus.Canceled;
+                    }
+
+                    UserOverview? poster = null;
+                    if (applyingStatus is FinderPostApplyingStatus.Accepted || !post.IsAnonymous)
+                    {
+                        poster = userOverviewDict.GetValueOrDefault<string, UserOverview>(post.UserId);
+                        if (poster == null)
+                        {
+                            _logger.Warn($"Poster with ID {post.UserId} not found for post ID {post.Id}");
+                        }
+                    }
+
+
                     var result = new ExploreFinderPostView
                     {
                         Id = post.Id,
@@ -115,17 +131,12 @@ namespace LiftNet.Handler.Finders.Queries
                         Lng = post.HideAddress ? null : post.Lng,
                         IsAnonymous = post.IsAnonymous,
                         HideAddress = post.HideAddress,
-                        ApplyingStatus = (post.StartTime < DateTime.UtcNow || 
-                                          post.Status == (int)FinderPostStatus.Closed) 
-                                                    ? FinderPostApplyingStatus.Canceled 
-                                                    : applyingStatus,
+                        ApplyingStatus = applyingStatus,
                         RepeatType = (RepeatingType)post.RepeatType,
                         Status = post.StartTime < DateTime.UtcNow ? FinderPostStatus.Closed:
                                             (FinderPostStatus)post.Status,
                         CreatedAt = post.CreatedAt.ToOffSet(),
-                        Poster = post.IsAnonymous
-                           ? null
-                           : userOverviewDict.GetValueOrDefault<string, UserOverview>(post.UserId)
+                        Poster = poster
                     };
                     results.Add(result);
                 }
