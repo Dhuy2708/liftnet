@@ -45,6 +45,7 @@ namespace LiftNet.Api.Controllers
             var request = new BookAppointmentCommand()
             {
                 Appointment = req.ToDto(UserId, placeDetail),
+                CallerId = UserId
             };
             var result = await _mediator.Send(request);
             if (result.Success)

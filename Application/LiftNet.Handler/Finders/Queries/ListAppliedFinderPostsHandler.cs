@@ -127,10 +127,12 @@ namespace LiftNet.Handler.Finders.Queries
                         StartPrice = post.StartPrice,
                         EndPrice = post.EndPrice,
                         PlaceName = post.HideAddress ? null : post.PlaceName,
-                        Lat = post.HideAddress ? null : post.Lat,
-                        Lng = post.HideAddress ? null : post.Lng,
+                        Lat = (applyingStatus is FinderPostApplyingStatus.Accepted) ? post.Lat
+                                    : post.HideAddress ? null : post.Lat,
+                        Lng = (applyingStatus is FinderPostApplyingStatus.Accepted) ? post.Lng
+                                    : post.HideAddress ? null : post.Lng,
                         IsAnonymous = post.IsAnonymous,
-                        HideAddress = post.HideAddress,
+                        HideAddress = (applyingStatus is FinderPostApplyingStatus.Accepted) ? false : post.HideAddress,
                         ApplyingStatus = applyingStatus,
                         RepeatType = (RepeatingType)post.RepeatType,
                         Status = post.StartTime < DateTime.UtcNow ? FinderPostStatus.Closed:

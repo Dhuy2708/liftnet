@@ -51,6 +51,10 @@ namespace LiftNet.Contract.Views.Appointments
         {
             get; set;
         }
+        public int Price
+        {
+            get; set;
+        }
         public RepeatingType RepeatingType
         {
             get; set;

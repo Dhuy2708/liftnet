@@ -68,6 +68,7 @@ namespace LiftNet.Utility.Mappers
                 RepeatingType = (RepeatingType)entity.RepeatingType,
                 Created = new DateTimeOffset(entity.Created, TimeSpan.Zero),
                 Modified = new DateTimeOffset(entity.Modified, TimeSpan.Zero),
+                Price = entity.Price    
             };
         }
 
@@ -86,6 +87,7 @@ namespace LiftNet.Utility.Mappers
                 RepeatingType = (RepeatingType)entity.RepeatingType,
                 Created = entity.Created,
                 Modified = entity.Modified,
+                Price = entity.Price
             };
         }
 
@@ -112,6 +114,7 @@ namespace LiftNet.Utility.Mappers
                 StartTime = dto.StartTime,
                 EndTime = dto.EndTime,
                 RepeatingType = (int)dto.RepeatingType,
+                Price = dto.Price,
             };
         }
 
@@ -171,6 +174,7 @@ namespace LiftNet.Utility.Mappers
                 Name = dto.Name,
                 Description = dto.Description,
                 Location = dto.PlaceDetail,
+                Price = dto.Price,
                 StartTime = startTime,
                 EndTime = endTime,
                 Status =  status,

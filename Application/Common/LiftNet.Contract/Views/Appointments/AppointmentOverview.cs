@@ -34,6 +34,10 @@ namespace LiftNet.Contract.Views.Appointments
         {
             get; set;
         }
+        public int Price
+        {
+            get; set;
+        }
         public DateTimeOffset StartTime
         {
             get; set;
@@ -54,6 +58,12 @@ namespace LiftNet.Contract.Views.Appointments
         {
             get; set;
         }
+
+        public int NotiCount
+        {
+            get; set;
+        }
+
         public DateTimeOffset Created
         {
             get; set;

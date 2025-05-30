@@ -236,6 +236,17 @@ namespace LiftNet.Repositories.Core
                 return _finderPostSeenStatusRepo;
             }
         }
+
+        private IAppointmentSeenStatusRepo? _appointmentSeenStatusRepo = null;
+        public IAppointmentSeenStatusRepo AppointmentSeenStatusRepo
+        {
+            get
+            {
+                _appointmentSeenStatusRepo ??= _serviceProvider.GetRequiredService<IAppointmentSeenStatusRepo>();
+                _appointmentSeenStatusRepo.AutoSave = false;
+                return _appointmentSeenStatusRepo;
+            }
+        }
         #endregion
 
         public async Task BeginTransactionAsync()

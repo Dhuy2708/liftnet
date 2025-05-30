@@ -24,6 +24,10 @@ namespace LiftNet.Api.Requests.Appointments
         {
             get; set;
         }
+        public int Price
+        {
+            get; set;
+        }
         public DateTime StartTime
         {
             get; set;

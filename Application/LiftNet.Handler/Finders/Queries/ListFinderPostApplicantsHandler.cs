@@ -87,7 +87,7 @@ namespace LiftNet.Handler.Finders.Queries
                     Trainer = trainerOverviewDict.GetValueOrDefault<string, UserOverview>(applicant.TrainerId, null)
                 }).ToList();
 
-                await UpdateSeenStatus(request.UserId, request.PostId);
+                await UpdateSeenStatus(request.UserId, request.PostId, post.ModifiedAt);
                 return LiftNetRes<FinderPostApplicantView>.SuccessResponse(applicantViews);
             }
             catch (Exception ex)
@@ -97,7 +97,7 @@ namespace LiftNet.Handler.Finders.Queries
             }
         }
 
-        private async Task UpdateSeenStatus(string userId, string postId)
+        private async Task UpdateSeenStatus(string userId, string postId, DateTime postLastModified)
         {
             var seenStatus = await _seenStatusRepo.GetQueryable()
                                                   .FirstOrDefaultAsync(x => x.UserId == userId &&
@@ -117,6 +117,7 @@ namespace LiftNet.Handler.Finders.Queries
             {
                 seenStatus.NotiCount = 0;
                 seenStatus.LastSeen = DateTime.UtcNow;
+                seenStatus.LastUpdate = postLastModified;
                 await _seenStatusRepo.Update(seenStatus);
             }
         }

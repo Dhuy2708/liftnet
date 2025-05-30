@@ -15,5 +15,10 @@ namespace LiftNet.Handler.Appointments.Commands.Requests
         {
             get; set;
         }
+
+        public string CallerId
+        {
+            get; set;
+        }
     }
 }

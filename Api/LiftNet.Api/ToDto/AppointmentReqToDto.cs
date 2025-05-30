@@ -24,6 +24,7 @@ namespace LiftNet.Api.ToDto
                             Id = bookerId
                         }]).ToList(),
                 Name = req.Name,
+                Price = req.Price,
                 Description = req.Description,
                 StartTime = req.StartTime,
                 EndTime = req.EndTime,
