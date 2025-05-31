@@ -202,7 +202,7 @@ namespace LiftNet.Handler.Appointments.Commands
                 UserId = callerId,
                 Amount = transferAmount,
                 Description = "Payment for appointment " + appointment.Name,
-                Status = (int)PaymentStatus.Success,
+                Status = (int)TransactionStatus.Success,
                 FromUserId = callerId,
                 ToUserId = null, // go to the fund hold
                 CreatedAt = DateTime.UtcNow,

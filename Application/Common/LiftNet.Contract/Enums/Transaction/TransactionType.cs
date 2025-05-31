@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Contract.Enums.Payment
 {
-    public enum PaymentType
+    public enum TransactionType
     {
         None = 0,
         Topup = 1,
