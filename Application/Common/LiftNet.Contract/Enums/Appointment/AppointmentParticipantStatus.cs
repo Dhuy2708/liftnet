@@ -21,6 +21,7 @@ namespace LiftNet.Contract.Enums.Appointment
         Upcomming = 1,
         InProgress = 2,
         Expired = 3,
+        Finished = 4,
     }
 
     public enum RepeatingType
