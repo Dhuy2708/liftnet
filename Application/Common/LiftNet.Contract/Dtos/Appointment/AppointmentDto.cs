@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LiftNet.Contract.Dtos
+namespace LiftNet.Contract.Dtos.Appointment
 {
     public class AppointmentDto
     {

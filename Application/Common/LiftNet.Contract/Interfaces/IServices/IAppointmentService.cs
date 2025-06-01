@@ -1,4 +1,4 @@
-﻿using LiftNet.Contract.Dtos;
+﻿using LiftNet.Contract.Dtos.Appointment;
 using LiftNet.Ioc;
 using System;
 using System.Collections.Generic;
@@ -11,5 +11,6 @@ namespace LiftNet.Contract.Interfaces.IServices
     public interface IAppointmentService : IDependency
     {
         Task<List<AppointmentDto>> ListUserAppointments(string userId);
+        Task<int> FeedBackAsync(AppointmentFeedbackRequestDto request);
     }
 }

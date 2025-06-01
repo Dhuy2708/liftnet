@@ -1,4 +1,5 @@
 ﻿using LiftNet.Contract.Dtos;
+using LiftNet.Contract.Dtos.Appointment;
 using LiftNet.Contract.Enums.Appointment;
 using LiftNet.Contract.Views.Appointments;
 using LiftNet.Domain.Entities;

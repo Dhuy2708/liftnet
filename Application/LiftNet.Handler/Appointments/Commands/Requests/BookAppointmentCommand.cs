@@ -1,4 +1,4 @@
-﻿using LiftNet.Contract.Dtos;
+﻿using LiftNet.Contract.Dtos.Appointment;
 using LiftNet.Domain.Response;
 using MediatR;
 using System;
