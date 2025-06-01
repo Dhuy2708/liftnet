@@ -18,12 +18,6 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
-        [ForeignKey(nameof(User))]
-        public string UserId
-        {
-            get; set;
-        }
-
         [ForeignKey(nameof(Appointment))]
         public string AppointmentId
         {
@@ -31,6 +25,16 @@ namespace LiftNet.Domain.Entities
         }
 
         public string? Img
+        {
+            get; set;
+        }
+
+        public string? Content
+        {
+            get; set;
+        }
+
+        public int Status
         {
             get; set;
         }
@@ -51,11 +55,6 @@ namespace LiftNet.Domain.Entities
         }
 
         // mapping
-        public User User
-        {
-            get; set;
-        }
-
         public Appointment Appointment
         {
             get; set;

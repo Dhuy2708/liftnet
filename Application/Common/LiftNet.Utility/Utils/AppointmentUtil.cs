@@ -1,4 +1,4 @@
-﻿using LiftNet.Contract.Dtos;
+﻿using LiftNet.Contract.Dtos.Appointment;
 using LiftNet.Contract.Enums.Appointment;
 using LiftNet.Domain.Entities;
 using LiftNet.Utility.Extensions;
