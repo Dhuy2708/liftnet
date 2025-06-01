@@ -1,4 +1,5 @@
-﻿using LiftNet.Contract.Enums.Appointment;
+﻿using LiftNet.Contract.Dtos;
+using LiftNet.Contract.Enums.Appointment;
 using LiftNet.Domain.Entities;
 using LiftNet.Utility.Extensions;
 using System;
@@ -25,12 +26,40 @@ namespace LiftNet.Utility.Utils
             {
                 return AppointmentStatus.InProgress;
             }
-            if (appointment.Participants.IsNullOrEmpty())
-            {
-                throw new InvalidOperationException("participants are null or empty");
-            } 
 
-            var allAccept = appointment.Participants.All(x => x.Status == (int)AppointmentParticipantStatus.Accepted);
+            var allAccept = appointment.AllAccepted;
+
+            if (appointment.EndTime < DateTime.UtcNow)
+            {
+                if (allAccept)
+                {
+                    return AppointmentStatus.Finished;
+                }
+                else
+                {
+                    return AppointmentStatus.Expired;
+                }
+            }
+
+            return AppointmentStatus.None;
+        }
+
+        public static AppointmentStatus GetAppointmentStatus(AppointmentDto appointment)
+        {
+            if (appointment == null)
+            {
+                throw new ArgumentNullException(nameof(appointment), "Appointment cannot be null");
+            }
+            if (appointment.StartTime > DateTime.UtcNow)
+            {
+                return AppointmentStatus.Upcomming;
+            }
+            if (appointment.StartTime <= DateTime.UtcNow && appointment.EndTime >= DateTime.UtcNow)
+            {
+                return AppointmentStatus.InProgress;
+            }
+
+            var allAccept = appointment.AllAccepted;
 
             if (appointment.EndTime < DateTime.UtcNow)
             {

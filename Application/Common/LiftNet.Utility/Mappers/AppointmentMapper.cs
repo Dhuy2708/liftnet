@@ -4,6 +4,7 @@ using LiftNet.Contract.Views.Appointments;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Enums;
 using LiftNet.Utility.Extensions;
+using LiftNet.Utility.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -87,7 +88,8 @@ namespace LiftNet.Utility.Mappers
                 RepeatingType = (RepeatingType)entity.RepeatingType,
                 Created = entity.Created,
                 Modified = entity.Modified,
-                Price = entity.Price
+                Price = entity.Price,
+                AllAccepted = entity.AllAccepted
             };
         }
 
@@ -152,19 +154,7 @@ namespace LiftNet.Utility.Mappers
                 }
             }
 
-            var appointmentStatus = AppointmentStatus.None;
-            if (startTime > DateTime.UtcNow)
-            {
-                appointmentStatus = AppointmentStatus.Upcomming;
-            }
-            if (startTime <= DateTime.UtcNow && endTime >= DateTime.UtcNow)
-            {
-                appointmentStatus = AppointmentStatus.InProgress;
-            }
-            if (endTime < DateTime.UtcNow)
-            {
-                appointmentStatus = AppointmentStatus.Expired;
-            }
+            var appointmentStatus = AppointmentUtil.GetAppointmentStatus(dto);
 
             return new AppointmentOverview
             {

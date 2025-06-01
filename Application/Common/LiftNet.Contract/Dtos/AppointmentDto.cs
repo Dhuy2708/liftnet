@@ -37,6 +37,11 @@ namespace LiftNet.Contract.Dtos
         {
             get; set;
         }
+
+        public bool AllAccepted
+        {
+            get; set;
+        }
         public DateTime StartTime
         {
             get; set;
