@@ -258,6 +258,28 @@ namespace LiftNet.Repositories.Core
                 return _liftNetTransactionRepo;
             }
         }
+
+        private IAppointmentConfirmationRepo? _appointmentConfirmationRepo = null;
+        public IAppointmentConfirmationRepo AppointmentConfirmationRepo
+        {
+            get
+            {
+                _appointmentConfirmationRepo ??= _serviceProvider.GetRequiredService<IAppointmentConfirmationRepo>();
+                _appointmentConfirmationRepo.AutoSave = false;
+                return _appointmentConfirmationRepo;
+            }
+        }
+
+        private IAppointmentFeedbackRepo? _appointmentFeedbackRepo = null;
+        public IAppointmentFeedbackRepo AppointmentFeedbackRepo
+        {
+            get
+            {
+                _appointmentFeedbackRepo ??= _serviceProvider.GetRequiredService<IAppointmentFeedbackRepo>();
+                _appointmentFeedbackRepo.AutoSave = false;
+                return _appointmentFeedbackRepo;
+            }
+        }
         #endregion
 
         public async Task BeginTransactionAsync()

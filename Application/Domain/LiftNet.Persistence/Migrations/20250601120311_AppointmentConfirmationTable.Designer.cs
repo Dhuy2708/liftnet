@@ -4,6 +4,7 @@ using LiftNet.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LiftNet.Persistence.Migrations
 {
     [DbContext(typeof(LiftNetDbContext))]
-    partial class LiftNetDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250601120311_AppointmentConfirmationTable")]
+    partial class AppointmentConfirmationTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -174,40 +177,6 @@ namespace LiftNet.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("AppointmentConfirmations");
-                });
-
-            modelBuilder.Entity("LiftNet.Domain.Entities.AppointmentFeedback", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ApppointmentId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Img")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReviewerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Star")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApppointmentId");
-
-                    b.HasIndex("ReviewerId");
-
-                    b.ToTable("AppointmentFeedbacks");
                 });
 
             modelBuilder.Entity("LiftNet.Domain.Entities.AppointmentParticipant", b =>
@@ -1214,25 +1183,6 @@ namespace LiftNet.Persistence.Migrations
                     b.Navigation("Appointment");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("LiftNet.Domain.Entities.AppointmentFeedback", b =>
-                {
-                    b.HasOne("LiftNet.Domain.Entities.Appointment", "Appointment")
-                        .WithMany()
-                        .HasForeignKey("ApppointmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LiftNet.Domain.Entities.User", "Reviewer")
-                        .WithMany()
-                        .HasForeignKey("ReviewerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Appointment");
-
-                    b.Navigation("Reviewer");
                 });
 
             modelBuilder.Entity("LiftNet.Domain.Entities.AppointmentParticipant", b =>
