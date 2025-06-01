@@ -153,8 +153,12 @@ namespace LiftNet.Handler.Appointments.Queries
                         queryable = queryable.Where(x => x.StartTime <= DateTime.UtcNow && x.EndTime >= DateTime.UtcNow);
                         break;
                     case (int)AppointmentStatus.Expired:
-                        queryable = queryable.Where(x => x.EndTime < DateTime.UtcNow);
+                        queryable = queryable.Where(x => x.EndTime < DateTime.UtcNow && !x.AllAccepted);
                         break;
+                    case (int)AppointmentStatus.Finished:
+                        queryable = queryable.Where(x => x.EndTime < DateTime.UtcNow && x.AllAccepted);
+                        break;
+
                 }
             }
 
