@@ -60,6 +60,11 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        public bool AllAccepted
+        {
+            get; set;
+        }
+
         public DateTime Created
         {
             get; set;

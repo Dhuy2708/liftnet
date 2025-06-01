@@ -36,7 +36,7 @@ namespace LiftNet.Handler.Appointments.Commands
 
             try
             {
-                _logger.Info("begin to handle appointment action command");
+                    _logger.Info("begin to handle appointment action command");
                 var appointmentRepo = _uow.AppointmentRepo;
                 var participantRepo = _uow.AppointmentParticipantRepo;
 
@@ -106,6 +106,7 @@ namespace LiftNet.Handler.Appointments.Commands
                     _logger.Error("invalid action");
                     return LiftNetRes.ErrorResponse("Invalid action");
                 }
+                AsssignAllAcceptedStatus(appointment);
                 await UpdateSeenStatus(appointment, request.UserId);
                 await _uow.CommitAsync();
                 _logger.Info("appointment action handled successfully");
@@ -116,6 +117,18 @@ namespace LiftNet.Handler.Appointments.Commands
                 await _uow.RollbackAsync();
                 _logger.Error(e, "Error handling appointment action command");
                 return LiftNetRes.ErrorResponse("An error occurred while processing your request.");
+            }
+        }
+
+        private void AsssignAllAcceptedStatus(Appointment appointment)
+        {
+            if (appointment.Participants.All(x => x.Status == (int)AppointmentParticipantStatus.Accepted))
+            {
+                appointment.AllAccepted = true;
+            }
+            else
+            {
+                appointment.AllAccepted = false;
             }
         }
 
@@ -202,7 +215,7 @@ namespace LiftNet.Handler.Appointments.Commands
                 UserId = callerId,
                 Amount = transferAmount,
                 Description = "Payment for appointment " + appointment.Name,
-                Status = (int)PaymentStatus.Success,
+                Status = (int)TransactionStatus.Success,
                 FromUserId = callerId,
                 ToUserId = null, // go to the fund hold
                 CreatedAt = DateTime.UtcNow,

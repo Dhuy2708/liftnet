@@ -70,9 +70,9 @@ namespace LiftNet.Api.Controllers
                     UserId = UserId,
                     Amount = moneyToPay,
                     Description = description,
-                    Type = (int)PaymentType.Topup,
+                    Type = (int)TransactionType.Topup,
                     PaymentMethod = (int)PaymentMethod.VnPay,
-                    Status = (int)PaymentStatus.Pending,
+                    Status = (int)Contract.Enums.Payment.TransactionStatus.Pending,
                     CreatedAt = now,
                     TimeToLive = now.AddMinutes(15),
                 };
@@ -125,10 +125,10 @@ namespace LiftNet.Api.Controllers
                     await UpdateTransactionAsync(paymentResult, amount);
                     if (paymentResult.IsSuccess)
                     {
-                        return Redirect(UIBaseUrl + $"/payment-callback?orderId={paymentResult.PaymentId}&status={(int)PaymentStatus.Success}");
+                        return base.Redirect(UIBaseUrl + $"/payment-callback?orderId={paymentResult.PaymentId}&status={(int)Contract.Enums.Payment.TransactionStatus.Success}");
                     }
 
-                    return Redirect(UIBaseUrl + $"/payment-callback?orderId={paymentResult.PaymentId}&status={(int)PaymentStatus.Failed}");
+                    return base.Redirect(UIBaseUrl + $"/payment-callback?orderId={paymentResult.PaymentId}&status={(int)Contract.Enums.Payment.TransactionStatus.Failed}");
                 }
                 catch (Exception ex)
                 {
@@ -152,9 +152,9 @@ namespace LiftNet.Api.Controllers
             var transaction = await _uow.TransactionRepo.GetQueryable()
                                               .FirstOrDefaultAsync(x => x.PaymentId == paymentId &&
                                                                    x.Amount == amount &&
-                                                                   x.Type == (int)PaymentType.Topup &&
+                                                                   x.Type == (int)TransactionType.Topup &&
                                                                    x.Description == description);
-            if (transaction == null || transaction.Status != (int)PaymentStatus.Pending)
+            if (transaction == null || transaction.Status != (int)Contract.Enums.Payment.TransactionStatus.Pending)
             {
                 return 0;
             }
@@ -162,8 +162,8 @@ namespace LiftNet.Api.Controllers
             await _uow.BeginTransactionAsync();
 
             transaction.TransactionId = paymentResult.VnpayTransactionId.ToString();
-            transaction.Status = paymentResult.IsSuccess ? (int)PaymentStatus.Success
-                                                         : (int)PaymentStatus.Failed;
+            transaction.Status = paymentResult.IsSuccess ? (int)Contract.Enums.Payment.TransactionStatus.Success
+                                                         : (int)Contract.Enums.Payment.TransactionStatus.Failed;
             transaction.CreatedAt = DateTime.UtcNow;
             transaction.TimeToLive = null;
             await _uow.TransactionRepo.Update(transaction);

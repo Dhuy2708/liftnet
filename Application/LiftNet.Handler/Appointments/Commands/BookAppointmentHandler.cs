@@ -62,6 +62,7 @@ namespace LiftNet.Handler.Appointments.Commands
             }
             entity.Created = DateTime.UtcNow;
             entity.Modified = DateTime.UtcNow;
+            AsssignAllAcceptedStatus(entity);
             var result = await _appointmentRepo.Create(entity);
             await AsignNotiCount(entity.Participants.Select(x => x.UserId).ToList(), entity.Id, request.CallerId);   
             if (result == 0)
@@ -120,6 +121,18 @@ namespace LiftNet.Handler.Appointments.Commands
                 entitiesToCreate.Add(seenStatus);
             }
             await _seenRepo.CreateRange(entitiesToCreate);
+        }
+
+        private void AsssignAllAcceptedStatus(Appointment appointment)
+        {
+            if (appointment.Participants.All(x => x.Status == (int)AppointmentParticipantStatus.Accepted))
+            {
+                appointment.AllAccepted = true;
+            }
+            else
+            {
+                appointment.AllAccepted = false;
+            }
         }
     }
 }

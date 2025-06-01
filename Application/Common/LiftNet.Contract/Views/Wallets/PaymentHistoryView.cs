@@ -29,7 +29,7 @@ namespace LiftNet.Contract.Views.Wallets
             get; set;
         } = string.Empty;
 
-        public PaymentType Type
+        public TransactionType Type
         {
             get; set;
         } // 1: Topup, 2: Transfer, 3: Withdraw
@@ -39,7 +39,7 @@ namespace LiftNet.Contract.Views.Wallets
             get; set;
         }
 
-        public PaymentStatus Status
+        public TransactionStatus Status
         {
             get; set;
         }

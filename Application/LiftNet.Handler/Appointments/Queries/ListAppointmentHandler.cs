@@ -38,6 +38,7 @@ namespace LiftNet.Handler.Appointments.Queries
 
         public async Task<PaginatedLiftNetRes<AppointmentOverview>> Handle(ListAppointmentsQuery request, CancellationToken cancellationToken)
         {
+            //await TemporaryInit();
             _logger.Info("begin list appointment overviews");
             var queryable = _appointmentRepo.GetQueryable();
             var conditions = request.Conditions;
@@ -88,6 +89,28 @@ namespace LiftNet.Handler.Appointments.Queries
                 }
             }
         }
+        
+        //private async Task TemporaryInit()
+        //{
+        //    var appointments = await _appointmentRepo.GetQueryable()
+        //                                        .AsTracking()
+        //                                        .Include(x => x.Participants)
+        //                                        .ToListAsync();
+
+        //    foreach (var appointment in appointments)
+        //    {
+        //        if (appointment.Participants.All(x => x.Status == (int)AppointmentParticipantStatus.Accepted))
+        //        {
+        //            appointment.AllAccepted = true;
+        //        }
+        //        else
+        //        {
+        //            appointment.AllAccepted = false;
+        //        }
+        //    }
+
+        //    await _appointmentRepo.SaveChangesAsync();
+        //}
 
         private AppointmentParticipantStatus GetCurrentUserStatusFromAppointment(Appointment appointment, string userId)
         {
