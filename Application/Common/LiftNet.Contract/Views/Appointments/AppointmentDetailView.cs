@@ -67,6 +67,11 @@ namespace LiftNet.Contract.Views.Appointments
         {
             get; set;
         }
+
+        public AppointmentConfirmationRequestView ConfirmationRequest
+        {
+            get; set;
+        }
     }
 
     public class UserViewInAppointmentDetail : UserOverview

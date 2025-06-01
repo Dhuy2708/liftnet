@@ -80,6 +80,7 @@ namespace LiftNet.Handler.Appointments.Commands
                 };
 
                 await _uow.AppointmentConfirmationRepo.Create(entity);
+                await _uow.CommitAsync();
                 return LiftNetRes.SuccessResponse("Confirmation request created successfully.");
             }
             catch (Exception e)
