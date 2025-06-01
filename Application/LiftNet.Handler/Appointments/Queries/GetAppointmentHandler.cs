@@ -9,6 +9,7 @@ using LiftNet.Handler.Appointments.Queries.Requests;
 using LiftNet.Ioc;
 using LiftNet.Utility.Extensions;
 using LiftNet.Utility.Mappers;
+using LiftNet.Utility.Utils;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,14 +25,17 @@ namespace LiftNet.Handler.Appointments.Queries
         private readonly ILiftLogger<GetAppointmentHandler> _logger;
         private readonly IAppointmentRepo _appointmentRepo;
         private readonly IAppointmentSeenStatusRepo _seenStatusRepo;
+        private readonly IAppointmentConfirmationRepo _confirmationRepo;
 
         public GetAppointmentHandler(ILiftLogger<GetAppointmentHandler> logger, 
-                                     IAppointmentRepo appointmentRepo, 
-                                     IAppointmentSeenStatusRepo seenStatusRepo)
+                                     IAppointmentRepo appointmentRepo,
+                                     IAppointmentSeenStatusRepo seenStatusRepo, 
+                                     IAppointmentConfirmationRepo confirmationRepo)
         {
             _logger = logger;
             _appointmentRepo = appointmentRepo;
             _seenStatusRepo = seenStatusRepo;
+            _confirmationRepo = confirmationRepo;
         }
 
         public async Task<LiftNetRes<AppointmentDetailView>> Handle(GetAppointmentQuery request, CancellationToken cancellationToken)
@@ -50,7 +54,25 @@ namespace LiftNet.Handler.Appointments.Queries
             var status = GetCurrentUserStatusFromAppointment(appointment, request.UserId);
 
             await ResetSeenStatus(appointment, request.UserId);
-            return LiftNetRes<AppointmentDetailView>.SuccessResponse(appointment.ToDetailView(request.UserId.Eq(appointment.BookerId!), status: status));
+
+            var detail = appointment.ToDetailView(request.UserId.Eq(appointment.BookerId!), status: status);
+            var confirmationReq = await _confirmationRepo.GetQueryable()
+                                                         .FirstOrDefaultAsync(x => x.AppointmentId == appointment.Id);
+            if (confirmationReq != null)
+            {
+                detail.ConfirmationRequest = new AppointmentConfirmationRequestView
+                {
+                    Id = confirmationReq.Id,
+                    Img = confirmationReq.Img,
+                    Content = confirmationReq.Content,
+                    Status = (AppointmentConfirmationStatus)confirmationReq.Status,
+                    CreatedAt = confirmationReq.CreatedAt.ToOffSet(),
+                    ModifiedAt = confirmationReq.ModifiedAt.ToOffSet(),
+                    ExpiresdAt = confirmationReq.ExpiredAt.ToOffSet(),
+                };
+            }
+          
+            return LiftNetRes<AppointmentDetailView>.SuccessResponse(detail);
         }
 
         private AppointmentParticipantStatus GetCurrentUserStatusFromAppointment(Appointment appointment, string userId)

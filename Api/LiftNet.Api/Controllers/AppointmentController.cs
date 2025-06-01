@@ -172,7 +172,7 @@ namespace LiftNet.Api.Controllers
         }
 
         [HttpPost("requestConfirmation")]
-        [Authorize(Policy = LiftNetPolicies.Seeker)]
+        [Authorize(Policy = LiftNetPolicies.Coach)]
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> RequestConfirmation([FromForm] AppointmentConfirmationRequest req)
         {
@@ -187,6 +187,33 @@ namespace LiftNet.Api.Controllers
                 CallerId = UserId,
                 Content = req.Content,
                 Image = req.Image,
+            };
+
+            var result = await _mediator.Send(command);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpPost("feedback")]
+        [Authorize(Policy = LiftNetPolicies.Seeker)]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> FeedbackAppointment([FromForm] AppointmentFeedbackReq req)
+        {
+            if (UserId.IsNullOrEmpty())
+            {
+                return Unauthorized();
+            }
+
+            var command = new AppointmentFeedbackCommand
+            {
+                AppointmentId = req.AppointmentId,
+                CallerId = UserId,
+                Content = req.Content,
+                Image = req.Image,
+                Star = req.Star,
             };
 
             var result = await _mediator.Send(command);
