@@ -12,6 +12,7 @@ namespace LiftNet.Contract.Enums.Job
         ProvinceDiscovery = 1,
         AllSocialScoreUp = 2,
         TrainFFMModel = 3,
+        UpdateConfirmationRequest = 4,
     }
 
     public enum JobKind
@@ -49,6 +50,7 @@ namespace LiftNet.Contract.Enums.Job
             JobType.ProvinceDiscovery,
             JobType.AllSocialScoreUp,
             JobType.TrainFFMModel,
+            JobType.UpdateConfirmationRequest
         ];
         public static bool Contains(JobType type)
         {

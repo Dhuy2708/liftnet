@@ -12,5 +12,6 @@ namespace LiftNet.Contract.Interfaces.IServices
     {
         Task<List<AppointmentDto>> ListUserAppointments(string userId);
         Task<int> FeedBackAsync(AppointmentFeedbackRequestDto request);
+        Task PingAppointmentNotiCount(string appointmentId, string factorUserId);
     }
 }

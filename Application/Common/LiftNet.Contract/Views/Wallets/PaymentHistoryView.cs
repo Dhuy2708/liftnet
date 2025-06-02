@@ -39,7 +39,7 @@ namespace LiftNet.Contract.Views.Wallets
             get; set;
         }
 
-        public TransactionStatus Status
+        public LiftNetTransactionStatus Status
         {
             get; set;
         }

@@ -181,12 +181,36 @@ namespace LiftNet.Api.Controllers
                 return Unauthorized();
             }
 
-            var command = new AppointmentConfirmationCommand
+            var command = new RequestAppointmentConfirmationCommand
             {
                 AppointmentId = req.AppointmentId,
                 CallerId = UserId,
                 Content = req.Content,
                 Image = req.Image,
+            };
+
+            var result = await _mediator.Send(command);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpPost("confirm")]
+        [Authorize(Policy = LiftNetPolicies.Seeker)]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ConfirmRequest([FromBody] int id)
+        {
+            if (UserId.IsNullOrEmpty())
+            {
+                return Unauthorized();
+            }
+
+            var command = new ConfirmAppointmentCommand
+            {
+                CallerId = UserId,
+                ConfirmRequestId = id,
             };
 
             var result = await _mediator.Send(command);
