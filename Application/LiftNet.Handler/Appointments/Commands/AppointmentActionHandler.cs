@@ -212,10 +212,11 @@ namespace LiftNet.Handler.Appointments.Commands
 
             var transaction = new LiftNetTransaction()
             {
+                AppointmentId = appointment.Id,
                 UserId = callerId,
                 Amount = transferAmount,
-                Description = "Payment for appointment " + appointment.Name,
-                Status = (int)TransactionStatus.Success,
+                Description = "Transaction for appointment " + appointment.Name,
+                Status = (int)LiftNetTransactionStatus.Hold,
                 FromUserId = callerId,
                 ToUserId = null, // go to the fund hold
                 CreatedAt = DateTime.UtcNow,

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Contract.Enums.Payment
 {
-    public enum TransactionStatus
+    public enum LiftNetTransactionStatus
     {
         None = 0,
         Pending = 1, // Payment is pending

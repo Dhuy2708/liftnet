@@ -22,6 +22,12 @@ namespace LiftNet.Domain.Entities
         {
             get; set;
         }
+
+        [ForeignKey(nameof(Appointment))]
+        public string? AppointmentId
+        {
+            get; set;
+        }
         
         public double Amount
         {
@@ -43,17 +49,24 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        [ForeignKey(nameof(FromUser))]
         public string? FromUserId
         {
             get; set;
         }
 
+        [ForeignKey(nameof(ToUser))]
         public string? ToUserId
         {
             get; set;
         }
 
         public DateTime CreatedAt
+        {
+            get; set;
+        }
+
+        public DateTime LastUpdate
         {
             get; set;
         } = DateTime.UtcNow;
@@ -64,14 +77,17 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
-        // mapping
         public User FromUser
         {
             get; set;
         }
 
-        // mapping
         public User ToUser
+        {
+            get; set;
+        }
+
+        public Appointment Appointment
         {
             get; set;
         }

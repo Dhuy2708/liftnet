@@ -4,6 +4,7 @@ using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
+using LiftNet.Utility.Extensions;
 using LiftNet.Utility.Mappers;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -32,6 +33,59 @@ namespace LiftNet.Service.Services
             var queryable = _uow.AppointmentRepo.GetQueryable();
             var appointments = await queryable.Where(x => x.Participants.Any(x => x.UserId == userId)).ToListAsync();
             return appointments.ToDtos();
+        }
+
+        public async Task PingAppointmentNotiCount(string appointmentId, string factorUserId)
+        {
+            try
+            {
+                await _uow.BeginTransactionAsync();
+                var time = DateTime.UtcNow;
+                var queryable = _uow.AppointmentSeenStatusRepo.GetQueryable();
+                var participantIds = await _uow.AppointmentParticipantRepo.GetQueryable()
+                                             .Where(x => x.AppointmentId == appointmentId)
+                                             .Select(x => x.UserId)
+                                             .ToListAsync();
+
+                var seenStatuses = await queryable.Where(x => x.AppointmentId == appointmentId &&
+                                                            participantIds.Contains(x.UserId))
+                                                .ToListAsync();
+
+                var notExistUserIds = participantIds.Except(seenStatuses.Select(x => x.UserId)).ToList();
+
+                notExistUserIds.Remove(factorUserId);
+                var listToCreate = notExistUserIds.Select(userId => new AppointmentSeenStatus
+                {
+                    AppointmentId = appointmentId,
+                    UserId = userId,
+                    NotiCount = 1,
+                    LastSeen = null,
+                    LastUpdate = time
+                }).ToList();
+
+                if (listToCreate.IsNotNullOrEmpty())
+                {
+                    await _uow.AppointmentSeenStatusRepo.CreateRange(listToCreate);
+                }
+
+                foreach (var status in seenStatuses)
+                {
+                    if (status.UserId == factorUserId)
+                    {
+                        continue;
+                    }
+                    status.NotiCount += 1;
+                    status.LastUpdate = time;
+                }
+
+                await _uow.AppointmentSeenStatusRepo.UpdateRange(seenStatuses);
+                await _uow.CommitAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, $"Error in PingAppointmentNotiCount");
+                throw;
+            }
         }
 
         public async Task<int> FeedBackAsync(AppointmentFeedbackRequestDto request)
@@ -70,7 +124,7 @@ namespace LiftNet.Service.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"Error in FeedBackAsync: {ex.Message}");
+                _logger.Error(ex, $"Error in FeedBackAsync");
                 throw;
             }
         }

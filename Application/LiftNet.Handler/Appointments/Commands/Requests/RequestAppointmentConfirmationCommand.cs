@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Appointments.Commands.Requests
 {
-    public class AppointmentConfirmationCommand : IRequest<LiftNetRes>
+    public class RequestAppointmentConfirmationCommand : IRequest<LiftNetRes>
     {
         public string CallerId
         {

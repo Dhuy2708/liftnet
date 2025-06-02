@@ -16,22 +16,25 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Appointments.Commands
 {
-    public class AppointmentConfirmationHandler : IRequestHandler<AppointmentConfirmationCommand, LiftNetRes>
+    public class RequestAppointmentConfirmationHandler : IRequestHandler<RequestAppointmentConfirmationCommand, LiftNetRes>
     {
-        private readonly ILiftLogger<AppointmentConfirmationHandler> _logger;
+        private readonly ILiftLogger<RequestAppointmentConfirmationHandler> _logger;
+        private readonly IAppointmentService _appointmentService;
         private readonly ICloudinaryService _cloudinaryService;
         private readonly IUnitOfWork _uow;
 
-        public AppointmentConfirmationHandler(ILiftLogger<AppointmentConfirmationHandler> logger, 
-                                              ICloudinaryService cloudinaryService, 
-                                              IUnitOfWork uow)
+        public RequestAppointmentConfirmationHandler(ILiftLogger<RequestAppointmentConfirmationHandler> logger, 
+                                                     IAppointmentService appointmentService,
+                                                     ICloudinaryService cloudinaryService,
+                                                     IUnitOfWork uow)
         {
             _logger = logger;
+            _appointmentService = appointmentService;
             _cloudinaryService = cloudinaryService;
             _uow = uow;
         }
 
-        public async Task<LiftNetRes> Handle(AppointmentConfirmationCommand request, CancellationToken cancellationToken)
+        public async Task<LiftNetRes> Handle(RequestAppointmentConfirmationCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -80,7 +83,11 @@ namespace LiftNet.Handler.Appointments.Commands
                 };
 
                 await _uow.AppointmentConfirmationRepo.Create(entity);
-                await _uow.CommitAsync();
+                var result = await _uow.CommitAsync();
+                if (result > 0)
+                {
+                    await _appointmentService.PingAppointmentNotiCount(request.AppointmentId, request.CallerId);
+                }
                 return LiftNetRes.SuccessResponse("Confirmation request created successfully.");
             }
             catch (Exception e)
