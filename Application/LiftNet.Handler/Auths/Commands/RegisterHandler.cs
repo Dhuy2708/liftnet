@@ -155,6 +155,11 @@ namespace LiftNet.Handler.Auths.Commands
             var result = await _authRepo.RegisterAsync(registerModel);
             if (result.Succeeded)
             {
+                var userId = await _uow.UserRepo.GetQueryable()
+                                       .Where(x => x.UserName == request.Username)
+                                       .Select(x => x.Id)
+                                       .FirstOrDefaultAsync();
+                await InitWallet(userId!);
                 if (placeDetail == null)
                 {
                     _logger.Info("register user successfully");
@@ -182,6 +187,18 @@ namespace LiftNet.Handler.Auths.Commands
             }
             _logger.Error("failed to register user");
             return LiftNetRes.ErrorResponse(message: "Failed to register.", errors: result.Errors.Select(x => x.Description).ToList());
+        }
+
+        private async Task InitWallet(string userId)
+        {
+            var walelt = new Wallet
+            {
+                UserId = userId,
+                Balance = 0,
+                LastUpdate = DateTime.UtcNow
+            };
+            await _uow.WalletRepo.Create(walelt);
+            await _uow.CommitAsync();
         }
 
         private async Task<int> InsertCosmosAsync(string userId, PlaceDetailDto placeDetail)

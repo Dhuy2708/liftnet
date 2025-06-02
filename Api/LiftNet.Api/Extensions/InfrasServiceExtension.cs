@@ -81,9 +81,7 @@ namespace LiftNet.Api.Extensions
             #endregion
 
             #region quartz
-#if !DEBUG
             services.RegisterQuartzService();
-#endif
             #endregion
 
             #region rabbitmq
@@ -128,6 +126,7 @@ namespace LiftNet.Api.Extensions
             #region vnpay
             services.RegisterVNPay();
             #endregion
+
             return services;
         }
 
@@ -191,6 +190,7 @@ namespace LiftNet.Api.Extensions
 
         private static IServiceCollection RegisterQuartzService(this IServiceCollection services)
         {
+#if !DEBUG
             services.AddQuartz(q =>
             {
                 q.AddJob<ProvinceDiscService>(opts => opts.WithIdentity("ProvinceDiscJob", "DiscJobs"));
@@ -235,10 +235,32 @@ namespace LiftNet.Api.Extensions
                     )
                 );
             });
+#endif
+           
+
+            services.AddQuartz(q =>
+            {
+                q.AddJob<UpdateConfirmationRequestsService>(opts => opts.WithIdentity("UpdateConfirmationRequestsJob", "UpJobs"));
+
+                q.AddTrigger(opts => opts
+                    .ForJob("UpdateConfirmationRequestsJob", "UpJobs")
+                    .WithIdentity("UpdateConfirmationRequestsTrigger", "UpTriggers")
+                    .StartNow()
+                    .WithSimpleSchedule(schedule => schedule
+                        .WithIntervalInMinutes(5)
+                        .RepeatForever()
+                    )
+                );
+            });
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+
+#if !DEBUG
             services.AddTransient<ProvinceDiscService>();
             services.AddTransient<SocialScoreService>();
+#endif
+            services.AddTransient<UpdateConfirmationRequestsService>();
+
 
             return services;
         }
