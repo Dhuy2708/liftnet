@@ -29,6 +29,11 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        public DateTime LastUpdate
+        {
+            get; set;
+        } = DateTime.UtcNow;
+
         // mapping
         public User User
         {

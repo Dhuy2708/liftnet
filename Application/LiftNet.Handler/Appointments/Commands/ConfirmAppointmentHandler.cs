@@ -7,6 +7,7 @@ using LiftNet.Domain.Exceptions;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Appointments.Commands.Requests;
+using LiftNet.Utility.Utils;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -38,18 +39,21 @@ namespace LiftNet.Handler.Appointments.Commands
             {
                 var requestId = request.ConfirmRequestId;
                 var callerId = request.CallerId;
-                if (!await CheckPermission(requestId, callerId))
-                {
-                    return LiftNetRes.ErrorResponse("You do not have permission to confirm this appointment.");
-                }
+              
 
                 var confirmation = await _uow.AppointmentConfirmationRepo.GetQueryable()
                                                 .Include(x => x.Appointment)
+                                                .ThenInclude(x => x.Participants)
                                                 .FirstOrDefaultAsync(x => x.Id == requestId);
 
                 if (confirmation == null)
                 {
                     throw new BadRequestException(["Confirmation request with ID {requestId} does not exist."]);
+                }
+
+                if (!CheckPermission(confirmation.Appointment, callerId))
+                {
+                    return LiftNetRes.ErrorResponse("You do not have permission to confirm this appointment.");
                 }
 
                 await _uow.BeginTransactionAsync();
@@ -80,13 +84,22 @@ namespace LiftNet.Handler.Appointments.Commands
             }
         }
 
-        private async Task<bool> CheckPermission(int requestId, string callerId)
+        private bool CheckPermission(Appointment appointment, string callerId)
         {
-            var isExist = await _uow.AppointmentConfirmationRepo.GetQueryable()
-                                            .Where(x => x.Id == requestId)
-                                            .AnyAsync(x => x.Appointment.Participants.Select(p => p.UserId).Contains(callerId));
+            if (appointment.BookerId == callerId)
+            {
+                return false;
+            }
+            if (AppointmentUtil.GetAppointmentStatus(appointment) != AppointmentStatus.Finished)
+            {
+                return false;
+            }
+            if (!appointment.Participants.Select(x => x.UserId).Contains(callerId))
+            {
+                return false;
+            }
 
-            return isExist;
+            return true;
         }
 
         private async Task HandleTransaction(Appointment appointment)
@@ -110,6 +123,26 @@ namespace LiftNet.Handler.Appointments.Commands
             transaction.ToUserId = appointment.BookerId;
             transaction.Status = (int)LiftNetTransactionStatus.Success;
             transaction.LastUpdate = DateTime.UtcNow;
+
+            // wallet
+            var wallet = await _uow.WalletRepo.GetQueryable()
+                                   .FirstOrDefaultAsync(x => x.UserId == appointment.BookerId);
+            if (wallet == null)
+            {
+                var newWallet = new Wallet
+                {
+                    UserId = appointment.BookerId!,
+                    Balance = transaction.Amount,
+                    LastUpdate = DateTime.UtcNow,
+                };
+                await _uow.WalletRepo.Create(newWallet);
+            }
+            else
+            {
+                wallet.Balance += Math.Abs(transaction.Amount);
+                wallet.LastUpdate = transaction.LastUpdate;
+                await _uow.WalletRepo.Update(wallet);
+            }
             await _uow.LiftNetTransactionRepo.Update(transaction);
         }
     }

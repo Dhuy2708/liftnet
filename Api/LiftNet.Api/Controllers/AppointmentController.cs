@@ -198,7 +198,7 @@ namespace LiftNet.Api.Controllers
         }
 
         [HttpPost("confirm")]
-        [Authorize(Policy = LiftNetPolicies.Coach)]
+        [Authorize(Policy = LiftNetPolicies.Seeker)]
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> ConfirmRequest([FromBody] int id)
         {

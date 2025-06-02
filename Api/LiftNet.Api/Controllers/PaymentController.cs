@@ -173,6 +173,7 @@ namespace LiftNet.Api.Controllers
             if (wallet != null)
             {
                 wallet.Balance += amount / 1000;
+                wallet.LastUpdate = DateTime.UtcNow;
                 await _uow.WalletRepo.Update(wallet);
             }
             else
@@ -180,7 +181,8 @@ namespace LiftNet.Api.Controllers
                 wallet = new Wallet()
                 {
                     UserId = transaction.UserId,
-                    Balance = amount / 1000
+                    Balance = amount / 1000,
+                    LastUpdate = DateTime.UtcNow
                 };
                 await _uow.WalletRepo.Create(wallet);
             }

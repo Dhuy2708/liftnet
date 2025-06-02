@@ -41,6 +41,17 @@ namespace LiftNet.Service.Services
             {
                 await _uow.BeginTransactionAsync();
                 var time = DateTime.UtcNow;
+
+                var appointment = await _uow.AppointmentRepo.GetQueryable()
+                                                .FirstOrDefaultAsync(x => x.Id == appointmentId);
+                if (appointment == null)
+                {
+                    return;
+                }
+                appointment.Modified = DateTime.UtcNow;
+                await _uow.AppointmentRepo.Update(appointment);
+
+
                 var queryable = _uow.AppointmentSeenStatusRepo.GetQueryable();
                 var participantIds = await _uow.AppointmentParticipantRepo.GetQueryable()
                                              .Where(x => x.AppointmentId == appointmentId)

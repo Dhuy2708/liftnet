@@ -179,7 +179,8 @@ namespace LiftNet.Handler.Appointments.Commands
                 var newWallet = new Wallet()
                 {
                     UserId = userId,
-                    Balance = 0
+                    Balance = 0,
+                    LastUpdate = DateTime.UtcNow
                 };
                 await _uow.WalletRepo.Create(newWallet);
                 await _uow.CommitAsync();
@@ -209,12 +210,13 @@ namespace LiftNet.Handler.Appointments.Commands
                 transferAmount = appointment.Price;
             }
             Wallet.Balance += transferAmount;
+            Wallet.LastUpdate = DateTime.UtcNow;
 
             var transaction = new LiftNetTransaction()
             {
                 AppointmentId = appointment.Id,
                 UserId = callerId,
-                Amount = transferAmount,
+                Amount = appointment.Price,
                 Description = "Transaction for appointment " + appointment.Name,
                 Status = (int)LiftNetTransactionStatus.Hold,
                 FromUserId = callerId,

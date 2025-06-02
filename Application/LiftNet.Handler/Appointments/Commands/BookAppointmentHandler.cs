@@ -5,6 +5,7 @@ using LiftNet.Contract.Interfaces.IServices.Indexes;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Enums;
 using LiftNet.Domain.Enums.Indexes;
+using LiftNet.Domain.Exceptions;
 using LiftNet.Domain.Indexes;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
@@ -59,6 +60,14 @@ namespace LiftNet.Handler.Appointments.Commands
                 {
                     part.Status = (int)AppointmentParticipantStatus.Pending;
                 }
+            }
+            if (request.Appointment.StartTime >= request.Appointment.EndTime)
+            {
+                throw new BadRequestException(["Time is invalid"]);
+            }
+            if (request.Appointment.StartTime < DateTime.UtcNow)
+            {
+                throw new BadRequestException(["Time is invalid"]);
             }
             entity.Created = DateTime.UtcNow;
             entity.Modified = DateTime.UtcNow;
