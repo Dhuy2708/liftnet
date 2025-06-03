@@ -8,11 +8,6 @@ namespace LiftNet.Contract.Views.Plannings
 {
     public class UserPhysicalStatView
     {
-        public int Id
-        {
-            get; set;
-        }
-
         public int? Age
         {
             get; set;

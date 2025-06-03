@@ -37,14 +37,13 @@ namespace LiftNet.Handler.Plannings.Queries
                     var creatingResult = await _physicalStatRepo.Create(newStat);
                     if (creatingResult > 0)
                     {
-                        return LiftNetRes<UserPhysicalStatView>.SuccessResponse(new UserPhysicalStatView { Id = newStat.Id});
+                        return LiftNetRes<UserPhysicalStatView>.SuccessResponse(new UserPhysicalStatView());
                     }
                     return LiftNetRes<UserPhysicalStatView>.ErrorResponse("Failed to get physical stats");
                 }
 
                 var view = new UserPhysicalStatView
                 {
-                    Id = physicalStat.Id,
                     Age = physicalStat.Age,
                     Gender = physicalStat.Gender,
                     Height = physicalStat.Height,
