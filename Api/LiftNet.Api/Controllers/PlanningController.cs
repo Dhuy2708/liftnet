@@ -10,6 +10,7 @@ using LiftNet.Handler.Plannings.Commands.Requests;
 using LiftNet.Handler.Plannings.Queries.Requests;
 using LiftNet.Api.Requests.Plannings;
 using LiftNet.Utility.Extensions;
+using LiftNet.Contract.Views.Plannings;
 
 namespace LiftNet.Api.Controllers
 {
@@ -19,7 +20,7 @@ namespace LiftNet.Api.Controllers
         {
         }
 
-        [HttpPost("setPhysicalStats")]
+        [HttpPost("setPhysicalStat")]
         [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> SetPhysicalStats([FromBody] SetPhysicalStatsReq req)
@@ -49,7 +50,7 @@ namespace LiftNet.Api.Controllers
             return StatusCode(500, result);
         }
 
-        [HttpGet("getPhysicalStats")]
+        [HttpGet("getPhysicalStat")]
         [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
         [ProducesResponseType(typeof(LiftNetRes<UserPhysicalStatView>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetPhysicalStats()
