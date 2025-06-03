@@ -322,12 +322,12 @@ namespace LiftNet.Repositories.Core
 
 
         #region helper
-        public async Task<int> SaveChangesAsync()
+        public async Task<int> SaveChangesAsync(CancellationToken? cts = null)
         {
             if (AutoSave)
             {
                 _logger.Info($"[BaseRepo<{typeof(TEntity).Name}>.SaveChangeAsync]: Saving changes...");
-                return await _dbContext.SaveChangesAsync();
+                return await _dbContext.SaveChangesAsync(cts ?? default);
             }
             return 0;
         }

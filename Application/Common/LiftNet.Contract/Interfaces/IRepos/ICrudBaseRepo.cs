@@ -29,6 +29,6 @@ namespace LiftNet.Contract.Interfaces.IRepos
         Task<int> HardDelete(T model);
         Task<int> HardDeleteRange(IEnumerable<T> models);
         Task<int> GetCount();
-        Task<int> SaveChangesAsync();
+        Task<int> SaveChangesAsync(CancellationToken? cts = null);
     }
 }

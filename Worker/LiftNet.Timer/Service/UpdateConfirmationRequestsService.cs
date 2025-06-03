@@ -38,6 +38,12 @@ namespace LiftNet.Timer.Service
                                         .Where(x => x.ExpiredAt >= DateTime.UtcNow && x.Status != (int)AppointmentConfirmationStatus.Confirmed)
                                         .ToListAsync();
 
+                if (expiredRequests.IsNullOrEmpty())
+                {
+                    _logger.Info("no expired confirmation requests found");
+                    return JobStatus.Finished;
+                }
+
                 foreach (var request in expiredRequests)
                 {
                     request.Status = (int)AppointmentConfirmationStatus.Confirmed;

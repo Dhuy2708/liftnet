@@ -280,6 +280,17 @@ namespace LiftNet.Repositories.Core
                 return _appointmentFeedbackRepo;
             }
         }
+
+        private IPhysicalStatRepo? _userPhysicalStatRepo = null;
+        public IPhysicalStatRepo PhysicalStatRepo
+        {
+            get
+            {
+                _userPhysicalStatRepo ??= _serviceProvider.GetRequiredService<IPhysicalStatRepo>();
+                _userPhysicalStatRepo.AutoSave = false;
+                return _userPhysicalStatRepo;
+            }
+        }
         #endregion
 
         public async Task BeginTransactionAsync()

@@ -32,6 +32,7 @@ namespace LiftNet.Contract.Interfaces.IRepos
         IFinderPostApplicantRepo FinderPostApplicantRepo { get; }
         IChatBotConversationRepo ChatBotConversationRepo { get; }
         IChatBotMessageRepo ChatBotMessageRepo { get; }
+        IPhysicalStatRepo PhysicalStatRepo { get; }
         Task BeginTransactionAsync();
         Task<int> CommitAsync();
         Task RollbackAsync();
