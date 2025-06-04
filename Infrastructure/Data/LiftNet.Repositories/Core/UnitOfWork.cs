@@ -302,7 +302,7 @@ namespace LiftNet.Repositories.Core
             }
 
             _transaction = await _context.Database.BeginTransactionAsync();
-            _logger.Info("Mysql transaction started.");
+            _logger.Info("SQLServer transaction started.");
         }
 
         public async Task<int> CommitAsync()
