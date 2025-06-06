@@ -20,4 +20,8 @@ namespace LiftNet.Handler.Auths.Commands.Requests
             get; set;
         }
     }
+
+    public class AdminLoginCommand : LoginCommand
+    {
+    }
 }
