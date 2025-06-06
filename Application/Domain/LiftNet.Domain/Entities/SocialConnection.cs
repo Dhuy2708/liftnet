@@ -36,6 +36,7 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        // mapping
         public User User
         {
             get; set;

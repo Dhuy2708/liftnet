@@ -36,27 +36,22 @@ namespace LiftNet.Api.Controllers
             return StatusCode(500, result);
         }
 
-        [HttpGet("paymentHistories")]
+        [HttpGet("paymentTransactions")]
         [Authorize]
         [ProducesResponseType(typeof(LiftNetRes<double>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> GetPaymentHistories([FromQuery] int pageNumber)
+        public async Task<IActionResult> GetPaymentTransactions([FromQuery] int pageNumber)
         {
-            return Ok();
-            //if (UserId.IsNullOrEmpty())
-            //{
-            //    return Unauthorized();
-            //}
-            //var request = new GetPaymentHistoriesQuery
-            //{
-            //    UserId = UserId,
-            //    PageNumber = pageNumber
-            //};
-            //var result = await _mediator.Send(request);
-            //if (result.Success)
-            //{
-            //    return Ok(result);
-            //}
-            //return StatusCode(500, result);
+            var request = new GetPaymentTransactionsQuery
+            {
+                UserId = UserId,
+                PageNumber = pageNumber
+            };
+            var result = await _mediator.Send(request);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
         }
     }
 }

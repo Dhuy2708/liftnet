@@ -13,7 +13,8 @@ namespace LiftNet.Contract.Interfaces.IRepos
 {
     public interface IAuthRepo : IDependency
     {
-        Task<JwtSecurityToken?> LogInAsync(LoginModel logInViewModel);
+        Task<JwtSecurityToken?> LogInAsync(LoginModel model);
+        Task<JwtSecurityToken?> AdminLoginAsync(LoginModel model);
         Task<IdentityResult> RegisterAsync(RegisterModel registerViewModel);
         Task LogOutAsync();
     }

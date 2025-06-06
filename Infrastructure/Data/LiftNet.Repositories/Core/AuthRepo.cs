@@ -113,6 +113,60 @@ namespace LiftNet.Repositories.Core
             return token;
         }
 
+        public async Task<JwtSecurityToken?> AdminLoginAsync(LoginModel model)
+        {
+            var user = await _userManager.FindByNameAsync(model.Username);
+
+            if (user == null || user.IsDeleted == true || user.IsSuspended == true)
+            {
+                return null;
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, false, false);
+            if (!result.Succeeded)
+            {
+                _logger.Error(result.ToString());
+                return null;
+            }
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            if (!userRoles.Contains(LiftNetRoles.Admin))
+            {
+                _logger.Error("User is not an admin");
+                return null;
+            }
+            var authClaims = new List<Claim>
+            {
+                new Claim(LiftNetClaimType.UId, user.Id),
+                new Claim(LiftNetClaimType.UEmail, user.Email ?? ""),
+                new Claim(LiftNetClaimType.Username, user.UserName ?? ""),
+                new Claim(LiftNetClaimType.FirstName, user.FirstName),
+                new Claim(LiftNetClaimType.LastName, user.LastName),
+                new Claim(LiftNetClaimType.UAvatar, user.Avatar),
+                new Claim(LiftNetClaimType.Roles, string.Join(", ", userRoles.ToList())),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+            foreach (var role in userRoles)
+            {
+                authClaims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var util = CoreUtil.Instance();
+            var authenKey = new SymmetricSecurityKey(util.GetSecretKey());
+            var issuer = util.GetIssuer();
+            var audience = util.GetValidAudience();
+
+            var token = new JwtSecurityToken
+            (
+                issuer: issuer,
+                audience: audience,
+                expires: DateTime.UtcNow.AddSeconds(CoreConstant.TokenExpirationTimeInSeconds),
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha512Signature)
+            );
+            return token;
+        }
+
         public async Task LogOutAsync()
         {
             await _signInManager.SignOutAsync();
