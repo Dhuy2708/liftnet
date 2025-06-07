@@ -78,6 +78,7 @@ public class Program
         app.MapControllers();
 
         app.MapHub<ChatHub>("/chat-hub");
+        app.MapHub<NotiHub>("/noti-hub");
 
         app.Run();
         #endregion;

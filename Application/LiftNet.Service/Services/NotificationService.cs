@@ -1,9 +1,15 @@
-﻿using LiftNet.Contract.Dtos;
+﻿using LiftNet.Contract.Constants;
+using LiftNet.Contract.Dtos;
 using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Views.Notis;
+using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
+using LiftNet.Hub.Contract;
 using LiftNet.Hub.Core;
+using LiftNet.Utility.Extensions;
+using LiftNet.Utility.Mappers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -17,21 +23,24 @@ namespace LiftNet.Service.Services
     {
         private readonly NotiHub _notiHub;
         private readonly INotificationRepo _notiRepo;
+        private readonly IUserRepo _userRepo;
         private readonly ILiftLogger<NotificationService> _logger;
 
         public NotificationService(NotiHub notiHub, 
-                                   INotificationRepo notiRepo, 
+                                   INotificationRepo notiRepo,
+                                   IUserRepo userRepo, 
                                    ILiftLogger<NotificationService> logger)
         {
             _notiHub = notiHub;
             _notiRepo = notiRepo;
+            _userRepo = userRepo;
             _logger = logger;
         }
 
         public async Task<int> GetNotiCount(string userId)
         {
             var result = await _notiRepo.GetQueryable()
-                                        .Where(x => x.UserId.Equals(userId))
+                                        .Where(x => x.RecieverId.Equals(userId))
                                         .CountAsync();
             return result;
         }
@@ -39,18 +48,20 @@ namespace LiftNet.Service.Services
         public async Task<List<NotificationView>> GetNotifications(string userId, int pageIndex, int pageSize)
         {
             var entites = await _notiRepo.GetQueryable()
-                             .Where(x => x.UserId.Equals(userId))
+                             .Include(x => x.Sender)
+                             .Include(x => x.Reciever)
+                             .Where(x => x.RecieverId.Equals(userId))
                              .OrderByDescending(x => x.CreatedAt)
                              .Skip((pageIndex - 1) * pageSize)
                              .Take(pageSize)
                              .ToListAsync();
-            var result = NotiConvertHelper.ConvertRange2VMs(entites);
+            var result = entites.Select(x => x.ToView());
             return result.OrderByDescending(x => x.CreatedAt).ToList();
         }
 
         public async Task<int> SaveNotification(NotiMessageDto dto)
         {
-            var entity = NotiConvertHelper.Convert2Entity(dto);
+            var entity = dto.ToEntity();
             var result = await _notiRepo.Create(entity);
 
             if (result > 0)
@@ -71,15 +82,25 @@ namespace LiftNet.Service.Services
             return 0;
         }
 
-        public async Task Send(NotiMessageDto notiMessage, bool save = false)
+        public async Task Send(NotiMessageDto notiMessage, bool save = true)
         {
             try
             {
+                notiMessage.Title = NotiTitles.GetTitle(notiMessage.EventType);
+                notiMessage.Body = NotiBodies.GetBody(notiMessage.EventType, notiMessage.ObjectNames);
 
-                notiMessage.Title = string.Format(notiTemplate?.Title ?? "", notiMessage.ObjectNames.ToArray());
-                notiMessage.Body = string.Format(notiTemplate?.Body ?? "", notiMessage.ObjectNames.ToArray());
+                var userQueryable = _userRepo.GetQueryable();
 
-                await _notiHub.SendToUser(notiMessage.RecieverId!, ConvertToNotiMessage(notiMessage));
+                var getSenderTask = userQueryable
+                                .FirstOrDefaultAsync(x => x.Id == notiMessage.SenderId);
+                var getReceiverTask = userQueryable
+                                .FirstOrDefaultAsync(x => x.Id == notiMessage.RecieverId);
+
+                await Task.WhenAll(getSenderTask, getReceiverTask);
+                var sender = getSenderTask.Result;
+                var receiver = getReceiverTask.Result;
+
+                await _notiHub.SendNotiToOneUser(ConvertToNotiMessage(notiMessage, sender, receiver));
                 if (save)
                 {
                     await SaveNotification(notiMessage);
@@ -87,12 +108,12 @@ namespace LiftNet.Service.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError("error when send noti message: {0}", ex.Message);
+                _logger.Error(ex, "error when send noti message: {0}");
             }
 
         }
 
-        private NotiMessage ConvertToNotiMessage(NotiMessageDto dto)
+        private NotiMessage ConvertToNotiMessage(NotiMessageDto dto, User? sender, User? reciever)
         {
             if (dto == null)
             {
@@ -102,15 +123,17 @@ namespace LiftNet.Service.Services
             return new NotiMessage
             {
                 Title = dto.Title,
-                SenderUsername = dto.SenderUsername,
-                SenderName = dto.SenderName,
                 Body = dto.Body,
-                CreatedAt = dto.CreatedAt,
+                SenderId = sender?.Id ?? string.Empty,
+                SenderUsername = sender?.UserName ?? string.Empty,
+                SenderName = sender?.FirstName + " " + sender?.LastName,
+                SenderAvatar = sender?.Avatar ?? string.Empty,
                 SenderType = dto.SenderType,
+                RecieverId = reciever?.Id ?? string.Empty,
                 RecieverType = dto.RecieverType,
-                SenderAvatar = dto.SenderAvatar,
                 ObjectNames = dto.ObjectNames,
                 EventType = dto.EventType,
+                CreatedAt = dto.CreatedAt,
             };
         }
     }

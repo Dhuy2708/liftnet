@@ -15,6 +15,6 @@ namespace LiftNet.Contract.Interfaces.IServices
         Task<int> GetNotiCount(string userId);
         Task<int> SaveNotification(NotiMessageDto dto);
         Task<int> DeleteNoti(int id);
-        Task Send(NotiMessageDto notiMessage, bool save = false);
+        Task Send(NotiMessageDto notiMessage, bool save = true);
     }
 }

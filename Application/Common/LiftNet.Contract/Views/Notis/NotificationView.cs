@@ -14,7 +14,7 @@ namespace LiftNet.Contract.Views.Notis
             get; set;
         }
 
-        public string UserId
+        public string RecieverId
         {
             get; set;
         }
@@ -54,7 +54,7 @@ namespace LiftNet.Contract.Views.Notis
             get; set;
         } = string.Empty;
 
-        public DateTime CreatedAt
+        public DateTimeOffset CreatedAt
         {
             get; set;
         } = DateTime.UtcNow;

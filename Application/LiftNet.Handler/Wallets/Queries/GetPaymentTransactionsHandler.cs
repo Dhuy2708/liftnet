@@ -5,6 +5,7 @@ using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Wallets.Queries.Requests;
+using LiftNet.Utility.Utils;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -63,7 +64,8 @@ namespace LiftNet.Handler.Wallets.Queries
                 Type = (TransactionType)transaction.Type,
                 PaymentMethod = transaction.PaymentMethod == null ? PaymentMethod.None
                                                  : (PaymentMethod)transaction.PaymentMethod,
-                Status = (LiftNetTransactionStatus)transaction.Status
+                Status = (LiftNetTransactionStatus)transaction.Status,
+                CreatedAt = transaction.CreatedAt.ToOffSet()
             };
         }
     }
