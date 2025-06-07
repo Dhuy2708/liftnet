@@ -18,18 +18,24 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
-        [ForeignKey(nameof(User))]
-        public string UserId
-        {
-            get; set;
-        }
-
-        public int SenderType
+        [ForeignKey(nameof(Reciever))]
+        public string RecieverId // the current user
         {
             get; set;
         }
 
         public int RecieverType
+        {
+            get; set;
+        }
+
+        [ForeignKey(nameof(Sender))]
+        public string? SenderId
+        {
+            get; set;
+        }
+
+        public int SenderType
         {
             get; set;
         }
@@ -60,7 +66,11 @@ namespace LiftNet.Domain.Entities
         }
 
         // mapping
-        public User User
+        public User Sender
+        {
+            get; set;
+        }
+        public User Reciever
         {
             get; set;
         }

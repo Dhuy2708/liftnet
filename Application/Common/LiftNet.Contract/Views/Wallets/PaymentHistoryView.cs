@@ -43,5 +43,10 @@ namespace LiftNet.Contract.Views.Wallets
         {
             get; set;
         }
+
+        public DateTimeOffset CreatedAt
+        {
+            get; set;
+        } = DateTime.UtcNow;
     }
 }

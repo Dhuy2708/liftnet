@@ -9,11 +9,21 @@ namespace LiftNet.Hub.Contract
 {
     public class NotiMessage : HubMessage
     {
-        public string? RecieverId
+        public string Title
         {
             get; set;
-        }
+        } = string.Empty;
 
+        public string SenderUsername
+        {
+            get; set;
+        } = string.Empty;
+
+        public string SenderName
+        {
+            get; set;
+        } = string.Empty;
+     
         public string SenderAvatar
         {
             get; set;
@@ -23,6 +33,12 @@ namespace LiftNet.Hub.Contract
         {
             get; set;
         }
+
+        public string? RecieverId
+        {
+            get; set;
+        }
+
 
         public NotiTarget RecieverType
         {

@@ -24,6 +24,7 @@ namespace LiftNet.Api.Extensions
 
             services.AddSingleton<ConnectionPool>();
             services.AddTransient<ChatHub>();
+            services.AddTransient<NotiHub>();
             return services;
         }
     }

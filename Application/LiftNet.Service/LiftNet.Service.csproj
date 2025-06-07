@@ -30,6 +30,7 @@
     <ProjectReference Include="..\Domain\LiftNet.Domain\LiftNet.Domain.csproj" />
     <ProjectReference Include="..\Domain\LiftNet.Ioc\LiftNet.Ioc.csproj" />
     <ProjectReference Include="..\LiftNet.Engine\LiftNet.Engine.csproj" />
+    <ProjectReference Include="..\LiftNet.Hub\LiftNet.Hub.csproj" />
   </ItemGroup>
 
 </Project>
