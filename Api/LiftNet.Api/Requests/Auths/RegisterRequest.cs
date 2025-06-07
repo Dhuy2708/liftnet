@@ -23,10 +23,10 @@ namespace LiftNet.Api.Requests.Auths
 
         [Required]
         [Range(1, 120)]
-        public int Age { get; set; }
+        public int? Age { get; set; }
 
         [Required]
-        public LiftNetGender Gender { get; set; }
+        public LiftNetGender? Gender { get; set; }
 
         public AddressRequest? Address { get; set; }
 

@@ -81,6 +81,8 @@ namespace LiftNet.Api.Extensions
                     policy.RequireRole(LiftNetRoles.Seeker));
                 options.AddPolicy(LiftNetPolicies.Coach, policy =>
                     policy.RequireRole(LiftNetRoles.Coach));
+                options.AddPolicy(LiftNetPolicies.Admin, policy =>
+                    policy.RequireRole(LiftNetRoles.Admin));
             });
 
             return services;

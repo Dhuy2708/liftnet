@@ -291,6 +291,17 @@ namespace LiftNet.Repositories.Core
                 return _userPhysicalStatRepo;
             }
         }
+
+        private INotificationRepo? _notificationTemplateRepo = null;
+        public INotificationRepo NotificationRepo
+        {
+            get
+            {
+                _notificationTemplateRepo ??= _serviceProvider.GetRequiredService<INotificationRepo>();
+                _notificationTemplateRepo.AutoSave = false;
+                return _notificationTemplateRepo;
+            }
+        }
         #endregion
 
         public async Task BeginTransactionAsync()

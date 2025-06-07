@@ -66,5 +66,8 @@ namespace LiftNet.Persistence.Context
 
         // planning
         public DbSet<UserPhysicalStat> UserPhysicalStats { get; set; }
+
+        // notification
+        public DbSet<Notification> Notifications { get; set; }
     }
 }

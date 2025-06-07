@@ -41,15 +41,18 @@ public class Program
         });
 
         var orginUrl = "http://localhost:5173";
+        var adminUrl = "http://localhost:3000";
 
 #if !DEBUG
         orginUrl = Environment.GetEnvironmentVariable("UI_URL") ?? "http://localhost:5173";
+        adminUrl = Environment.GetEnvironmentVariable("ADMIN_URL") ?? "http://localhost:3000";
 #endif
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowAll", policy =>
             {
                 policy.WithOrigins(orginUrl!)
+                      .WithOrigins(adminUrl!)
                       .AllowAnyHeader()
                       .AllowAnyMethod()
                       .AllowCredentials();

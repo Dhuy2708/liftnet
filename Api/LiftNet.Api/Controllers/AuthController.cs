@@ -50,11 +50,11 @@ namespace LiftNet.Api.Controllers
 
         [HttpPost("admin/login")]
         [ProducesResponseType(typeof(LiftNetRes<TokenInfo>), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> AdminLogin(LoginRequest req)
+        public async Task<IActionResult> AdminLogin(AdminLoginRequest req)
         {
             var command = new AdminLoginCommand
             {
-                Username = req.Email,
+                Username = req.Username,
                 Password = req.Password
             };
             var result = await _mediator.Send(command);

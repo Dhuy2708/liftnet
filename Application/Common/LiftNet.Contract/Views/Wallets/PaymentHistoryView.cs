@@ -14,7 +14,7 @@ namespace LiftNet.Contract.Views.Wallets
             get; set;
         }
 
-        public string? TransactionId // for external payment system
+        public string TransactionId 
         {
             get; set;
         }
@@ -34,7 +34,7 @@ namespace LiftNet.Contract.Views.Wallets
             get; set;
         } // 1: Topup, 2: Transfer, 3: Withdraw
 
-        public int? PaymentMethod
+        public PaymentMethod PaymentMethod
         {
             get; set;
         }
