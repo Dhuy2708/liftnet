@@ -23,6 +23,7 @@ namespace LiftNet.Contract.Enums
         BookAppointment = 1,
         AcceptAppointment = 2,
         CancelAppointment = 3,
+        RejectAppointment = 4,
 
         // finder
         ApplyFinder = 10,
