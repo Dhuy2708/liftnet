@@ -28,7 +28,8 @@ namespace LiftNet.ServiceBus.Factory
                     return new ReactFeedProcessor(_eventMessage, _serviceProvider, ReactType.Like);
                 case EventType.UnLikeFeed:
                     return new ReactFeedProcessor(_eventMessage, _serviceProvider, ReactType.UnLike);
-
+                case EventType.Noti:
+                    return new NotiEventProcessor(_eventMessage, _serviceProvider);
                 default:
                     throw new NotSupportedException($"havent supported this processor, event: {_eventMessage.ToString()}");
             }

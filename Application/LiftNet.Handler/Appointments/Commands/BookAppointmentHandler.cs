@@ -1,4 +1,7 @@
-﻿using LiftNet.Contract.Enums.Appointment;
+﻿using LiftNet.Contract.Constants;
+using LiftNet.Contract.Dtos;
+using LiftNet.Contract.Enums;
+using LiftNet.Contract.Enums.Appointment;
 using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Interfaces.IServices.Indexes;
@@ -10,10 +13,14 @@ using LiftNet.Domain.Indexes;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Appointments.Commands.Requests;
+using LiftNet.ServiceBus.Contracts;
+using LiftNet.ServiceBus.Interfaces;
 using LiftNet.Utility.Extensions;
 using LiftNet.Utility.Mappers;
 using LiftNet.Utility.Utils;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,24 +33,30 @@ namespace LiftNet.Handler.Appointments.Commands
     {
         private readonly ILiftLogger<BookAppointmentHandler> _logger;
         private readonly IAppointmentRepo _appointmentRepo;
+        private readonly IUserRepo _userRepo;
         private readonly IAppointmentSeenStatusRepo _seenRepo;
         private readonly IEventIndexService _indexService;
         private readonly IRoleService _roleService;
         private readonly IUserService _userService;
+        private readonly IEventBusService _eventBusService;
 
         public BookAppointmentHandler(ILiftLogger<BookAppointmentHandler> logger,
-                                      IAppointmentRepo appointmentRepo, 
+                                      IAppointmentRepo appointmentRepo,
+                                      IUserRepo userRepo,
                                       IAppointmentSeenStatusRepo seenRepo, 
                                       IEventIndexService indexService, 
                                       IRoleService roleService, 
-                                      IUserService userService)
+                                      IUserService userService,
+                                      IEventBusService eventBusService)
         {
             _logger = logger;
             _appointmentRepo = appointmentRepo;
+            _userRepo = userRepo;
             _seenRepo = seenRepo;
             _indexService = indexService;
             _roleService = roleService;
             _userService = userService;
+            _eventBusService = eventBusService;
         }
 
         public async Task<LiftNetRes> Handle(BookAppointmentCommand request, CancellationToken cancellationToken)
@@ -111,6 +124,8 @@ namespace LiftNet.Handler.Appointments.Commands
                     return LiftNetRes.ErrorResponse($"Create appointment {request.Appointment.Name} failed");
                 }
             }
+            participantIds.Remove(request.CallerId);
+            await SendNoti(entity.Id, request.CallerId, participantIds);
             _logger.Info("create appointment successfully");
             return LiftNetRes.SuccessResponse($"Create appointment {request.Appointment.Name} successfully");
         }
@@ -142,6 +157,43 @@ namespace LiftNet.Handler.Appointments.Commands
             {
                 appointment.AllAccepted = false;
             }
+        }
+
+        private async Task SendNoti(string appointmentId, string callerId, List<string> otherParticipantIds)
+        {
+            if (otherParticipantIds.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            var callerName = await _userRepo.GetQueryable()
+                                        .Where(x => x.Id == callerId)
+                                        .Select(x => new { x.FirstName, x.LastName })
+                                        .FirstOrDefaultAsync();
+            List<EventMessage> messages = [];
+
+            otherParticipantIds.ForEach(x =>
+            {
+                messages.Add(new EventMessage
+                {
+                    Type = EventType.Noti,
+                    Context = JsonConvert.SerializeObject(new NotiMessageDto()
+                    {
+                        SenderId = callerId,
+                        EventType = NotiEventType.BookAppointment,
+                        Location = NotiRefernceLocationType.Appointment,
+                        SenderType = NotiTarget.User,
+                        RecieverId = x,
+                        RecieverType = NotiTarget.User,
+                        CreatedAt = DateTime.UtcNow,
+                        ObjectNames = [callerName!.FirstName + " " + callerName!.LastName, appointmentId]
+                    })
+                });
+                   
+            });
+
+            var sendTasks = messages.Select(x => _eventBusService.PublishAsync(x, QueueNames.Noti)).ToList();
+            await Task.WhenAll(sendTasks);
         }
     }
 }

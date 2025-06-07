@@ -87,18 +87,14 @@ namespace LiftNet.Service.Services
             try
             {
                 notiMessage.Title = NotiTitles.GetTitle(notiMessage.EventType);
-                notiMessage.Body = NotiBodies.GetBody(notiMessage.EventType, notiMessage.ObjectNames);
+                notiMessage.Body = NotiBodies.GetBody(notiMessage.EventType, notiMessage.ObjectNames.ToArray());
 
                 var userQueryable = _userRepo.GetQueryable();
 
-                var getSenderTask = userQueryable
+                var sender = await userQueryable
                                 .FirstOrDefaultAsync(x => x.Id == notiMessage.SenderId);
-                var getReceiverTask = userQueryable
+                var receiver = await userQueryable
                                 .FirstOrDefaultAsync(x => x.Id == notiMessage.RecieverId);
-
-                await Task.WhenAll(getSenderTask, getReceiverTask);
-                var sender = getSenderTask.Result;
-                var receiver = getReceiverTask.Result;
 
                 await _notiHub.SendNotiToOneUser(ConvertToNotiMessage(notiMessage, sender, receiver));
                 if (save)
@@ -122,6 +118,7 @@ namespace LiftNet.Service.Services
 
             return new NotiMessage
             {
+                TrackId = Guid.NewGuid().ToString(),
                 Title = dto.Title,
                 Body = dto.Body,
                 SenderId = sender?.Id ?? string.Empty,

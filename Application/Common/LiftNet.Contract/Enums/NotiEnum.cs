@@ -9,13 +9,11 @@ namespace LiftNet.Contract.Enums
     public enum NotiTarget
     {
         None = 0,
-        Seeker = 1,
-        Trainer = 2,
-        Admin = 3,
-        AllSeeker = 4,
-        AllTrainer = 5,
-        AllAdmin = 6,
-        All = 7,
+        User = 1,
+        Admin = 2,
+        AllUser = 3,
+        AllAdmin = 4,
+        All = 5,
     }
 
     public enum NotiEventType

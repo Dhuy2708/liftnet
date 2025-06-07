@@ -15,16 +15,11 @@ namespace LiftNet.Api.Extensions
             enableDetailedErrors = true;
 #endif
 
-            services.AddSignalR(options =>
-            {
-                options.EnableDetailedErrors = enableDetailedErrors;
-                options.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
-                options.KeepAliveInterval = TimeSpan.FromSeconds(10);
-            });
+            services.AddSignalR();
 
             services.AddSingleton<ConnectionPool>();
             services.AddTransient<ChatHub>();
-            services.AddTransient<NotiHub>();
+            services.AddSingleton<NotiHub>();
             return services;
         }
     }

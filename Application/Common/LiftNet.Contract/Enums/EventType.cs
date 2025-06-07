@@ -10,9 +10,11 @@ namespace LiftNet.Contract.Enums
     {
         None = 0,
         Job = 1,
+        Noti = 2,
         
         // feed
         LikeFeed = 10,
         UnLikeFeed = 11,
+
     }
 }
