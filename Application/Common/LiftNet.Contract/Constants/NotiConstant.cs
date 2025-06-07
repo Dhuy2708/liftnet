@@ -10,8 +10,9 @@ namespace LiftNet.Contract.Constants
     public static class NotiBodies
     {
         public const string BookAppointment = "{0} has booked a new appointment with you.";
-        public const string AcceptAppointment = "{0} has accepted your appointment request for {1}.";
-        public const string CancelAppointment = "{0} has cancelled the appointment scheduled on {1}.";
+        public const string AcceptAppointment = "{0} has accepted your appointment.";
+        public const string CancelAppointment = "{0} has cancelled the appointment scheduled on.";
+        public const string RejectAppointment = "{0} has rejected the appointment scheduled on.";
 
         public const string ApplyFinder = "{0} has applied to your finder request.";
         public const string AcceptFinder = "Your finder application has been accepted by {0}.";
@@ -26,6 +27,7 @@ namespace LiftNet.Contract.Constants
             { NotiEventType.BookAppointment, BookAppointment },
             { NotiEventType.AcceptAppointment, AcceptAppointment },
             { NotiEventType.CancelAppointment, CancelAppointment },
+            { NotiEventType.RejectAppointment, RejectAppointment },
             { NotiEventType.ApplyFinder, ApplyFinder },
             { NotiEventType.AcceptFinder, AcceptFinder },
             { NotiEventType.RejectFinder, RejectFinder },
@@ -58,6 +60,7 @@ namespace LiftNet.Contract.Constants
         public const string BookAppointment = "New Appointment Booked with You";
         public const string AcceptAppointment = "Appointment Accepted";
         public const string CancelAppointment = "Appointment Cancelled";
+        public const string RejectAppointment = "Appointment Rejected";
 
         public const string ApplyFinder = "New Finder Application";
         public const string AcceptFinder = "Finder Application Accepted";
@@ -72,6 +75,7 @@ namespace LiftNet.Contract.Constants
             { NotiEventType.BookAppointment, BookAppointment },
             { NotiEventType.AcceptAppointment, AcceptAppointment },
             { NotiEventType.CancelAppointment, CancelAppointment },
+            { NotiEventType.RejectAppointment, RejectAppointment },
             { NotiEventType.ApplyFinder, ApplyFinder },
             { NotiEventType.AcceptFinder, AcceptFinder },
             { NotiEventType.RejectFinder, RejectFinder },

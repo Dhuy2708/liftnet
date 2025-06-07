@@ -1,4 +1,7 @@
-﻿using LiftNet.Contract.Dtos.Transaction;
+﻿using LiftNet.Contract.Constants;
+using LiftNet.Contract.Dtos;
+using LiftNet.Contract.Dtos.Transaction;
+using LiftNet.Contract.Enums;
 using LiftNet.Contract.Enums.Appointment;
 using LiftNet.Contract.Enums.Payment;
 using LiftNet.Contract.Interfaces.IRepos;
@@ -7,6 +10,8 @@ using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Appointments.Commands.Requests;
 using LiftNet.Handler.Appointments.Commands.Validators;
+using LiftNet.ServiceBus.Contracts;
+using LiftNet.ServiceBus.Interfaces;
 using LiftNet.SharedKenel.Extensions;
 using LiftNet.Utility.Extensions;
 using MediatR;
@@ -21,12 +26,14 @@ namespace LiftNet.Handler.Appointments.Commands
     public class AppointmentActionHandler : IRequestHandler<AppointmentActionCommand, LiftNetRes>
     {
         private readonly IUnitOfWork _uow;
+        private readonly IEventBusService _eventBusService;
         private readonly ILiftLogger<AppointmentActionHandler> _logger;
         private Wallet Wallet;
 
-        public AppointmentActionHandler(IUnitOfWork uow, ILiftLogger<AppointmentActionHandler> logger)
+        public AppointmentActionHandler(IUnitOfWork uow, IEventBusService eventBusService, ILiftLogger<AppointmentActionHandler> logger)
         {
             _uow = uow;
+            _eventBusService = eventBusService;
             _logger = logger;
         }
 
@@ -108,6 +115,17 @@ namespace LiftNet.Handler.Appointments.Commands
                 }
                 AsssignAllAcceptedStatus(appointment);
                 await UpdateSeenStatus(appointment, request.UserId);
+
+                // noti
+                var otherParticipantIds = appointment.Participants.Select(x => x.UserId).ToList();
+                otherParticipantIds.Remove(request.UserId);
+                await SendNoti
+                (
+                    request.AppointmentId,
+                    request.UserId,
+                    otherParticipantIds,
+                    request.Action
+                );
                 await _uow.CommitAsync();
                 _logger.Info("appointment action handled successfully");
                 return LiftNetRes.SuccessResponse("Appointment action handled successfully");
@@ -225,6 +243,54 @@ namespace LiftNet.Handler.Appointments.Commands
             };
             await _uow.WalletRepo.Update(Wallet);
             await _uow.LiftNetTransactionRepo.Create(transaction);
+        }
+
+        private async Task SendNoti(string appointmentId, string callerId, List<string> otherParticipantIds, AppointmentActionRequestType type)
+        {
+            if (otherParticipantIds.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            var callerName = await _uow.UserRepo.GetQueryable()
+                                        .Where(x => x.Id == callerId)
+                                        .Select(x => new { x.FirstName, x.LastName })
+                                        .FirstOrDefaultAsync();
+            List<EventMessage> messages = [];
+
+            otherParticipantIds.ForEach(x =>
+            {
+                messages.Add(new EventMessage
+                {
+                    Type = EventType.Noti,
+                    Context = JsonConvert.SerializeObject(new NotiMessageDto()
+                    {
+                        SenderId = callerId,
+                        EventType = GetEventType(type),
+                        Location = NotiRefernceLocationType.Appointment,
+                        SenderType = NotiTarget.User,
+                        RecieverId = x,
+                        RecieverType = NotiTarget.User,
+                        CreatedAt = DateTime.UtcNow,
+                        ObjectNames = [callerName!.FirstName + " " + callerName!.LastName, appointmentId]
+                    })
+                });
+
+            });
+
+            var sendTasks = messages.Select(x => _eventBusService.PublishAsync(x, QueueNames.Noti)).ToList();
+            await Task.WhenAll(sendTasks);
+        }
+
+        private static NotiEventType GetEventType(AppointmentActionRequestType type)
+        {
+            return type switch
+            {
+                AppointmentActionRequestType.Accept => NotiEventType.AcceptAppointment,
+                AppointmentActionRequestType.Cancel => NotiEventType.CancelAppointment,
+                AppointmentActionRequestType.Reject => NotiEventType.RejectAppointment,
+                _ => NotiEventType.None
+            };
         }
     }
 }
