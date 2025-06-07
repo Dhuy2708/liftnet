@@ -73,10 +73,10 @@ namespace LiftNet.Hub.Core
             await Send(connections, message, methodName);
         }
 
-        protected async Task SendToUser(string userId, T message)
+        protected async Task SendToUser(string userId, T message, string? methodName = null)
         {
             var connections = _connPool.GetUserConnectionsByHub(userId, _hubName);
-            await Send(connections, message);
+            await Send(connections, message, methodName);
         }
 
         protected async Task SendToUsers(List<string> userIds, T message)

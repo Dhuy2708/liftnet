@@ -9,6 +9,10 @@ namespace LiftNet.Hub.Contract
 {
     public class NotiMessage : HubMessage
     {
+        public string TrackId
+        {
+            get; set;
+        }
         public string Title
         {
             get; set;

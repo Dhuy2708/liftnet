@@ -9,5 +9,6 @@ namespace LiftNet.Contract.Constants
     public static class QueueNames
     {
         public const string Feed = "feed";
+        public const string Noti = "noti";
     }
 } 

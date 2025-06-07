@@ -9,7 +9,7 @@ namespace LiftNet.Contract.Constants
 {
     public static class NotiBodies
     {
-        public const string BookAppointment = "You have booked a new appointment with {0} on {1}.";
+        public const string BookAppointment = "{0} has booked a new appointment with you.";
         public const string AcceptAppointment = "{0} has accepted your appointment request for {1}.";
         public const string CancelAppointment = "{0} has cancelled the appointment scheduled on {1}.";
 
@@ -55,7 +55,7 @@ namespace LiftNet.Contract.Constants
 
     public static class NotiTitles
     {
-        public const string BookAppointment = "Appointment Booked";
+        public const string BookAppointment = "New Appointment Booked with You";
         public const string AcceptAppointment = "Appointment Accepted";
         public const string CancelAppointment = "Appointment Cancelled";
 

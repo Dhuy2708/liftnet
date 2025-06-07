@@ -24,7 +24,7 @@ namespace LiftNet.Hub.Core
             {
                 return;
             }
-            await SendToUser(message.RecieverId!, message);
+            await SendToUser(message.RecieverId!, message, "ReceiveNoti");
         }
 
         public async Task SendNotiToUsers(List<NotiMessage> messages)
@@ -40,7 +40,7 @@ namespace LiftNet.Hub.Core
                     {
                         var userId = group.Key;
                         var notiMessage = group.First();
-                        return SendToUser(userId, notiMessage);
+                        return SendToUser(userId!, notiMessage, "ReceiveNoti");
                     });
 
              await Task.WhenAll(tasks);
