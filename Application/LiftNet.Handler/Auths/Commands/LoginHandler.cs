@@ -31,17 +31,6 @@ namespace LiftNet.Handler.Auths.Commands
         {
             await new LoginCommandValidator(_userManager).ValidateAndThrowAsync(request);
 
-            if (request is AdminLoginCommand)
-            {
-                var result = await HandleLoginAdmin((AdminLoginCommand)request);
-                if (result == null)
-                {
-                    _logger.Error("failed to login as admin");
-                    return LiftNetRes<TokenInfo>.ErrorResponse("Username or password is not correct!");
-                }
-                return LiftNetRes<TokenInfo>.SuccessResponse(result);
-            }
-
             var user = await _userManager.FindByNameAsync(request.Username);
             if (user == null)
             {
@@ -69,27 +58,6 @@ namespace LiftNet.Handler.Auths.Commands
                 ExpiresAt = token.ValidTo
             };
             return LiftNetRes<TokenInfo>.SuccessResponse(tokenInfo);
-        }
-
-        private async Task<TokenInfo> HandleLoginAdmin(AdminLoginCommand request)
-        {
-            var model = new LoginModel 
-            { 
-                Password = request.Password, 
-                Username = request.Username 
-            };
-            var token = await _authRepo.AdminLoginAsync(model);
-            if (token == null)
-            {
-                _logger.Error("failed to login as admin");
-                throw new NotFoundException("Username or password is not correct!");
-            }
-            var tokenInfo = new TokenInfo()
-            {
-                Token = new JwtSecurityTokenHandler().WriteToken(token),
-                ExpiresAt = token.ValidTo
-            };
-            return tokenInfo;
         }
     }
 }

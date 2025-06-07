@@ -30,7 +30,7 @@ namespace LiftNet.Service.Services
         private const int CACHE_EXPIRATION_DAYS = 1;
         private const int MAX_FOLLOWING_USERS = 5;
         private const int MAX_CONTENT_BASED_FEED_PER_USER = 25;
-        private const int MAX_COLLABORATIVE_FEEDS_COUNT = 25;
+        private const int MAX_COLLABORATIVE_FEEDS_COUNT = 50;
 
 
         private readonly IUnitOfWork _uow;
@@ -157,7 +157,7 @@ namespace LiftNet.Service.Services
                 var userScore = userScores.FirstOrDefault(x => x.UserId2 == followingUserId);
                 foreach (var feed in userFeeds)
                 {
-                    var score = userScore?.Score ?? 0.1f;
+                    var score = userScore?.Score * 0.1f ?? 0.1f;
                     result.Add((feed, score));
                 }
             }

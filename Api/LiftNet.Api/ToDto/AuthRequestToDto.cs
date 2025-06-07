@@ -22,8 +22,8 @@ namespace LiftNet.Api.ToDto
                     WardCode = request.Address!.WardCode,
                     Location = request.Address!.Location,
                 } : null,
-                Age = request.Age,
-                Gender = request.Gender,
+                Age = request.Age ?? 0,
+                Gender = request.Gender ?? 0,
             };
         }
 
