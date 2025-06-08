@@ -10,6 +10,7 @@ using LiftNet.Contract.Interfaces.IServices.Indexes;
 using LiftNet.CosmosDb.Contracts;
 using LiftNet.CosmosDb.Services;
 using LiftNet.Domain.Constants;
+using LiftNet.ExerciseSDK.Core;
 using LiftNet.MapSDK.Contracts;
 using LiftNet.Redis.Interface;
 using LiftNet.Redis.Service;
@@ -60,8 +61,14 @@ namespace LiftNet.Api.Extensions
             {
                 Key = Environment.GetEnvironmentVariable(EnvKeys.GOONG_MAP_API_KEY)!
             });
-
             services.AddDependencies(typeof(MapSDK.MapSdkAssemblyRef).Assembly);
+
+            // exercise
+            services.AddScoped(sp =>
+            {
+                var apiKey = Environment.GetEnvironmentVariable(EnvKeys.EXERCISE_API_KEY);
+                return new ExerciseApiClient(apiKey!);
+            });
 
             // cloudinary
             var cloudinaryKeyName = Environment.GetEnvironmentVariable(EnvKeys.CLOUDINARY_CLOUD_NAME);
@@ -235,8 +242,23 @@ namespace LiftNet.Api.Extensions
                     )
                 );
             });
+
+            services.AddQuartz(q =>
+            {
+                q.AddJob<ExerciseDiscService>(opts => opts.WithIdentity("ExerciseDiscJob", "DiscJobs"));
+
+                q.AddTrigger(opts => opts
+                    .ForJob("ExerciseDiscJob", "DiscJobs")
+                    .WithIdentity("ExerciseDiscTrigger", "DiscTriggers")
+                    .StartNow()
+                    .WithSimpleSchedule(schedule => schedule
+                        .WithIntervalInHours(JobIntervalHour.EXERCISE_DISC)
+                        .RepeatForever()
+                    )
+                );
+            });
 #endif
-           
+
 
             services.AddQuartz(q =>
             {
@@ -258,6 +280,7 @@ namespace LiftNet.Api.Extensions
 #if !DEBUG
             services.AddTransient<ProvinceDiscService>();
             services.AddTransient<SocialScoreService>();
+            services.AddTransient<ExerciseDiscService>();
 #endif
             services.AddTransient<UpdateConfirmationRequestsService>();
 
