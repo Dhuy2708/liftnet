@@ -50,6 +50,7 @@ namespace LiftNet.Contract.Constants
         public const string COSMOS_CONNECTION_STRING = "COSMOS_CONNECTION_STRING";
         public const string COSMOS_DATABASE_ID = "COSMOS_DATABASE_ID";
         public const string GOONG_MAP_API_KEY = "GOONG_MAP_API_KEY";
+        public const string EXERCISE_API_KEY = "EXERCISE_API_KEY";
         public const string CLOUDINARY_CLOUD_NAME = "CLOUDINARY_CLOUD_NAME";
         public const string CLOUDINARY_API_KEY = "CLOUDINARY_API_KEY";
         public const string CLOUDINARY_API_SECRET = "CLOUDINARY_API_SECRET";

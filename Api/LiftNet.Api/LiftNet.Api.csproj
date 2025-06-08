@@ -55,6 +55,7 @@
     <ProjectReference Include="..\..\Infrastructure\Job\LiftNet.JobService\LiftNet.JobService.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Job\LiftNet.Job\LiftNet.Job.csproj" />
     <ProjectReference Include="..\..\Infrastructure\LiftNet.Cloudinary\LiftNet.Cloudinary.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\LiftNet.ExerciseSDK\LiftNet.ExerciseSDK.csproj" />
     <ProjectReference Include="..\..\Infrastructure\LiftNet.MailService\LiftNet.MailService.csproj" />
     <ProjectReference Include="..\..\Infrastructure\LiftNet.MapSDK\LiftNet.MapSDK.csproj" />
     <ProjectReference Include="..\..\Infrastructure\LiftNet.Redis\LiftNet.Redis.csproj" />

@@ -302,6 +302,28 @@ namespace LiftNet.Repositories.Core
                 return _notificationTemplateRepo;
             }
         }
+
+        private ITrainingPlanRepo? _trainingPlanRepo = null;
+        public ITrainingPlanRepo TrainingPlanRepo
+        {
+            get
+            {
+                _trainingPlanRepo ??= _serviceProvider.GetRequiredService<ITrainingPlanRepo>();
+                _trainingPlanRepo.AutoSave = false;
+                return _trainingPlanRepo;
+            }
+        }
+
+        private IExerciseRepo? _exerciseRepo = null;
+        public IExerciseRepo ExerciseRepo
+        {
+            get
+            {
+                _exerciseRepo ??= _serviceProvider.GetRequiredService<IExerciseRepo>();
+                _exerciseRepo.AutoSave = false;
+                return _exerciseRepo;
+            }
+        }
         #endregion
 
         public async Task BeginTransactionAsync()

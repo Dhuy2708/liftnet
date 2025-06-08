@@ -6,6 +6,7 @@ using LiftNet.Domain.Response;
 using LiftNet.Redis.Interface;
 using LiftNet.Contract.Interfaces.IServices.Indexes;
 using LiftNet.Api.Requests.Feeds;
+using LiftNet.ExerciseSDK.Core;
 
 namespace LiftNet.Api.Controllers
 {
@@ -15,6 +16,8 @@ namespace LiftNet.Api.Controllers
     {
         private IFeedIndexService feedService => _serviceProvider.GetRequiredService<IFeedIndexService>();
         private IRedisCacheService redisCacheService => _serviceProvider.GetRequiredService<IRedisCacheService>();
+        private ExerciseApiClient exerciseClient => _serviceProvider.GetRequiredService<ExerciseApiClient>();
+
         public TestController(IMediator mediator, IServiceProvider serviceProvider) : base(mediator, serviceProvider)
         {
         }
@@ -73,6 +76,14 @@ namespace LiftNet.Api.Controllers
             }
             return Ok(LiftNetRes.SuccessResponse("Expiration set successfully"));
         }
+
+        [HttpGet("exercises")]
+        public async Task<IActionResult> GetExercises([FromQuery]string muscle = null, [FromQuery] string type = null, [FromQuery]string difficulty = null)
+        {
+            var result = await exerciseClient.GetAllExercisesAsync();
+            return Ok(result);
+        }
+
 
         [HttpPost("feed/post")]
         public async Task<IActionResult> PostFeedAsync(TestPostFeedRequest req)

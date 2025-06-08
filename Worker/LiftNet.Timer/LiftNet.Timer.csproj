@@ -20,6 +20,7 @@
     <ProjectReference Include="..\..\Application\LiftNet.Engine\LiftNet.Engine.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Data\LiftNet.CosmosDb\LiftNet.CosmosDb.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Job\LiftNet.Job\LiftNet.Job.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\LiftNet.ExerciseSDK\LiftNet.ExerciseSDK.csproj" />
     <ProjectReference Include="..\..\Infrastructure\LiftNet.ProvinceSDK\LiftNet.ProvinceSDK.csproj" />
   </ItemGroup>
 

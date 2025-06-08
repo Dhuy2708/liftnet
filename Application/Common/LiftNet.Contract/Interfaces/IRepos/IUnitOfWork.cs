@@ -34,6 +34,8 @@ namespace LiftNet.Contract.Interfaces.IRepos
         IChatBotMessageRepo ChatBotMessageRepo { get; }
         IPhysicalStatRepo PhysicalStatRepo { get; }
         INotificationRepo NotificationRepo { get; }
+        ITrainingPlanRepo TrainingPlanRepo { get; }
+        IExerciseRepo ExerciseRepo { get; }
         Task BeginTransactionAsync();
         Task<int> CommitAsync();
         Task RollbackAsync();
