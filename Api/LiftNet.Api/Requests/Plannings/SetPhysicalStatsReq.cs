@@ -1,3 +1,4 @@
+using LiftNet.Contract.Enums;
 using System.ComponentModel.DataAnnotations;
 
 namespace LiftNet.Api.Requests.Plannings
@@ -9,7 +10,7 @@ namespace LiftNet.Api.Requests.Plannings
         public int? Height { get; set; }
         public float? Mass { get; set; }
         public float? Bdf { get; set; }
-        public int? ActivityLevel { get; set; }
-        public int? Goal { get; set; }
+        public ActivityLevel? ActivityLevel { get; set; }
+        public TrainingGoal? Goal { get; set; }
     }
 } 
