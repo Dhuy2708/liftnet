@@ -18,12 +18,24 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        [ForeignKey(nameof(User))]
+        public string UserId
+        {
+            get; set;
+        }
+
         public int DayOfWeek
         {
             get; set;
         }
 
         public List<Exercise> Exercises
+        {
+            get; set;
+        }
+
+        // mapping
+        public User User
         {
             get; set;
         }

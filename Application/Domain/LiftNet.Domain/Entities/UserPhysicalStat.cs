@@ -52,7 +52,7 @@ namespace LiftNet.Domain.Entities
         public int? ActivityLevel
         {
             get; set;
-        }
+        }   
 
         public int? Goal
         {

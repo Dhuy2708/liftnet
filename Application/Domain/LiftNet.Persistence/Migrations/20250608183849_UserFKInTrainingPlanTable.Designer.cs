@@ -4,6 +4,7 @@ using LiftNet.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LiftNet.Persistence.Migrations
 {
     [DbContext(typeof(LiftNetDbContext))]
-    partial class LiftNetDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250608183849_UserFKInTrainingPlanTable")]
+    partial class UserFKInTrainingPlanTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace LiftNet.Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ExerciseTrainingPlan", b =>
-                {
-                    b.Property<string>("ExercisesSelfId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("TrainingPlansId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ExercisesSelfId", "TrainingPlansId");
-
-                    b.HasIndex("TrainingPlansId");
-
-                    b.ToTable("ExerciseTrainingPlan");
-                });
 
             modelBuilder.Entity("LiftNet.Domain.Entities.ActionJob", b =>
                 {
@@ -522,7 +510,12 @@ namespace LiftNet.Persistence.Migrations
                     b.Property<string>("Target")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TrainingPlanId")
+                        .HasColumnType("int");
+
                     b.HasKey("SelfId");
+
+                    b.HasIndex("TrainingPlanId");
 
                     b.ToTable("Exercises");
                 });
@@ -1301,21 +1294,6 @@ namespace LiftNet.Persistence.Migrations
                     b.ToTable("UserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("ExerciseTrainingPlan", b =>
-                {
-                    b.HasOne("LiftNet.Domain.Entities.Exercise", null)
-                        .WithMany()
-                        .HasForeignKey("ExercisesSelfId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LiftNet.Domain.Entities.TrainingPlan", null)
-                        .WithMany()
-                        .HasForeignKey("TrainingPlansId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("LiftNet.Domain.Entities.ActionJob", b =>
                 {
                     b.HasOne("LiftNet.Domain.Entities.User", "User")
@@ -1491,6 +1469,13 @@ namespace LiftNet.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Province");
+                });
+
+            modelBuilder.Entity("LiftNet.Domain.Entities.Exercise", b =>
+                {
+                    b.HasOne("LiftNet.Domain.Entities.TrainingPlan", null)
+                        .WithMany("Exercises")
+                        .HasForeignKey("TrainingPlanId");
                 });
 
             modelBuilder.Entity("LiftNet.Domain.Entities.FinderPost", b =>
@@ -1788,6 +1773,11 @@ namespace LiftNet.Persistence.Migrations
             modelBuilder.Entity("LiftNet.Domain.Entities.Role", b =>
                 {
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("LiftNet.Domain.Entities.TrainingPlan", b =>
+                {
+                    b.Navigation("Exercises");
                 });
 
             modelBuilder.Entity("LiftNet.Domain.Entities.User", b =>

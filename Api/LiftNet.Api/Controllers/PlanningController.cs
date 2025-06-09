@@ -38,8 +38,8 @@ namespace LiftNet.Api.Controllers
                 Height = req.Height,
                 Mass = req.Mass,
                 Bdf = req.Bdf,
-                ActivityLevel = req.ActivityLevel,
-                Goal = req.Goal
+                ActivityLevel = (int?)req.ActivityLevel,
+                Goal = (int?)req.Goal
             };
 
             var result = await _mediator.Send(command);
