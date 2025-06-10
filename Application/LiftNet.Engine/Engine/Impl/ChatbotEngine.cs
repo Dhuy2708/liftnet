@@ -15,7 +15,10 @@ namespace LiftNet.Engine.Engine.Impl
         public ChatbotEngine(string engineUrl)
         {
             _engineUrl = engineUrl.TrimEnd('/');
-            _httpClient = new HttpClient();
+            _httpClient = new HttpClient()
+            {
+                Timeout = TimeSpan.FromHours(1)
+            };
         }
 
         public async Task<string> ChatAsync(string userId, string conversationId, string message)
