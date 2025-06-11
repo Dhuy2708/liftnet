@@ -68,6 +68,7 @@ namespace LiftNet.Persistence.Context
         public DbSet<UserPhysicalStat> UserPhysicalStats { get; set; }
         public DbSet<TrainingPlan> TrainingPlans { get; set; }
         public DbSet<Exercise> Exercises { get; set; }
+        public DbSet<ExerciseTrainingPlan> ExerciseTrainingPlan { get; set; }
 
         // notification
         public DbSet<Notification> Notifications { get; set; }

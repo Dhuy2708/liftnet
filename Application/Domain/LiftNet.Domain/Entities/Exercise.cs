@@ -45,10 +45,5 @@ namespace LiftNet.Domain.Entities
         {
             get; set;
         }
-
-        public List<TrainingPlan> TrainingPlans
-        {
-            get; set;
-        }
     }
 }
