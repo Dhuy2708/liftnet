@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Domain.Entities
 {
-    [Table("TrainingPlans")]
-    public sealed class TrainingPlan
+    [Table("ExerciseTrainingPlan")]
+    public sealed class ExerciseTrainingPlan
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -18,24 +18,30 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
-        [ForeignKey(nameof(User))]
-        public string UserId
+        [ForeignKey(nameof(Exercise))]
+        public string ExercisesSelfId
         {
             get; set;
         }
 
-        public int DayOfWeek
+        [ForeignKey(nameof(TrainingPlan))]
+        public int TrainingPlansId
         {
             get; set;
         }
 
-        public List<ExerciseTrainingPlan> Exercises
+        public float Order
         {
             get; set;
         }
 
         // mapping
-        public User User
+        public Exercise Exercise
+        {
+            get; set;
+        }
+
+        public TrainingPlan TrainingPlan
         {
             get; set;
         }
