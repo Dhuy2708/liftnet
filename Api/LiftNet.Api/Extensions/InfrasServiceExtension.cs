@@ -243,6 +243,21 @@ namespace LiftNet.Api.Extensions
                 );
             });
 
+             services.AddQuartz(q =>
+            {
+                q.AddJob<UpdateConfirmationRequestsService>(opts => opts.WithIdentity("UpdateConfirmationRequestsJob", "UpJobs"));
+
+                q.AddTrigger(opts => opts
+                    .ForJob("UpdateConfirmationRequestsJob", "UpJobs")
+                    .WithIdentity("UpdateConfirmationRequestsTrigger", "UpTriggers")
+                    .StartNow()
+                    .WithSimpleSchedule(schedule => schedule
+                        .WithIntervalInMinutes(5)
+                        .RepeatForever()
+                    )
+                );
+            });
+#endif
             services.AddQuartz(q =>
             {
                 q.AddJob<ExerciseDiscService>(opts => opts.WithIdentity("ExerciseDiscJob", "DiscJobs"));
@@ -257,33 +272,14 @@ namespace LiftNet.Api.Extensions
                     )
                 );
             });
-#endif
-
-
-            services.AddQuartz(q =>
-            {
-                q.AddJob<UpdateConfirmationRequestsService>(opts => opts.WithIdentity("UpdateConfirmationRequestsJob", "UpJobs"));
-
-                q.AddTrigger(opts => opts
-                    .ForJob("UpdateConfirmationRequestsJob", "UpJobs")
-                    .WithIdentity("UpdateConfirmationRequestsTrigger", "UpTriggers")
-                    .StartNow()
-                    .WithSimpleSchedule(schedule => schedule
-                        .WithIntervalInMinutes(5)
-                        .RepeatForever()
-                    )
-                );
-            });
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
-
+            services.AddTransient<ExerciseDiscService>();
 #if !DEBUG
             services.AddTransient<ProvinceDiscService>();
             services.AddTransient<SocialScoreService>();
-            services.AddTransient<ExerciseDiscService>();
-#endif
             services.AddTransient<UpdateConfirmationRequestsService>();
-
+#endif
 
             return services;
         }
