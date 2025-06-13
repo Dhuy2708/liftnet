@@ -8,15 +8,15 @@ namespace LiftNet.ExerciseSDK.Res
 {
     public class ExerciseRes
     {
-        public string BodyPart
+        public string? BodyPart
         {
             get; set;
         }
-        public string Equipment
+        public string? Equipment
         {
             get; set;
         }
-        public string GifUrl
+        public string? GifUrl
         {
             get; set;
         }
@@ -24,19 +24,31 @@ namespace LiftNet.ExerciseSDK.Res
         {
             get; set;
         }
-        public string Name
+        public string? Name
         {
             get; set;
         }
-        public string Target
+        public string? Target
         {
             get; set;
         }
-        public List<string> SecondaryMuscles
+        public List<string>? SecondaryMuscles
         {
             get; set;
         }
-        public List<string> Instructions
+        public List<string>? Instructions
+        {
+            get; set;
+        }
+        public string? Difficulty
+        {
+            get; set;
+        }
+        public string? Description
+        {
+            get; set;
+        }
+        public string? Category
         {
             get; set;
         }
