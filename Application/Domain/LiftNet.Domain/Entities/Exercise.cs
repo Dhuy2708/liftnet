@@ -37,11 +37,23 @@ namespace LiftNet.Domain.Entities
         {
             get; set;
         }
-        public string? SecondaryMuscles // serialize
+        public string? SecondaryMuscles // serialize list string
         {
             get; set;
         }
-        public string? Instructions // serialize
+        public string? Instructions // serialize list string
+        {
+            get; set;
+        }
+        public string? Difficulty
+        {
+            get; set;
+        }
+        public string? Description
+        {
+            get; set;
+        }
+        public string? Category
         {
             get; set;
         }

@@ -35,7 +35,7 @@ namespace LiftNet.ExerciseSDK.Core
                 var error = await response.Content.ReadAsStringAsync();
                 throw new Exception($"API error: {response.StatusCode} - {error}");
             }
-
+            var content = await response.Content.ReadAsStringAsync();
             return await response.Content.ReadFromJsonAsync<List<ExerciseRes>>() ?? new List<ExerciseRes>();
         }
     }
