@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,9 +25,14 @@ namespace LiftNet.Timer.Service
         private ILiftLogger<ExerciseDiscService> _logger => _provider.GetRequiredService<ILiftLogger<ExerciseDiscService>>();
         private ExerciseApiClient exerciseSDK => _provider.GetRequiredService<ExerciseApiClient>();
         private IUnitOfWork uow => _provider.GetRequiredService<IUnitOfWork>();
+        private HttpClient httpClient;
 
         public ExerciseDiscService(IServiceProvider provider) : base(JobType.ExerciseDisc, provider, TimeSpan.FromHours(JobIntervalHour.EXERCISE_DISC - 1))
         {
+            httpClient = new HttpClient
+            {
+                Timeout = TimeSpan.FromMinutes(60)
+            };
         }
 
         protected override async Task<JobStatus> KickOffJobServiceAsync()
@@ -41,17 +47,46 @@ namespace LiftNet.Timer.Service
                 {
                     return JobStatus.Finished;
                 }
+
                 var existingExercises = await uow.ExerciseRepo.GetQueryable().ToListAsync();
-                if (existingExercises.IsNotNullOrEmpty())
+                var existingDict = existingExercises.ToDictionary(e => e.SelfId);
+
+                var entitiesToUpdate = new List<Exercise>();
+                var entitiesToCreate = new List<Exercise>();
+
+                foreach (var dto in allExercises)
                 {
-                    await uow.ExerciseRepo.HardDeleteRange(existingExercises);
+                    var entity = ToEntity(dto);
+                    if (existingDict.TryGetValue(entity.SelfId, out var existingEntity))
+                    {
+                        existingEntity.Name = entity.Name;
+                        existingEntity.Description = entity.Description;
+                        existingEntity.Instructions = entity.Instructions;
+                        entitiesToUpdate.Add(existingEntity);
+                    }
+                    else
+                    {
+                        entitiesToCreate.Add(entity);
+                    }
                 }
 
-                await uow.ExerciseRepo.CreateRange(allExercises.Select(ToEntity));
+                if (entitiesToUpdate.Any())
+                {
+                    await uow.ExerciseRepo.UpdateRange(entitiesToUpdate);
+                }
+
+                if (entitiesToCreate.Any())
+                {
+                    await uow.ExerciseRepo.CreateRange(entitiesToCreate);
+                }
 
                 var result = await uow.CommitAsync();
                 if (result > 0)
                 {
+                    if (entitiesToCreate.Any())
+                    {
+                        await InserChromaDB(entitiesToCreate);
+                    }
                     return JobStatus.Finished;
                 }
                 return JobStatus.Failed;
@@ -61,6 +96,20 @@ namespace LiftNet.Timer.Service
                 _logger.Error(ex, "error while discover provinces");
                 await uow.RollbackAsync();
                 return JobStatus.Failed;
+            }
+        }
+
+        private async Task InserChromaDB(List<Exercise> exercises)
+        {
+            var response = await httpClient.PostAsJsonAsync("http://127.0.0.1:5000/api/exercises/insert", exercises);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                var error = await response.Content.ReadAsStringAsync();
             }
         }
 
