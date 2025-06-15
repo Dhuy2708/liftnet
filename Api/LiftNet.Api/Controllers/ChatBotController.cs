@@ -133,10 +133,10 @@ namespace LiftNet.Api.Controllers
                 await SendSseMessage(str);
             });
 
-            var chatTask = _chatbotService.ChatAsync(UserId, conversationId, req.Message);
 
             try
             {
+                var chatTask = _chatbotService.ChatAsync(UserId, conversationId, req.Message);
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     if (chatTask.IsCompleted)
@@ -147,6 +147,11 @@ namespace LiftNet.Api.Controllers
             }
             catch (OperationCanceledException)
             {
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = StatusCodes.Status500InternalServerError;
+                await Response.WriteAsync($"An error occurred: {ex.Message}");
             }
             finally
             {

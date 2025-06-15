@@ -48,5 +48,17 @@ namespace LiftNet.Contract.Views.Plannings
         {
             get; set;
         }
+        public string? Category
+        {
+            get; set;
+        }
+        public string? Difficulty
+        {
+            get; set;
+        }
+        public string? Description
+        {
+            get; set;
+        }
     }
 }

@@ -56,7 +56,10 @@ namespace LiftNet.Handler.Plannings.Queries
                             JsonSerializer.Deserialize<List<string>>(e.Exercise.SecondaryMuscles ?? "[]")! : [],
                         Instructions = !string.IsNullOrEmpty(e.Exercise.Instructions) ?
                             JsonSerializer.Deserialize<List<string>>(e.Exercise.Instructions ?? "[]")! : [],
-                        Order = index + 1 
+                        Order = index + 1,
+                        Category = e.Exercise.Category,
+                        Difficulty = e.Exercise.Difficulty,
+                        Description = e.Exercise.Description
                     })
                     .ToList() ?? []
             }).ToList();

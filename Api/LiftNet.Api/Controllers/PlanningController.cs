@@ -11,6 +11,7 @@ using LiftNet.Handler.Plannings.Queries.Requests;
 using LiftNet.Api.Requests.Plannings;
 using LiftNet.Utility.Extensions;
 using LiftNet.Contract.Views.Plannings;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace LiftNet.Api.Controllers
 {
@@ -89,6 +90,34 @@ namespace LiftNet.Api.Controllers
             };
 
             var result = await _mediator.Send(query);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpPost("setPlan")]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> SetPlan(SetPlanReq req)
+        {
+            if (req.UserId.IsNullOrEmpty())
+            {
+                return Unauthorized();
+            }
+
+            var command = new SetPlanCommand();
+            try
+            {
+                command.UserId = req.UserId;
+                command.DayWithExerciseIds = req.Plan.ToDictionary(k => k.DayOfWeek, v => v.ExerciseIds);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+
+            var result = await _mediator.Send(command);
             if (result.Success)
             {
                 return Ok(result);
