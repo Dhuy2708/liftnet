@@ -124,5 +124,30 @@ namespace LiftNet.Api.Controllers
             }
             return StatusCode(500, result);
         }
+
+        [HttpPost("updateSpecificDays")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> UpdateSpecificDays([FromBody] UpdateSpecificDaysPlanReq req)
+        {
+            if (req.UserId.IsNullOrEmpty())
+            {
+                return Unauthorized();
+            }
+
+            var command = new UpdateSpecificDaysPlanCommand
+            {
+                UserId = req.UserId,
+                DaysOfWeek = req.DaysOfWeek,
+                DayWithExerciseIds = req.Plan.ToDictionary(k => k.DayOfWeek, v => v.ExerciseIds)
+            };
+
+            var result = await _mediator.Send(command);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
     }
 }
