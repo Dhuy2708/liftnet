@@ -22,4 +22,12 @@ namespace LiftNet.Contract.Enums
         MaintainWeight = 2,
         GainMuscle = 3,
     }
+
+    public enum UserIntent
+    {
+        None = 0,
+        GeneralKnowledge = 1,
+        PersonalAdvice = 2,
+        UpdatePlan = 3,
+    }
 }
