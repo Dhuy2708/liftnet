@@ -1,4 +1,6 @@
 ﻿using LiftNet.Api.Requests.ChatBots;
+using LiftNet.Api.Responses;
+using LiftNet.Contract.Enums;
 using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Views.Chatbots;
 using LiftNet.Domain.Constants;
@@ -70,30 +72,17 @@ namespace LiftNet.Api.Controllers
 
         [HttpPost("chat")]
         [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
-        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ChatBotStateResponse), (int)HttpStatusCode.OK)]
         public async Task SendMessage([FromBody] SendChatBotMessageReq req)
         {
-            if (string.IsNullOrEmpty(UserId))
-            {
-                Response.StatusCode = StatusCodes.Status401Unauthorized;
-                return;
-            }
-
             var conversationId = req.ConversationId;
-            if (string.IsNullOrEmpty(conversationId))
-            {
-                Response.StatusCode = StatusCodes.Status400BadRequest;
-                await Response.WriteAsync("Conversation is null or empty.");
-                return;
-            }
-
             var exist = await _chatbotService.CheckConversationAsync(UserId, conversationId);
             if (!exist)
             {
                 Response.StatusCode = StatusCodes.Status400BadRequest;
                 await Response.WriteAsync("Conversation does not exist.");
-                return;
             }
+            UserIntent intent = UserIntent.None;
 
             var sessionId = conversationId;
             var channel = $"chatbot.session:{sessionId}";
@@ -130,7 +119,21 @@ namespace LiftNet.Api.Controllers
                 }
 
                 var str = redisValue.ToString();
-                await SendSseMessage(str);
+                if (str.StartsWith("[INTENT]"))
+                {
+                    var intentStr = str.Substring("[INTENT]".Length).Trim();
+                    intent = intentStr switch
+                    {
+                        "general_knowledge" => UserIntent.GeneralKnowledge,
+                        "personal_advice" => UserIntent.PersonalAdvice,
+                        "training_plan_update" => UserIntent.UpdatePlan,
+                        _ => UserIntent.None,
+                    };
+                }
+                else
+                {
+                    await SendSseMessage(str);
+                }
             });
 
 
@@ -150,8 +153,7 @@ namespace LiftNet.Api.Controllers
             }
             catch (Exception ex)
             {
-                Response.StatusCode = StatusCodes.Status500InternalServerError;
-                await Response.WriteAsync($"An error occurred: {ex.Message}");
+                await Response.WriteAsync($"data: [ERROR]");
             }
             finally
             {
