@@ -157,7 +157,7 @@ namespace LiftNet.Service.Services
                 var userScore = userScores.FirstOrDefault(x => x.UserId2 == followingUserId);
                 foreach (var feed in userFeeds)
                 {
-                    var score = userScore?.Score * 0.1f ?? 0.1f;
+                    var score = userScore?.Score ?? 0.1f;
                     result.Add((feed, score));
                 }
             }
@@ -184,6 +184,7 @@ namespace LiftNet.Service.Services
                 condition.PageSize = MAX_COLLABORATIVE_FEEDS_COUNT - feeds.Count;
                 condition.UpdateCondition(new ConditionItem("rand", [threshold.ToString()], FilterType.Float, QueryOperator.LessThan, logic: QueryLogic.And));
                 var (extraResult, _) = await _feedIndexService.QueryAsync(condition);
+                feeds.AddRange(extraResult);
             }
 
             foreach (var feed in feeds)
@@ -194,6 +195,7 @@ namespace LiftNet.Service.Services
                     Feed = new FeedFieldAware { FeedId = feed.Id }
                 };
                 var score = _engine.Predict(feature);
+                score = 1 / (1 + MathF.Exp(-score)); 
                 result.Add((feed, score));
             }
             return result;
