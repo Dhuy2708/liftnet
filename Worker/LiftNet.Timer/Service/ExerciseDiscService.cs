@@ -62,6 +62,13 @@ namespace LiftNet.Timer.Service
                         existingEntity.Name = entity.Name;
                         existingEntity.Description = entity.Description;
                         existingEntity.Instructions = entity.Instructions;
+                        existingEntity.BodyPart = entity.BodyPart;
+                        existingEntity.Equipment = entity.Equipment;
+                        existingEntity.GifUrl = entity.GifUrl;
+                        existingEntity.Target = entity.Target;
+                        existingEntity.SecondaryMuscles = entity.SecondaryMuscles;
+                        existingEntity.Category = entity.Category;
+                        existingEntity.Difficulty = entity.Difficulty;
                         entitiesToUpdate.Add(existingEntity);
                     }
                     else
