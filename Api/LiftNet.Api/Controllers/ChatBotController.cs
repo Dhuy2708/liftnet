@@ -70,7 +70,7 @@ namespace LiftNet.Api.Controllers
 
         [HttpPost("chat")]
         [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
-        [ProducesResponseType(typeof(LiftNetRes<string>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
         public async Task SendMessage([FromBody] SendChatBotMessageReq req)
         {
             if (string.IsNullOrEmpty(UserId))
