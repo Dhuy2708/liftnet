@@ -228,7 +228,7 @@ namespace LiftNet.Api.Extensions
                 );
             });
 
-            services.AddQuartz(q =>
+             services.AddQuartz(q =>
             {
                 q.AddJob<TrainFFMModelService>(opts => opts.WithIdentity("TrainFFMModelJob", "MLJobs"));
 
@@ -278,6 +278,7 @@ namespace LiftNet.Api.Extensions
 
 #if !DEBUG
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+            services.AddTransient<TrainFFMModelService>();
             services.AddTransient<ProvinceDiscService>();
             services.AddTransient<SocialScoreService>();
             services.AddTransient<UpdateConfirmationRequestsService>();
