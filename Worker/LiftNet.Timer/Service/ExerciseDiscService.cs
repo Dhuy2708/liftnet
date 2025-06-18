@@ -92,7 +92,7 @@ namespace LiftNet.Timer.Service
                 {
                     if (entitiesToCreate.Any())
                     {
-                        await InserChromaDB(entitiesToCreate);
+                        await InserChromaDB(entitiesToUpdate);
                     }
                     return JobStatus.Finished;
                 }

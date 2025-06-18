@@ -2,7 +2,7 @@
 {
     public class CreateChatBotConversationReq
     {
-        public string Title
+        public string FirstPrompt
         {
             get; set;
         }

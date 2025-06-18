@@ -1,5 +1,6 @@
 ﻿using LiftNet.Api.Requests.ChatBots;
 using LiftNet.Api.Responses;
+using LiftNet.Contract.Dtos.Chatbot;
 using LiftNet.Contract.Enums;
 using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Views.Chatbots;
@@ -29,7 +30,7 @@ namespace LiftNet.Api.Controllers
 
         [HttpPost("conversation/create")]
         [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
-        [ProducesResponseType(typeof(LiftNetRes<string>), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(LiftNetRes<CreateChatbotConversationResponse>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> CreateConversation([FromBody] CreateChatBotConversationReq req)
         {
             if (string.IsNullOrEmpty(UserId))
@@ -39,7 +40,7 @@ namespace LiftNet.Api.Controllers
             var command = new CreateChatBotConversationCommand
             {
                 UserId = UserId,
-                Title = req.Title
+                FirstPrompt = req.FirstPrompt
             };
             var result = await _mediator.Send(command);
             if (result.Success)

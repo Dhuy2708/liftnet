@@ -9,7 +9,7 @@ public class PostFinderCommandValidator : AbstractValidator<CreateFinderPostComm
             .NotEmpty().WithMessage("UserId is required.");
 
         RuleFor(x => x.Title)
-            .NotEmpty().WithMessage("Title is required.");
+            .NotEmpty().WithMessage("FirstPrompt is required.");
 
         RuleFor(x => x.StartTime)
             .LessThanOrEqualTo(x => x.EndTime)

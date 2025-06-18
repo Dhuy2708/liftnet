@@ -30,6 +30,26 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        //public int? SetCount
+        //{
+        //    get; set;
+        //}
+
+        //public int? RepCount
+        //{
+        //    get; set;
+        //}
+
+        //public int? RestMinute
+        //{
+        //    get; set;
+        //}
+
+        //public int? Duration // in second
+        //{
+        //    get; set;
+        //}
+
         public float Order
         {
             get; set;
