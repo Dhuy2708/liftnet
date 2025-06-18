@@ -258,7 +258,7 @@ namespace LiftNet.Api.Extensions
                 );
             });
 
-             services.AddQuartz(q =>
+                services.AddQuartz(q =>
             {
                 q.AddJob<ExerciseDiscService>(opts => opts.WithIdentity("ExerciseDiscJob", "DiscJobs"));
 
