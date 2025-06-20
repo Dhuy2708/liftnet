@@ -22,6 +22,7 @@ using System.Threading;
 using LiftNet.Utility.Mappers;
 using LiftNet.Domain.Entities;
 using LiftNet.Redis.Interface;
+using System.Collections.Concurrent;
 
 namespace LiftNet.Service.Services
 {
@@ -43,6 +44,7 @@ namespace LiftNet.Service.Services
         private readonly IRoleService _roleService;
         private readonly ILiftLogger<RecommendationService> _logger;
 
+        private Object _lock = new Object();
 
         public RecommendationService(IUnitOfWork uow,
                                      IUserService userService,
@@ -73,8 +75,12 @@ namespace LiftNet.Service.Services
                 var seenFeedsKey = string.Format(RedisCacheKeys.SEEN_FEEDS_CACHE_KEY, userId);
                 var seenFeeds = await _redisCache.GetObjectAsync<HashSet<string>>(seenFeedsKey) ?? new HashSet<string>();
 
-                var contentBasedFeeds = await GetContentBasedFeedsAsync(userId, seenFeeds);
-                var collaborativeFeeds = await GetCollaborativeFeedsAsync(userId, seenFeeds);
+                var contentBasedTask = GetContentBasedFeedsAsync(userId, seenFeeds);
+                var collaborativeTask = GetCollaborativeFeedsAsync(userId, seenFeeds);
+
+                await Task.WhenAll(contentBasedTask, collaborativeTask);
+                var contentBasedFeeds = contentBasedTask.Result;
+                var collaborativeFeeds = collaborativeTask.Result;
 
                 var allFeeds = new Dictionary<string, (FeedIndexData Feed, float Score)>();
                 foreach (var feed in contentBasedFeeds)
@@ -142,6 +148,7 @@ namespace LiftNet.Service.Services
             }
             condition.AddCondition(new ConditionItem("schema", [$"{(int)DataSchema.Feed}"], FilterType.Integer, logic: QueryLogic.And));
             var (feeds, _) = await _feedIndexService.QueryAsync(condition);
+
             var userScores = await _similarityScoreRepo.GetQueryable()
                                     .AsNoTracking()
                                     .Where(x => x.UserId1 == userId &&
@@ -166,7 +173,6 @@ namespace LiftNet.Service.Services
 
         private async Task<List<(FeedIndexData Feed, float Score)>> GetCollaborativeFeedsAsync(string userId, HashSet<string> seenFeeds)
         {
-            var result = new List<(FeedIndexData Feed, float Score)>();
             var threshold = (float)new Random().NextDouble();
             var condition = new QueryCondition();
             condition.PageSize = MAX_COLLABORATIVE_FEEDS_COUNT;
@@ -187,18 +193,27 @@ namespace LiftNet.Service.Services
                 feeds.AddRange(extraResult);
             }
 
-            foreach (var feed in feeds)
+            var result = new ConcurrentBag<(FeedIndexData Feed, float Score)>();
+            var tasks = feeds.Select(feed => Task.Run(() =>
             {
-                var feature = new UserFeedFeature
+                try
                 {
-                    User = new UserFieldAware { UserId = userId },
-                    Feed = new FeedFieldAware { FeedId = feed.Id }
-                };
-                var score = _engine.Predict(feature);
-                score = 1 / (1 + MathF.Exp(-score)); 
-                result.Add((feed, score));
-            }
-            return result;
+                    var feature = new UserFeedFeature
+                    {
+                        User = new UserFieldAware { UserId = userId },
+                        Feed = new FeedFieldAware { FeedId = feed.Id }
+                    };
+                    var score = _engine.Predict(feature);
+                    score = 1 / (1 + MathF.Exp(-score));
+                    result.Add((feed, score));
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, $"Error predicting feed {feed.Id} for user {userId}");
+                }
+            })).ToList();
+            await Task.WhenAll(tasks);
+            return result.ToList();
         }
         #endregion
 
