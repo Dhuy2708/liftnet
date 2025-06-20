@@ -230,6 +230,42 @@ namespace LiftNet.CosmosDb.Services
             }
         }
 
+        public async Task<Dictionary<string, int>> GetFeedCommentCountsAsync(List<string> feedIds)
+        {
+            try
+            {
+                if (feedIds.IsNullOrEmpty())
+                {
+                    return [];
+                }
+                var condition = new QueryCondition();
+                condition.AddCondition(new ConditionItem("feedid", feedIds, FilterType.String));
+                condition.AddCondition(new ConditionItem("schema", new List<string> { $"{(int)DataSchema.Comment}" }, FilterType.Integer, QueryOperator.Equal, QueryLogic.And));
+
+                var (likes, _) = await _likeIndexService.QueryAsync(condition);
+
+                var counts = likes
+                    .GroupBy(x => x.FeedId)
+                    .ToDictionary(g => g.Key, g => g.Count());
+
+                // Ensure all requested feedIds are in the dictionary, even if they have 0 likes
+                foreach (var feedId in feedIds)
+                {
+                    if (!counts.ContainsKey(feedId))
+                    {
+                        counts[feedId] = 0;
+                    }
+                }
+
+                return counts;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Error getting like counts for multiple feeds");
+                return feedIds.ToDictionary(id => id, _ => 0);
+            }
+        }
+
         public async Task<Dictionary<string, bool>> GetFeedLikeStatusesAsync(List<string> feedIds, string userId)
         {
             try

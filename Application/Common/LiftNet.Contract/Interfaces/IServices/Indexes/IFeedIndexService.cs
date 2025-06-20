@@ -22,5 +22,6 @@ namespace LiftNet.Contract.Interfaces.IServices.Indexes
         Task<Dictionary<string, List<string>>> GetFeedLikesAsync(List<string> feedIds);
         Task<bool> UpdateAllFeedsRandomFieldAsync();
         Task<bool> CommentFeedAsync(string feedId, string userId, string comment, string? parentId);
+        Task<Dictionary<string, int>> GetFeedCommentCountsAsync(List<string> feedIds);
     }
 }

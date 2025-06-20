@@ -37,6 +37,10 @@ namespace LiftNet.Contract.Views.Feeds
         {
             get; set;
         }
+        public int CommentCount
+        {
+            get; set;
+        }
         public bool IsLiked 
         {
             get; set; 
