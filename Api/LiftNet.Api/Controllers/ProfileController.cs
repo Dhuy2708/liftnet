@@ -1,4 +1,5 @@
-﻿using LiftNet.Api.Requests.Profiles;
+﻿using LiftNet.Api.Requests;
+using LiftNet.Api.Requests.Profiles;
 using LiftNet.Contract.Views;
 using LiftNet.Domain.Constants;
 using LiftNet.Domain.Response;
@@ -21,12 +22,12 @@ namespace LiftNet.Api.Controllers
         [HttpPost("upload/avatar")]
         [Authorize]
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> UploadAvatar([FromForm] IFormFile file)
+        public async Task<IActionResult> UploadAvatar([FromForm] UploadImageReq file)
         {
             var req = new UploadAvatarCommand()
             {
                 UserId = UserId,
-                File = file,
+                File = file.Image,
             };
             var result = await _mediator.Send(req);
             if (result.Success)
@@ -39,12 +40,12 @@ namespace LiftNet.Api.Controllers
         [HttpPost("upload/cover")]
         [Authorize]
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
-        public async Task<IActionResult> UploadCover([FromForm] IFormFile file)
+        public async Task<IActionResult> UploadCover([FromForm] UploadImageReq file)
         {
             var req = new UploadCoverCommand()
             {
                 UserId = UserId,
-                File = file,
+                File = file.Image,
             };
             var result = await _mediator.Send(req);
             if (result.Success)
