@@ -1,4 +1,5 @@
-﻿using LiftNet.Contract.Constants;
+﻿using Azure.Core;
+using LiftNet.Contract.Constants;
 using LiftNet.Contract.Dtos.Query;
 using LiftNet.Contract.Enums;
 using LiftNet.Contract.Interfaces.IServices.Indexes;
@@ -18,12 +19,14 @@ namespace LiftNet.CosmosDb.Services
     {
         private readonly ILiftLogger<FeedIndexService> _logger;
         private readonly IndexBaseService<LikeIndexData> _likeIndexService;
+        private readonly IndexBaseService<CommentIndexData> _commentService;
         
         public FeedIndexService(CosmosCredential cred, ILiftLogger<FeedIndexService> logger) 
             : base(cred, CosmosContainerId.Feed)
         {
             _logger = logger;
             _likeIndexService = new IndexBaseService<LikeIndexData>(cred, "feed");
+            _commentService = new IndexBaseService<CommentIndexData>(cred, "feed");
         }
 
         public async Task<FeedIndexData?> PostFeedAsync(string userId, string content, List<string> medias)
@@ -300,6 +303,43 @@ namespace LiftNet.CosmosDb.Services
                 _logger.Error(ex, "Error updating random fields for all feeds");
                 return false;
             }
+        }
+
+        public async Task<bool> CommentFeedAsync(string feedId, string userId, string comment, string? parentId)
+        {
+            try
+            {
+                var condition = new QueryCondition();
+                condition.AddCondition(new ConditionItem("id", feedId));
+                condition.AddCondition(new ConditionItem(DataSchema.Feed, logic: QueryLogic.And));
+                var feedResult = await QueryAsync(condition);
+                if (!feedResult.Items.Any())
+                {
+                    return false;
+                }
+
+                var now = DateTime.UtcNow;
+
+                var index = new CommentIndexData
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    UserId = userId,
+                    Schema = DataSchema.Comment,
+                    CreatedAt = now,
+                    ModifiedAt = now,
+                    FeedId = feedId,
+                    Comment = comment,
+                    ParentId = parentId,
+                    IsRoot = parentId.IsNullOrEmpty() ? true : false
+                };
+                await _commentService.UpsertAsync(index);
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, $"Error commenting on feed {feedId}");
+                return false;
+            }
+            return true;
         }
     }
 }
