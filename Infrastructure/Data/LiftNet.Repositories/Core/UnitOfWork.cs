@@ -292,14 +292,14 @@ namespace LiftNet.Repositories.Core
             }
         }
 
-        private INotificationRepo? _notificationTemplateRepo = null;
+        private INotificationRepo? _notificationRepo = null;
         public INotificationRepo NotificationRepo
         {
             get
             {
-                _notificationTemplateRepo ??= _serviceProvider.GetRequiredService<INotificationRepo>();
-                _notificationTemplateRepo.AutoSave = false;
-                return _notificationTemplateRepo;
+                _notificationRepo ??= _serviceProvider.GetRequiredService<INotificationRepo>();
+                _notificationRepo.AutoSave = false;
+                return _notificationRepo;
             }
         }
 

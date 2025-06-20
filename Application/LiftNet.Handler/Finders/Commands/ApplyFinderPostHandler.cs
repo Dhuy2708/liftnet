@@ -1,11 +1,18 @@
+using LiftNet.Contract.Constants;
+using LiftNet.Contract.Dtos;
+using LiftNet.Contract.Enums;
 using LiftNet.Contract.Enums.Finder;
 using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Finders.Commands.Requests;
+using LiftNet.ServiceBus.Contracts;
+using LiftNet.ServiceBus.Interfaces;
+using LiftNet.Utility.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace LiftNet.Handler.Finders.Commands
 {
@@ -14,15 +21,17 @@ namespace LiftNet.Handler.Finders.Commands
         private readonly ILiftLogger<ApplyFinderPostHandler> _logger;
         private readonly IFinderPostRepo _postRepo;
         private readonly IUnitOfWork _uow;
+        private readonly IEventBusService _eventBusService;
 
-        public ApplyFinderPostHandler(
-            ILiftLogger<ApplyFinderPostHandler> logger,
-            IFinderPostRepo postRepo,
-            IUnitOfWork unitOfWork)
+        public ApplyFinderPostHandler(ILiftLogger<ApplyFinderPostHandler> logger, 
+                                      IFinderPostRepo postRepo, 
+                                      IUnitOfWork uow,
+                                      IEventBusService eventBusService)
         {
             _logger = logger;
             _postRepo = postRepo;
-            _uow = unitOfWork;
+            _uow = uow;
+            _eventBusService = eventBusService;
         }
 
         public async Task<LiftNetRes> Handle(ApplyFinderPostCommand request, CancellationToken cancellationToken)
@@ -73,6 +82,7 @@ namespace LiftNet.Handler.Finders.Commands
                 await _uow.FinderPostRepo.Update(post);
 
                 await _uow.CommitAsync();
+                await SendNoti(request.PostId, request.UserId, post.UserId);
                 return LiftNetRes.SuccessResponse();
             }
             catch (Exception ex)
@@ -108,6 +118,33 @@ namespace LiftNet.Handler.Finders.Commands
                 };
                 await _uow.FinderPostSeenStatusRepo.Create(seenStatus);
             }
+        }
+
+        private async Task SendNoti(string postId, string callerId, string posterId)
+        {
+            var callerName = await _uow.UserRepo.GetQueryable()
+                                        .Where(x => x.Id == callerId)
+                                        .Select(x => new { x.FirstName, x.LastName })
+                                        .FirstOrDefaultAsync();
+
+            var message = new EventMessage
+            {
+                Type = EventType.Noti,
+                Context = JsonConvert.SerializeObject(new NotiMessageDto()
+                {
+                    SenderId = callerId,
+                    EventType = NotiEventType.ApplyFinder,
+                    Location = NotiRefernceLocationType.Finder,
+                    SenderType = NotiTarget.User,
+                    RecieverId = posterId,
+                    RecieverType = NotiTarget.User,
+                    CreatedAt = DateTime.UtcNow,
+                    ObjectNames = [callerName!.FirstName + " " + callerName!.LastName, postId]
+                })
+            };
+
+
+            await _eventBusService.PublishAsync(message, QueueNames.Noti);
         }
     }
 } 
