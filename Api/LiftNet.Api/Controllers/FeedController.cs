@@ -1,3 +1,4 @@
+using LiftNet.Api.Requests.Feeds;
 using LiftNet.Contract.Dtos.Query;
 using LiftNet.Contract.Enums.Feed;
 using LiftNet.Contract.Views.Feeds;
@@ -162,6 +163,28 @@ namespace LiftNet.Api.Controllers
             var result = await _mediator.Send(command);
             if (result.Success)
                 return Ok(result);
+
+            return StatusCode(500, result);
+        }
+
+        [HttpPost("comment")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> CommentFeed(CommentFeedRequest req)
+        {
+            var command = new CommentFeedCommand
+            {
+                CallerId = UserId,
+                Comment = req.Comment,
+                FeedId = req.FeedId,
+                ParentId = req.ParentId
+            };
+
+            var result = await _mediator.Send(command);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
 
             return StatusCode(500, result);
         }
