@@ -21,6 +21,12 @@ namespace LiftNet.Domain.Indexes
             get; set;
         }
 
+        [JsonProperty(PropertyName = "isroot")]
+        public bool IsRoot
+        {
+            get; set;
+        }
+
         [JsonProperty(PropertyName = "parentid", NullValueHandling = NullValueHandling.Ignore)]
         public string? ParentId
         {

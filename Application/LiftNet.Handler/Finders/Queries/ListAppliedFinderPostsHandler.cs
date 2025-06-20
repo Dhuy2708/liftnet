@@ -77,7 +77,7 @@ namespace LiftNet.Handler.Finders.Queries
                                      .Distinct()
                                      .ToList();
 
-                var userOverviewDict = (await _userService.Convert2Overviews(posterIds))
+                var userOverviewDict = (await _userService.GetOverviewsByIds(posterIds))
                                             .ToDictionary(k => k.Id, v => v);
 
                 foreach (var post in posts)

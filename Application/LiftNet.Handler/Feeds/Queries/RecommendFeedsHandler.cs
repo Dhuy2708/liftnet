@@ -51,6 +51,7 @@ namespace LiftNet.Handler.Feeds.Queries
             var userOverviewDict = await AssembleUserOverviews(userIds);
 
             var likeCounts = await _feedIndexService.GetFeedLikeCountsAsync(feedIds);
+            var commentCounts = await _feedIndexService.GetFeedCommentCountsAsync(feedIds);
             var likeStatuses = await _feedIndexService.GetFeedLikeStatusesAsync(feedIds, request.UserId);
 
             var viewModels = new List<FeedViewModel>();
@@ -65,6 +66,7 @@ namespace LiftNet.Handler.Feeds.Queries
                     CreatedAt = feed.CreatedAt,
                     ModifiedAt = feed.ModifiedAt,
                     LikeCount = likeCounts.ContainsKey(feed.Id) ? likeCounts[feed.Id] : 0,
+                    CommentCount = commentCounts.ContainsKey(feed.Id) ? commentCounts[feed.Id] : 0,
                     IsLiked = likeStatuses.ContainsKey(feed.Id) && likeStatuses[feed.Id]
                 });
             }

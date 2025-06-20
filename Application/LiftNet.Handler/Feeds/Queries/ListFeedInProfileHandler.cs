@@ -45,6 +45,7 @@ namespace LiftNet.Handler.Feeds.Queries
 
                 var feedIds = feeds.Select(f => f.Id).ToList();
                 var likeCounts = await _feedService.GetFeedLikeCountsAsync(feedIds);
+                var commentCounts = await _feedService.GetFeedCommentCountsAsync(feedIds);
                 var likeStatuses = await _feedService.GetFeedLikeStatusesAsync(feedIds, request.UserId);
 
                 var viewModels = new List<FeedViewModel>();
@@ -58,6 +59,7 @@ namespace LiftNet.Handler.Feeds.Queries
                         CreatedAt = feed.CreatedAt,
                         ModifiedAt = feed.ModifiedAt,
                         LikeCount = likeCounts[feed.Id],
+                        CommentCount = commentCounts[feed.Id],
                         IsLiked = likeStatuses[feed.Id]
                     });
                 }
