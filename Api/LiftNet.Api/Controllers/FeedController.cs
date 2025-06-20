@@ -188,5 +188,25 @@ namespace LiftNet.Api.Controllers
 
             return StatusCode(500, result);
         }
+
+        [HttpGet("comments")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
+        [ProducesResponseType(typeof(LiftNetRes<CommentView>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ListComments([FromQuery] string feedId, [FromQuery] string? parentId = null)
+        {
+            if (string.IsNullOrEmpty(feedId))
+                return BadRequest(LiftNetRes.ErrorResponse("Feed ID is required"));
+            var command = new ListCommentsQuery
+            {
+                FeedId = feedId,
+                ParentId = parentId
+            };
+            var result = await _mediator.Send(command);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
     }
 }

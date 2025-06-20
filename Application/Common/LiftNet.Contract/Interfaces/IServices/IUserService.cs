@@ -17,6 +17,7 @@ namespace LiftNet.Contract.Interfaces.IServices
         Task<BasicUserInfo?> GetBasicUserInfoAsync(string userId);
         Task<List<User>> GetByIds(List<string> userIds);
         Task<List<UserOverview>> Convert2Overviews(List<User> users);
-        Task<List<UserOverview>> Convert2Overviews(List<string> userIds);
+        Task<List<UserOverview>> GetOverviewsByIds(List<string> userIds);
+        Task<Dictionary<string, UserOverview>> GetOverviewsDictByIds(List<string> userIds);
     }
 }

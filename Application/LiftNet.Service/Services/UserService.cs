@@ -125,7 +125,7 @@ namespace LiftNet.Service.Services
             return users.ToOverviews(roleDict);
         }
 
-        public async Task<List<UserOverview>> Convert2Overviews(List<string> userIds)
+        public async Task<List<UserOverview>> GetOverviewsByIds(List<string> userIds)
         {
             if (userIds.IsNullOrEmpty())
             {
@@ -137,6 +137,12 @@ namespace LiftNet.Service.Services
 
             var roleDict = await GetUserIdRoleDict(users.Select(x => x.Id).ToList());
             return users.ToOverviews(roleDict);
+        }
+
+        public async Task<Dictionary<string, UserOverview>> GetOverviewsDictByIds(List<string> userIds)
+        {
+            var overviews = await GetOverviewsByIds(userIds);
+            return overviews.ToDictionary(x => x.Id, x => x);
         }
     }
 }

@@ -377,5 +377,37 @@ namespace LiftNet.CosmosDb.Services
             }
             return true;
         }
+
+        public async Task<List<CommentIndexData>> ListCommentsAsync(string feedId, string? parentId)
+        {
+            try
+            {
+                var condition = new QueryCondition();
+                condition.AddCondition(new ConditionItem("feedid", feedId));
+                condition.AddCondition(new ConditionItem(DataSchema.Comment, logic: QueryLogic.And));
+                
+
+                if (parentId.IsNotNullOrEmpty())
+                {
+                    condition.AddCondition(new ConditionItem("parentid", parentId!, logic: QueryLogic.And));
+                }
+                condition.Sort = new SortCondition()
+                {
+                    Name = "created",
+                    Type = SortType.Desc
+                };
+                var result = await _commentService.QueryAsync(condition);
+                if (result.Items.IsNullOrEmpty())
+                {
+                    return [];
+                }
+                return result.Items;
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, $"Error commenting on feed {feedId}");
+                throw;
+            }
+        }
     }
 }
