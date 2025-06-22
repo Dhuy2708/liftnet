@@ -324,6 +324,17 @@ namespace LiftNet.Repositories.Core
                 return _exerciseRepo;
             }
         }
+
+        private ICoachExtensionRepo? _coachExtensionRepo = null;
+        public ICoachExtensionRepo CoachExtensionRepo
+        {
+            get
+            {
+                _coachExtensionRepo ??= _serviceProvider.GetRequiredService<ICoachExtensionRepo>();
+                _coachExtensionRepo.AutoSave = false;
+                return _coachExtensionRepo;
+            }
+        }
         #endregion
 
         public async Task BeginTransactionAsync()

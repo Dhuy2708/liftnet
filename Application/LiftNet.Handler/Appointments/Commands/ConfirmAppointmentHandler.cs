@@ -68,6 +68,7 @@ namespace LiftNet.Handler.Appointments.Commands
 
                 await _uow.AppointmentConfirmationRepo.Update(confirmation);
                 await HandleTransaction(confirmation.Appointment);
+                await UpdateCoachExtension(confirmation.Appointment.BookerId!);
                 var result = await _uow.CommitAsync();
 
                 if (result > 0)
@@ -144,6 +145,28 @@ namespace LiftNet.Handler.Appointments.Commands
                 await _uow.WalletRepo.Update(wallet);
             }
             await _uow.LiftNetTransactionRepo.Update(transaction);
+        }
+
+        private async Task UpdateCoachExtension(string coachId)
+        {
+            var coachExtension = await _uow.CoachExtensionRepo.GetQueryable()
+                                            .FirstOrDefaultAsync(x => x.CoachId == coachId);
+            if (coachExtension == null)
+            {
+                coachExtension = new CoachExtension
+                {
+                    CoachId = coachId,
+                    SessionTrained = 1,
+                    ReviewCount = 0,
+                    Star = 0,
+                };
+                await _uow.CoachExtensionRepo.Create(coachExtension);
+            }
+            else
+            {
+                coachExtension.SessionTrained += 1;
+                await _uow.CoachExtensionRepo.Update(coachExtension);
+            }
         }
     }
 }
