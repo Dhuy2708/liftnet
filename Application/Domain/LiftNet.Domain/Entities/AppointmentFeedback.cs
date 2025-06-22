@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Domain.Entities
 {
-    [Table("AppointmentFeedbacks")]
-    public sealed class AppointmentFeedback
+    [Table("Feedbacks")]
+    public sealed class Feedback
     {
         [Key]
         public int Id
@@ -23,22 +23,29 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        [ForeignKey(nameof(Reviewer))]
         public string ReviewerId
         {
             get; set;
         }
 
-        public string? Img
-        {
-            get; set;
-        }
-
-        public string? Content
+        [ForeignKey(nameof(Coach))]
+        public string CoachId
         {
             get; set;
         }
 
         public int Star
+        {
+            get; set;
+        }
+
+        public string? Medias // serialize list<string>
+        {
+            get; set;
+        }
+
+        public string? Content
         {
             get; set;
         }
@@ -50,6 +57,11 @@ namespace LiftNet.Domain.Entities
         }
 
         public User Reviewer
+        {
+            get; set;
+        }
+        
+        public User Coach
         {
             get; set;
         }

@@ -7,7 +7,7 @@
             get; set;
         }
 
-        public IFormFile? Image
+        public List<IFormFile>? Medias
         {
             get; set;
         }

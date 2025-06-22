@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Appointments.Commands.Requests
 {
-    public class AppointmentFeedbackCommand : IRequest<LiftNetRes>
+    public class FeedbackCommand : IRequest<LiftNetRes>
     {
         public string CallerId
         {
@@ -21,7 +21,7 @@ namespace LiftNet.Handler.Appointments.Commands.Requests
             get; set;
         }
 
-        public IFormFile? Image
+        public List<IFormFile>? Medias
         {
             get; set;
         }

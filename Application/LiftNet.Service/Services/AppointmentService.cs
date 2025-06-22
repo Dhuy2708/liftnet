@@ -103,7 +103,7 @@ namespace LiftNet.Service.Services
         {
             try
             {
-                var queryable = _uow.AppointmentFeedbackRepo.GetQueryable();
+                var queryable = _uow.FeedbackRepo.GetQueryable();
 
                 var feedbackExist = await queryable.AnyAsync(x => x.ApppointmentId == request.AppointmentId && 
                                                                   x.ReviewerId == request.ReviewerId);
@@ -121,15 +121,15 @@ namespace LiftNet.Service.Services
                     hostImgUrl = await _cloudinaryService.HostImageAsync(request.Img);
                 }
 
-                var feedback = new AppointmentFeedback
+                var feedback = new Feedback
                 {
                     ApppointmentId = request.AppointmentId,
                     ReviewerId = request.ReviewerId,
                     Content = request.Content,
                     Star = request.Star,
-                    Img = hostImgUrl
+                    Medias = hostImgUrl
                 };
-                await _uow.AppointmentFeedbackRepo.Create(feedback);
+                await _uow.FeedbackRepo.Create(feedback);
                 var result = await _uow.CommitAsync();
                 return result;
             }

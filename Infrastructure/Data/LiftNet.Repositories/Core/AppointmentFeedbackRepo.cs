@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Repositories.Core
 {
-    public class AppointmentFeedbackRepo : CrudBaseRepo<AppointmentFeedback>, IAppointmentFeedbackRepo
+    public class AppointmentFeedbackRepo : CrudBaseRepo<Feedback>, IFeedbackRepo
     {
-        public AppointmentFeedbackRepo(LiftNetDbContext dbContext, ILiftLogger<CrudBaseRepo<AppointmentFeedback>> logger) : base(dbContext, logger)
+        public AppointmentFeedbackRepo(LiftNetDbContext dbContext, ILiftLogger<CrudBaseRepo<Feedback>> logger) : base(dbContext, logger)
         {
         }
     }

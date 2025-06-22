@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Contract.Interfaces.IRepos
 {
-    public interface IAppointmentFeedbackRepo : ICrudBaseRepo<AppointmentFeedback>, IDependency
+    public interface IFeedbackRepo : ICrudBaseRepo<Feedback>, IDependency
     {
     }
 }
