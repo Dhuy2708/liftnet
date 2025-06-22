@@ -270,12 +270,12 @@ namespace LiftNet.Repositories.Core
             }
         }
 
-        private IAppointmentFeedbackRepo? _appointmentFeedbackRepo = null;
-        public IAppointmentFeedbackRepo AppointmentFeedbackRepo
+        private IFeedbackRepo? _appointmentFeedbackRepo = null;
+        public IFeedbackRepo FeedbackRepo
         {
             get
             {
-                _appointmentFeedbackRepo ??= _serviceProvider.GetRequiredService<IAppointmentFeedbackRepo>();
+                _appointmentFeedbackRepo ??= _serviceProvider.GetRequiredService<IFeedbackRepo>();
                 _appointmentFeedbackRepo.AutoSave = false;
                 return _appointmentFeedbackRepo;
             }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Appointments.Commands.Validators
 {
-    public class AppointmentFeedbackValidator : AbstractValidator<AppointmentFeedbackCommand>
+    public class AppointmentFeedbackValidator : AbstractValidator<FeedbackCommand>
     {
         public AppointmentFeedbackValidator()
         {

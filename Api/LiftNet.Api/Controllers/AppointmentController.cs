@@ -231,12 +231,12 @@ namespace LiftNet.Api.Controllers
                 return Unauthorized();
             }
 
-            var command = new AppointmentFeedbackCommand
+            var command = new FeedbackCommand
             {
                 AppointmentId = req.AppointmentId,
                 CallerId = UserId,
                 Content = req.Content,
-                Image = req.Image,
+                Medias = req.Medias,
                 Star = req.Star,
             };
 

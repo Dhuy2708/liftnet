@@ -17,13 +17,13 @@ using System.Threading.Tasks;
 
 namespace LiftNet.Handler.Appointments.Commands
 {
-    public class AppointmentFeedbackHandler : IRequestHandler<AppointmentFeedbackCommand, LiftNetRes>
+    public class FeedbackHandler : IRequestHandler<FeedbackCommand, LiftNetRes>
     {
-        private readonly ILiftLogger<AppointmentFeedbackHandler> _logger;
+        private readonly ILiftLogger<FeedbackHandler> _logger;
         private readonly ICloudinaryService _cloudinaryService;
         private readonly IUnitOfWork _uow;
 
-        public AppointmentFeedbackHandler(ILiftLogger<AppointmentFeedbackHandler> logger, 
+        public FeedbackHandler(ILiftLogger<FeedbackHandler> logger, 
                                           ICloudinaryService cloudinaryService, 
                                           IUnitOfWork uow)
         {
@@ -32,7 +32,7 @@ namespace LiftNet.Handler.Appointments.Commands
             _uow = uow;
         }
 
-        public async Task<LiftNetRes> Handle(AppointmentFeedbackCommand request, CancellationToken cancellationToken)
+        public async Task<LiftNetRes> Handle(FeedbackCommand request, CancellationToken cancellationToken)
         {
             await new AppointmentFeedbackValidator().ValidateAndThrowAsync(request);
             try
@@ -42,7 +42,7 @@ namespace LiftNet.Handler.Appointments.Commands
                     return LiftNetRes.ErrorResponse("User doesnt have permission to feedback this appointment");
                 }
 
-                var isExist = await _uow.AppointmentFeedbackRepo
+                var isExist = await _uow.FeedbackRepo
                                         .GetQueryable()
                                         .AnyAsync(x => x.ApppointmentId == request.AppointmentId &&
                                                        x.ReviewerId == request.CallerId);
@@ -53,20 +53,20 @@ namespace LiftNet.Handler.Appointments.Commands
                 }
 
                 string? imgUrl = null;
-                if (request.Image != null)
+                if (request.Medias != null)
                 {
-                    imgUrl = await _cloudinaryService.HostImageAsync(request.Image);
+                    imgUrl = await _cloudinaryService.HostImageAsync(request.Medias);
                 }
 
-                var entity = new AppointmentFeedback()
+                var entity = new Feedback()
                 {
                     ApppointmentId = request.AppointmentId,
                     ReviewerId = request.CallerId,
-                    Img = imgUrl,
+                    Medias = imgUrl,
                     Content = request.Content,
                     Star = request.Star,
                 };
-                await _uow.AppointmentFeedbackRepo.Create(entity);
+                await _uow.FeedbackRepo.Create(entity);
                 await _uow.CommitAsync();
                 return LiftNetRes.SuccessResponse(imgUrl);
             }
