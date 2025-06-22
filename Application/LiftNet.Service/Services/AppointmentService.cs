@@ -99,6 +99,7 @@ namespace LiftNet.Service.Services
             }
         }
 
+        [Obsolete]
         public async Task<int> FeedBackAsync(AppointmentFeedbackRequestDto request)
         {
             try
