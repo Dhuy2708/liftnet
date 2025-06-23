@@ -46,7 +46,7 @@ namespace LiftNet.Api.Controllers
         {
             try
             {
-                var ipAddress = NetworkHelper.GetIpAddress(HttpContext);
+                var ipAddress = GetIpAddress(HttpContext);
 
                 var now = DateTime.UtcNow;
                 var paymentId = now.Ticks;
@@ -168,27 +168,41 @@ namespace LiftNet.Api.Controllers
             transaction.TimeToLive = null;
             await _uow.TransactionRepo.Update(transaction);
             
-            var wallet = await _uow.WalletRepo.GetQueryable()
-                                              .FirstOrDefaultAsync(x => x.UserId == transaction.UserId);
-            if (wallet != null)
+            if (paymentResult.IsSuccess)
             {
-                wallet.Balance += amount / 1000;
-                wallet.LastUpdate = DateTime.UtcNow;
-                await _uow.WalletRepo.Update(wallet);
-            }
-            else
-            {
-                wallet = new Wallet()
+                var wallet = await _uow.WalletRepo.GetQueryable()
+                                           .FirstOrDefaultAsync(x => x.UserId == transaction.UserId);
+                if (wallet != null)
                 {
-                    UserId = transaction.UserId,
-                    Balance = amount / 1000,
-                    LastUpdate = DateTime.UtcNow
-                };
-                await _uow.WalletRepo.Create(wallet);
+                    wallet.Balance += amount / 1000;
+                    wallet.LastUpdate = DateTime.UtcNow;
+                    await _uow.WalletRepo.Update(wallet);
+                }
+                else
+                {
+                    wallet = new Wallet()
+                    {
+                        UserId = transaction.UserId,
+                        Balance = amount / 1000,
+                        LastUpdate = DateTime.UtcNow
+                    };
+                    await _uow.WalletRepo.Create(wallet);
+                }
             }
-
+         
             var result = await _uow.CommitAsync();
             return result;
+        }
+
+        private static string GetIpAddress(HttpContext context)
+        {
+            var ipFromHeader = context.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+            if (!string.IsNullOrWhiteSpace(ipFromHeader))
+            {
+                return ipFromHeader.Split(',')[0];
+            }
+
+            return context.Connection.RemoteIpAddress?.ToString() ?? "127.0.0.1";
         }
     }
 }
