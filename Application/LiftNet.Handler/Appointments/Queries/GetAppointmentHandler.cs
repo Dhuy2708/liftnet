@@ -1,5 +1,6 @@
 ﻿using LiftNet.Contract.Enums.Appointment;
 using LiftNet.Contract.Interfaces.IRepos;
+using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Contract.Views.Appointments;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Exceptions;
@@ -26,16 +27,22 @@ namespace LiftNet.Handler.Appointments.Queries
         private readonly IAppointmentRepo _appointmentRepo;
         private readonly IAppointmentSeenStatusRepo _seenStatusRepo;
         private readonly IAppointmentConfirmationRepo _confirmationRepo;
+        private readonly IFeedbackRepo _feedbackRepo;
+        private readonly IUserService _userService;
 
         public GetAppointmentHandler(ILiftLogger<GetAppointmentHandler> logger, 
                                      IAppointmentRepo appointmentRepo,
                                      IAppointmentSeenStatusRepo seenStatusRepo, 
-                                     IAppointmentConfirmationRepo confirmationRepo)
+                                     IAppointmentConfirmationRepo confirmationRepo,
+                                     IFeedbackRepo feedbackRepo,
+                                     IUserService userService)
         {
             _logger = logger;
             _appointmentRepo = appointmentRepo;
             _seenStatusRepo = seenStatusRepo;
             _confirmationRepo = confirmationRepo;
+            _feedbackRepo = feedbackRepo;
+            _userService = userService;
         }
 
         public async Task<LiftNetRes<AppointmentDetailView>> Handle(GetAppointmentQuery request, CancellationToken cancellationToken)
@@ -56,22 +63,10 @@ namespace LiftNet.Handler.Appointments.Queries
             await ResetSeenStatus(appointment, request.UserId);
 
             var detail = appointment.ToDetailView(request.UserId.Eq(appointment.BookerId!), status: status);
-            var confirmationReq = await _confirmationRepo.GetQueryable()
-                                                         .FirstOrDefaultAsync(x => x.AppointmentId == appointment.Id);
-            if (confirmationReq != null)
-            {
-                detail.ConfirmationRequest = new AppointmentConfirmationRequestView
-                {
-                    Id = confirmationReq.Id,
-                    Img = confirmationReq.Img,
-                    Content = confirmationReq.Content,
-                    Status = (AppointmentConfirmationStatus)confirmationReq.Status,
-                    CreatedAt = confirmationReq.CreatedAt.ToOffSet(),
-                    ModifiedAt = confirmationReq.ModifiedAt.ToOffSet(),
-                    ExpiresdAt = confirmationReq.ExpiredAt.ToOffSet(),
-                };
-            }
-          
+
+            await AssignConfirmationRequest(detail);
+            await AssignFeedbacks(detail);
+
             return LiftNetRes<AppointmentDetailView>.SuccessResponse(detail);
         }
 
@@ -110,6 +105,44 @@ namespace LiftNet.Handler.Appointments.Queries
                 };
                 await _seenStatusRepo.Create(newSeenStatus);
             }
+        }
+
+        private async Task AssignConfirmationRequest(AppointmentDetailView detail)
+        {
+            var confirmationReq = await _confirmationRepo.GetQueryable()
+                                                         .FirstOrDefaultAsync(x => x.AppointmentId == detail.Id);
+            if (confirmationReq != null)
+            {
+                detail.ConfirmationRequest = new AppointmentConfirmationRequestView
+                {
+                    Id = confirmationReq.Id,
+                    Img = confirmationReq.Img,
+                    Content = confirmationReq.Content,
+                    Status = (AppointmentConfirmationStatus)confirmationReq.Status,
+                    CreatedAt = confirmationReq.CreatedAt.ToOffSet(),
+                    ModifiedAt = confirmationReq.ModifiedAt.ToOffSet(),
+                    ExpiresdAt = confirmationReq.ExpiredAt.ToOffSet(),
+                };
+            }
+        }
+
+        private async Task AssignFeedbacks(AppointmentDetailView appointment)
+        {
+            var feedbacks = await _feedbackRepo.GetQueryable()
+                                               .Include(x => x.Reviewer)
+                                               .Where(x => x.ApppointmentId == appointment.Id)
+                                               .OrderByDescending(x => x.CreatedAt)
+                                               .ToListAsync();
+
+            if (feedbacks.IsNullOrEmpty())
+            {
+                return;
+            }
+            var reviewerIds = feedbacks.Select(x => x.ReviewerId).Distinct().ToList();
+            var userRoleMapping = await _userService.GetUserIdRoleDict(reviewerIds);
+            var feedbackView = feedbacks.ToViews(userRoleMapping);
+
+            appointment.Feedbacks = feedbackView;
         }
     }
 }

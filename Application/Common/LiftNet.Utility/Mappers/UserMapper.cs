@@ -86,6 +86,12 @@ namespace LiftNet.Utility.Mappers
             };
         }
 
+        /// <summary>
+        /// should have userRoleMapping to map user role to UserOverview.Role
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="userRoleMapping"></param>
+        /// <returns></returns>
         public static UserOverview ToOverview(this User user, Dictionary<string, LiftNetRoleEnum>? userRoleMapping = null)
         {
             var result = new UserOverview

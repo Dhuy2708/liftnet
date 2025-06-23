@@ -72,6 +72,11 @@ namespace LiftNet.Contract.Views.Appointments
         {
             get; set;
         }
+
+        public List<FeedbackView> Feedbacks
+        {
+            get; set;
+        }
     }
 
     public class UserViewInAppointmentDetail : UserOverview

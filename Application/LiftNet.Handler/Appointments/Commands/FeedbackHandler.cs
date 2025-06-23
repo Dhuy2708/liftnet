@@ -91,6 +91,7 @@ namespace LiftNet.Handler.Appointments.Commands
                     Medias = JsonConvert.SerializeObject(mediaUrls),
                     Content = request.Content,
                     Star = request.Star,
+                    CreatedAt = DateTime.UtcNow,
                 };
                 await _uow.FeedbackRepo.Create(entity);
                 await UpdateCoachExtension(appointment.BookerId!, request.Star);
