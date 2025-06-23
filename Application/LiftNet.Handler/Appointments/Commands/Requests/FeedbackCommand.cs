@@ -21,6 +21,11 @@ namespace LiftNet.Handler.Appointments.Commands.Requests
             get; set;
         }
 
+        public string CoachId
+        {
+            get; set;
+        }
+
         public List<IFormFile>? Medias
         {
             get; set;

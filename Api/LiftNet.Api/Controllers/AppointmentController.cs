@@ -234,6 +234,7 @@ namespace LiftNet.Api.Controllers
             var command = new FeedbackCommand
             {
                 AppointmentId = req.AppointmentId,
+                CoachId = req.CoachId,
                 CallerId = UserId,
                 Content = req.Content,
                 Medias = req.Medias,
