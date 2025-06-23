@@ -23,7 +23,7 @@ namespace LiftNet.Utility.Mappers
             {
                 Id = entity.Id,
                 Content = entity.Content,
-                Medias = entity.Medias == null ?
+                Medias = entity.Medias != null ?    
                     JsonConvert.DeserializeObject<List<string>>(entity.Medias) : null,
                 Star = entity.Star,
                 User = entity.Reviewer.ToOverview(userRoleMapping),

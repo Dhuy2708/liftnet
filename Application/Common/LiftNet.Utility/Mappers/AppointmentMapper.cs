@@ -17,7 +17,7 @@ namespace LiftNet.Utility.Mappers
 {
     public static class AppointmentMapper
     {
-        public static AppointmentDetailView ToDetailView(this Appointment entity, bool editable = false, AppointmentParticipantStatus status = AppointmentParticipantStatus.None)
+        public static AppointmentDetailView ToDetailView(this Appointment entity, Dictionary<string, LiftNetRoleEnum> roleDict, bool editable = false, AppointmentParticipantStatus status = AppointmentParticipantStatus.None)
         {
             var bookerPart = entity.Participants.FirstOrDefault(x => x.IsBooker);
             if (bookerPart != null)
@@ -33,7 +33,7 @@ namespace LiftNet.Utility.Mappers
                     Id = booker!.Id,
                     Email = booker!.Email ?? string.Empty,
                     Username = booker!.UserName ?? string.Empty,
-                    // Role = (LiftNetRoleEnum)booker!.Role,
+                    Role = roleDict.GetValueOrDefault(booker.UserRoles.First()!.RoleId, LiftNetRoleEnum.None),
                     IsDeleted = booker!.IsDeleted,
                     IsSuspended = booker!.IsSuspended,
                     Avatar = booker!.Avatar,
@@ -50,7 +50,7 @@ namespace LiftNet.Utility.Mappers
                                 Id = overViewUser.Id,
                                 Email = overViewUser.Email,
                                 Username = overViewUser.Username,
-                                // Role = overViewUser.Role,
+                                Role = roleDict.GetValueOrDefault(x.User.UserRoles.First()!.RoleId, LiftNetRoleEnum.None),
                                 IsDeleted = overViewUser.IsDeleted,
                                 IsSuspended = overViewUser.IsSuspended,
                                 Avatar = overViewUser.Avatar,
