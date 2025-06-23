@@ -94,7 +94,12 @@ namespace LiftNet.Handler.Appointments.Commands
                     CreatedAt = DateTime.UtcNow,
                 };
                 await _uow.FeedbackRepo.Create(entity);
+
+                appointment.Modified = DateTime.UtcNow;
+                await _uow.AppointmentRepo.Update(appointment);
+
                 await UpdateCoachExtension(appointment.BookerId!, request.Star);
+                await UpdateSeenStatus(appointment, request.CallerId);
                 await _uow.CommitAsync();
                 return LiftNetRes.SuccessResponse("Feedback sucessfully");
             }
@@ -160,6 +165,44 @@ namespace LiftNet.Handler.Appointments.Commands
                 coachExtension.ReviewCount += 1;
                 coachExtension.Star = totalStar / coachExtension.ReviewCount;
                 await _uow.CoachExtensionRepo.Update(coachExtension);
+            }
+        }
+
+        private async Task UpdateSeenStatus(Appointment appointment, string callerId)
+        {
+            var queryable = _uow.AppointmentSeenStatusRepo.GetQueryable();
+            var otherParticipantIds = appointment.Participants.Where(x => !x.UserId.Eq(callerId))
+                                                              .Select(x => x.UserId)
+                                                              .ToList();
+
+            var seenStatuses = await queryable.Where(x => x.AppointmentId == appointment.Id &&
+                                                        otherParticipantIds.Contains(x.UserId))
+                                            .ToListAsync();
+
+            var existingUserIds = seenStatuses.Select(x => x.UserId).ToList();
+
+            var nonExistUserIds = otherParticipantIds.Except(existingUserIds).ToList();
+
+            if (nonExistUserIds.Any())
+            {
+                var newSeenStatuses = nonExistUserIds.Select(userId => new AppointmentSeenStatus
+                {
+                    AppointmentId = appointment.Id,
+                    UserId = userId,
+                    NotiCount = 1,
+                    LastSeen = null,
+                    LastUpdate = DateTime.UtcNow
+                }).ToList();
+                await _uow.AppointmentSeenStatusRepo.CreateRange(newSeenStatuses);
+            }
+            else
+            {
+                foreach (var seenStatus in seenStatuses)
+                {
+                    seenStatus.NotiCount += 1;
+                    seenStatus.LastUpdate = DateTime.UtcNow;
+                }
+                await _uow.AppointmentSeenStatusRepo.UpdateRange(seenStatuses);
             }
         }
     }

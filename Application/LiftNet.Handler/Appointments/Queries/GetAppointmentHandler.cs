@@ -29,13 +29,15 @@ namespace LiftNet.Handler.Appointments.Queries
         private readonly IAppointmentConfirmationRepo _confirmationRepo;
         private readonly IFeedbackRepo _feedbackRepo;
         private readonly IUserService _userService;
+        private readonly IRoleService _roleService;
 
         public GetAppointmentHandler(ILiftLogger<GetAppointmentHandler> logger, 
                                      IAppointmentRepo appointmentRepo,
                                      IAppointmentSeenStatusRepo seenStatusRepo, 
                                      IAppointmentConfirmationRepo confirmationRepo,
                                      IFeedbackRepo feedbackRepo,
-                                     IUserService userService)
+                                     IUserService userService,
+                                     IRoleService roleService)
         {
             _logger = logger;
             _appointmentRepo = appointmentRepo;
@@ -43,6 +45,7 @@ namespace LiftNet.Handler.Appointments.Queries
             _confirmationRepo = confirmationRepo;
             _feedbackRepo = feedbackRepo;
             _userService = userService;
+            _roleService = roleService;
         }
 
         public async Task<LiftNetRes<AppointmentDetailView>> Handle(GetAppointmentQuery request, CancellationToken cancellationToken)
@@ -50,8 +53,10 @@ namespace LiftNet.Handler.Appointments.Queries
             _logger.Info($"get appointment detail, appointmentId: {request.Id}");
             var queryable = _appointmentRepo.GetQueryable();
             queryable = queryable.Include(x => x.Booker)
+                                 .ThenInclude(x => x.UserRoles)
                                  .Include(x => x.Participants)
-                                 .ThenInclude(x => x.User);
+                                 .ThenInclude(x => x.User)
+                                 .ThenInclude(x => x.UserRoles);
             var appointment = await queryable.FirstOrDefaultAsync(x => x.Id == request.Id && 
                                                        (x.Participants.Select(p => p.UserId).Contains(request.UserId)));
             if (appointment == null)
@@ -62,7 +67,8 @@ namespace LiftNet.Handler.Appointments.Queries
 
             await ResetSeenStatus(appointment, request.UserId);
 
-            var detail = appointment.ToDetailView(request.UserId.Eq(appointment.BookerId!), status: status);
+            var roleDict = await _roleService.GetAllRoleDictAsync();
+            var detail = appointment.ToDetailView(roleDict, request.UserId.Eq(appointment.BookerId!), status: status);
 
             await AssignConfirmationRequest(detail);
             await AssignFeedbacks(detail);
