@@ -50,6 +50,11 @@ namespace LiftNet.Domain.Entities
             get; set;
         }
 
+        public DateTime CreatedAt
+        {
+            get; set;
+        }
+
         // mapping
         public Appointment Appointment
         {
