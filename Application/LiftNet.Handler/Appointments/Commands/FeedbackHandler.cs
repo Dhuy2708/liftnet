@@ -1,5 +1,6 @@
 ﻿using CloudinaryDotNet;
 using LiftNet.Cloudinary.Services;
+using LiftNet.Contract.Enums.Appointment;
 using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Contract.Interfaces.IServices;
 using LiftNet.Domain.Entities;
@@ -10,6 +11,7 @@ using LiftNet.Handler.Appointments.Commands.Requests;
 using LiftNet.Handler.Appointments.Commands.Validators;
 using LiftNet.SharedKenel.Extensions;
 using LiftNet.Utility.Extensions;
+using LiftNet.Utility.Utils;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -51,9 +53,16 @@ namespace LiftNet.Handler.Appointments.Commands
                 {
                     return LiftNetRes.ErrorResponse("Appointment doesnt exist");
                 }
-                if (!await CheckPermission(request.CallerId, appointment))
+                var checkPermission = await CheckPermission(request.CallerId, request.CoachId, appointment);
+                if (!checkPermission.Item1)
                 {
-                    return LiftNetRes.ErrorResponse("User doesnt have permission to feedback this appointment");
+                    return LiftNetRes.ErrorResponse(checkPermission.Item2);
+                }
+
+                var checkStatus = CheckAppointment(appointment);
+                if (!checkStatus)
+                {
+                    return LiftNetRes.ErrorResponse("Appointment is not finished yet");
                 }
 
                 var isExist = await _uow.FeedbackRepo
@@ -95,21 +104,35 @@ namespace LiftNet.Handler.Appointments.Commands
             }
         }
 
-        private async Task<bool> CheckPermission(string callerId, Appointment appointment)
+        private async Task<(bool, string)> CheckPermission(string callerId, string coachId, Appointment appointment)
         {
+            if (!coachId.Eq(appointment.BookerId!))
+            {
+                return (false, "The PT is not the booker");
+            }
             var isParticipant = appointment.Participants.Any(x => x.UserId == callerId) && !appointment.BookerId.Eq(callerId);
 
             if (!isParticipant)
             {
-                return false;
+                return (false, "You are not a participant of this appointment");
             }
 
             var role = await _roleService.GetRoleByUserId(appointment.BookerId!);
             if (role is not LiftNetRoleEnum.Coach)
             {
-                return false;
+                return (false, "The booker is not a PT");
             }
 
+            return (true, string.Empty);
+        }
+
+        private bool CheckAppointment(Appointment appointment)
+        {
+            var status = AppointmentUtil.GetAppointmentStatus(appointment);
+            if (status is not AppointmentStatus.Finished)
+            {
+                return false;
+            }
             return true;
         }
 

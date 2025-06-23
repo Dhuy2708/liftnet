@@ -7,6 +7,11 @@
             get; set;
         }
 
+        public string CoachId
+        {
+            get; set;
+        }
+
         public List<IFormFile>? Medias
         {
             get; set;
