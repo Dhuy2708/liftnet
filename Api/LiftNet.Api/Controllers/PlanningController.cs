@@ -178,7 +178,31 @@ namespace LiftNet.Api.Controllers
             {
                 UserId = UserId,
                 DayOfWeek = req.DayOfWeek,
-                Order = req.Order
+                Order = req.Order,
+                ExerciseId = req.ExerciseId
+            };
+
+            var result = await _mediator.Send(command);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpPost("exercise/reorder")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ReorderExercise([FromBody] ReorderExerciseReq req)
+        {
+            var command = new ReorderExerciseCommand
+            {
+                UserId = UserId,
+                SourceDayOfWeek = req.SourceDayOfWeek,
+                SourceOrder = req.SourceOrder,
+                TargetDayOfWeek = req.TargetDayOfWeek,
+                TargetOrder = req.TargetOrder,
+                ExerciseId = req.ExerciseId
             };
 
             var result = await _mediator.Send(command);
