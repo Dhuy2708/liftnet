@@ -3,6 +3,7 @@ using LiftNet.Contract.Views.Plannings;
 using LiftNet.Domain.Interfaces;
 using LiftNet.Domain.Response;
 using LiftNet.Handler.Plannings.Queries.Requests;
+using LiftNet.Utility.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -31,12 +32,17 @@ namespace LiftNet.Handler.Plannings.Queries
             try
             {
                 var search = request.Search;
+                var query = _exerciseRepo.GetQueryable();
 
-                var exercises = await _exerciseRepo.GetQueryable()
-                                                   .Where(x => (x.Name!.Contains(search) || x.Description!.Contains(search)))
-                                                   .Take(request.PageSize)
-                                                   .Skip((request.PageNumber - 1) * request.PageSize)
-                                                   .ToListAsync();
+                if (!search.IsNullOrEmpty())
+                {
+                    query = query.Where(x => (x.Name!.Contains(search) || x.Description!.Contains(search)));
+                }
+
+                var exercises = await query
+                                       .Skip((request.PageNumber - 1) * request.PageSize)
+                                       .Take(request.PageSize)
+                                       .ToListAsync();
                 var exerciseViews = exercises.Select(e => new ExerciseView
                 {
                     Id = e.SelfId ?? string.Empty,

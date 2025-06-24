@@ -40,7 +40,17 @@ namespace LiftNet.Handler.Plannings.Commands
                     throw new BadRequestException(["Order must be greater than 0."]);
                 }
 
-                _logger.Info($"Removing exercise at order {request.Order} from plan for user {userId} on day {request.DayOfWeek}");
+                if (request.ExerciseId.IsNullOrEmpty())
+                {
+                    throw new BadRequestException(["ExerciseId cannot be null or empty."]);
+                }
+
+                if (!await _uow.ExerciseRepo.GetQueryable().AnyAsync(x => x.SelfId == request.ExerciseId))
+                {
+                    throw new BadRequestException([$"Exercise with ID {request.ExerciseId} does not exist."]);
+                }
+
+                _logger.Info($"Removing exercise {request.ExerciseId} at order {request.Order} from plan for user {userId} on day {request.DayOfWeek}");
                 await _uow.BeginTransactionAsync();
 
                 var planRepo = _uow.TrainingPlanRepo;
@@ -60,6 +70,12 @@ namespace LiftNet.Handler.Plannings.Commands
                 }
 
                 var exerciseToRemove = orderedExercises[request.Order - 1];
+                
+                if (exerciseToRemove.ExercisesSelfId != request.ExerciseId)
+                {
+                    throw new BadRequestException([$"Exercise at order {request.Order} does not match the provided ExerciseId {request.ExerciseId}."]);
+                }
+
                 existingPlan.Exercises.Remove(exerciseToRemove);
 
                 if (!existingPlan.Exercises.Any())
