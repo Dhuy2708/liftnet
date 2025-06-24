@@ -9,6 +9,7 @@ using LiftNet.Hub.Provider;
 using LiftNet.Utility.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,16 +24,19 @@ namespace LiftNet.Hub.Core
         private readonly IChatIndexService _chatService;
         private readonly ILiftLogger<ChatHub> _logger;
         private readonly IConversationRepo _conversationRepo;
+        private readonly IChatSeenStatusRepo _chatSeenRepo;
 
         public ChatHub(ConnectionPool connPool,
                        IChatIndexService chatService,
                        IConversationRepo conversationRepo,
+                       IChatSeenStatusRepo chatSeenRepo,
                        ILiftLogger<ChatHub> logger) 
             : base(connPool, HubNames.chat)
         {
             _chatService = chatService;
             _conversationRepo = conversationRepo;
             _logger = logger;
+            _chatSeenRepo = chatSeenRepo;
         }
 
         public async Task SendMessage(List<string> recieverIds, ChatMessage message)
@@ -55,7 +59,10 @@ namespace LiftNet.Hub.Core
                     var conversation = await _conversationRepo.GetById(message.ConversationId);
                     if (conversation != null)
                     {
-                        conversation.LastUpdate = DateTime.UtcNow;
+                        var otherUserId = conversation.UserId1.Eq(CallerId) ? conversation.UserId2 : conversation.UserId1;
+                        var now = DateTime.UtcNow;
+                        await UpdateSeenStatus(otherUserId!, conversation.Id, now);
+                        conversation.LastUpdate = now;
                         await _conversationRepo.SaveChangesAsync();
                     }
                 }
@@ -85,6 +92,32 @@ namespace LiftNet.Hub.Core
                 MessageId = messageId,
                 Status = (int)status
             }, "MessageSent");
+        }
+
+        private async Task UpdateSeenStatus(string userId, string conversationId, DateTime now)
+        {
+            var seenRecord = await _chatSeenRepo.GetQueryable()
+                                                .FirstOrDefaultAsync(x => x.UserId == userId && 
+                                                                          x.ConversationId == conversationId);
+
+            if (seenRecord == null)
+            {
+                var newRecord = new ChatSeenStatus
+                {
+                    UserId = userId,
+                    ConversationId = conversationId,
+                    LastSeen = null,
+                    LastUpdate = now,
+                    NotiCount = 1
+                };
+                await _chatSeenRepo.Create(newRecord);
+            }
+            else
+            {
+                seenRecord.LastUpdate = now;
+                seenRecord.NotiCount += 1;
+                await _chatSeenRepo.Update(seenRecord);
+            }
         }
     }
 }

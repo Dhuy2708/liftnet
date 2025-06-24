@@ -19,19 +19,22 @@ namespace LiftNet.Handler.Conversations.Queries
         private readonly IConversationUserRepo _conversationUserRepo;
         private readonly IRoleService _roleService;
         private readonly IChatIndexService _chatService;
+        private readonly IChatSeenStatusRepo _seenRepo;
         private readonly ILiftLogger<ListConversationsHandler> _logger;
 
         public ListConversationsHandler(
-            IConversationRepo conversationRepo,
-            IConversationUserRepo conversationUserRepo,
-            IChatIndexService chatService,
-            IRoleService roleService,
-            ILiftLogger<ListConversationsHandler> logger)
+                    IConversationRepo conversationRepo,
+                    IConversationUserRepo conversationUserRepo,
+                    IChatIndexService chatService,
+                    IRoleService roleService,
+                    IChatSeenStatusRepo seenRepo,
+                    ILiftLogger<ListConversationsHandler> logger)
         {
             _conversationRepo = conversationRepo;
             _conversationUserRepo = conversationUserRepo;
             _chatService = chatService;
             _roleService = roleService;
+            _seenRepo = seenRepo;
             _logger = logger;
         }
 
@@ -62,6 +65,10 @@ namespace LiftNet.Handler.Conversations.Queries
                                                 .ToDictionary(x => x.ConversationId, x => x);
 
             List<ConversationOverview> result = [];
+            var notiCountDict = await _seenRepo.GetQueryable()
+                                         .Where(x => x.UserId == userId &&
+                                                     conversationIds.Contains(x.ConversationId))
+                                         .ToDictionaryAsync(k => k.ConversationId, v => v.NotiCount);
             foreach (var conversation in conversations)
             {
                 var user1 = conversation.User1;
@@ -84,7 +91,8 @@ namespace LiftNet.Handler.Conversations.Queries
                     Name = conversation.UserId1 == userId
                                         ? user2.FirstName + user2.LastName
                                         : user1.FirstName + user1.LastName,
-                    Role = roleDict.GetValueOrDefault(targetUser.UserRoles.First()!.RoleId)
+                    Role = roleDict.GetValueOrDefault(targetUser.UserRoles.First()!.RoleId),
+                    NotiCount = notiCountDict.GetValueOrDefault(conversation.Id, 0),
                 });
             }
 
