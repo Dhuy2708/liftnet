@@ -13,7 +13,7 @@ namespace LiftNet.Contract.Views.Plannings
             get; set;
         }
 
-        public int Order
+        public int? Order
         {
             get; set;
         }

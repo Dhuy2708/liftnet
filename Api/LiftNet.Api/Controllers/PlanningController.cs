@@ -26,11 +26,6 @@ namespace LiftNet.Api.Controllers
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> SetPhysicalStats([FromBody] SetPhysicalStatsReq req)
         {
-            if (UserId.IsNullOrEmpty())
-            {
-                return Unauthorized();
-            }
-
             var command = new SetPhysicalStatsCommand
             {
                 UserId = UserId,
@@ -56,11 +51,6 @@ namespace LiftNet.Api.Controllers
         [ProducesResponseType(typeof(LiftNetRes<UserPhysicalStatView>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetPhysicalStats()
         {
-            if (UserId.IsNullOrEmpty())
-            {
-                return Unauthorized();
-            }
-
             var query = new GetPhysicalStatsQuery
             {
                 UserId = UserId
@@ -79,11 +69,6 @@ namespace LiftNet.Api.Controllers
         [ProducesResponseType(typeof(PaginatedLiftNetRes<TrainingPlanView>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> ListTrainingPlans()
         {
-            if (UserId.IsNullOrEmpty())
-            {
-                return Unauthorized();
-            }
-
             var query = new ListTrainingPlansQuery
             {
                 UserId = UserId
@@ -101,11 +86,6 @@ namespace LiftNet.Api.Controllers
         [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> SetPlan(SetPlanReq req)
         {
-            if (req.UserId.IsNullOrEmpty())
-            {
-                return Unauthorized();
-            }
-
             var command = new SetPlanCommand();
             try
             {
@@ -118,6 +98,25 @@ namespace LiftNet.Api.Controllers
             }
 
             var result = await _mediator.Send(command);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpGet("exercise/list")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
+        [ProducesResponseType(typeof(LiftNetRes<List<ExerciseView>>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> ListExercises([FromQuery]string search, [FromQuery]int pageNumber = 1, [FromQuery]int pageSize = 20)
+        {
+            var query = new ListExercisesQuery
+            {
+                Search = search,
+                PageNumber = pageNumber,    
+                PageSize = pageSize
+            };
+            var result = await _mediator.Send(query);
             if (result.Success)
             {
                 return Ok(result);
@@ -140,6 +139,46 @@ namespace LiftNet.Api.Controllers
                 UserId = req.UserId,
                 DaysOfWeek = req.DaysOfWeek,
                 DayWithExerciseIds = req.Plan.ToDictionary(k => k.DayOfWeek, v => v.ExerciseIds)
+            };
+
+            var result = await _mediator.Send(command);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpPost("exercise/add")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> AddExercise([FromBody] AddExerciseToPlanReq req)
+        {
+            var command = new AddExerciseToPlanCommand
+            {
+                UserId = UserId,
+                DayOfWeek = req.DayOfWeek,
+                ExerciseId = req.ExerciseId
+            };
+
+            var result = await _mediator.Send(command);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpPost("exercise/remove")]
+        [Authorize(Policy = LiftNetPolicies.SeekerOrCoach)]
+        [ProducesResponseType(typeof(LiftNetRes), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> RemoveExercise([FromBody] RemoveExerciseFromPlanReq req)
+        {
+            var command = new RemoveExerciseFromPlanCommand
+            {
+                UserId = UserId,
+                DayOfWeek = req.DayOfWeek,
+                Order = req.Order
             };
 
             var result = await _mediator.Send(command);

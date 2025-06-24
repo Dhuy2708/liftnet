@@ -1,4 +1,5 @@
-﻿using LiftNet.Contract.Enums.Job;
+﻿using LiftNet.Contract.Dtos;
+using LiftNet.Contract.Enums.Job;
 using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Domain.Constants;
 using LiftNet.Domain.Entities;
@@ -26,6 +27,7 @@ namespace LiftNet.Timer.Service
         private ExerciseApiClient exerciseSDK => _provider.GetRequiredService<ExerciseApiClient>();
         private IUnitOfWork uow => _provider.GetRequiredService<IUnitOfWork>();
         private HttpClient httpClient;
+        private ChatBotUrl ChatBotUrl => _provider.GetRequiredService<ChatBotUrl>();
 
         public ExerciseDiscService(IServiceProvider provider) : base(JobType.ExerciseDisc, provider, TimeSpan.FromHours(JobIntervalHour.EXERCISE_DISC - 1))
         {
@@ -92,7 +94,7 @@ namespace LiftNet.Timer.Service
                 {
                     if (entitiesToCreate.Any())
                     {
-                        await InserChromaDB(entitiesToUpdate);
+                        //await InserChromaDB(entitiesToUpdate);
                     }
                     return JobStatus.Finished;
                 }
@@ -108,7 +110,8 @@ namespace LiftNet.Timer.Service
 
         private async Task InserChromaDB(List<Exercise> exercises)
         {
-            var response = await httpClient.PostAsJsonAsync("http://127.0.0.1:5000/api/exercises/insert", exercises);
+            var url = ChatBotUrl.Url + "/exercises/insert";
+            var response = await httpClient.PostAsJsonAsync(url, exercises);
 
             if (response.IsSuccessStatusCode)
             {

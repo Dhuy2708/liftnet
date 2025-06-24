@@ -1,4 +1,5 @@
-﻿using LiftNet.Contract.Dtos.Chatbot;
+﻿using LiftNet.Contract.Dtos;
+using LiftNet.Contract.Dtos.Chatbot;
 using LiftNet.Contract.Interfaces.IRepos;
 using LiftNet.Domain.Entities;
 using LiftNet.Domain.Interfaces;
@@ -20,16 +21,19 @@ namespace LiftNet.Handler.ChatBots.Commands
         private readonly ILiftLogger<CreateChatBotConversationHandler> _logger;
         private readonly IChatBotConversationRepo _conversationRepo;
         private HttpClient httpClient;
+        private readonly string _chatBotBaseUrl;
 
-        public CreateChatBotConversationHandler(ILiftLogger<CreateChatBotConversationHandler> logger, IChatBotConversationRepo conversationRepo)
+        public CreateChatBotConversationHandler(ILiftLogger<CreateChatBotConversationHandler> logger, 
+                                                IChatBotConversationRepo conversationRepo,
+                                                ChatBotUrl chatBotUrl)
         {
             _logger = logger;
             _conversationRepo = conversationRepo;
             httpClient = new HttpClient
             {
                 Timeout = TimeSpan.FromMinutes(60),
-                BaseAddress = new Uri("http://127.0.0.1:5000/")
             };
+            _chatBotBaseUrl = chatBotUrl.Url;
         }
 
         public async Task<LiftNetRes<CreateChatbotConversationResponse>> Handle(CreateChatBotConversationCommand request, CancellationToken cancellationToken)
@@ -69,7 +73,7 @@ namespace LiftNet.Handler.ChatBots.Commands
                 var json = JsonSerializer.Serialize(payload);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var response = await httpClient.PostAsync("api/generate-title", content, cancellationToken);
+                var response = await httpClient.PostAsync($"{_chatBotBaseUrl}/generate-title", content, cancellationToken);
                 if (!response.IsSuccessStatusCode)
                 {
                     var err = await response.Content.ReadAsStringAsync(cancellationToken);
