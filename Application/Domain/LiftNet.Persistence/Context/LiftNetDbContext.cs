@@ -46,6 +46,7 @@ namespace LiftNet.Persistence.Context
         // chat
         public DbSet<Conversation> Conversations { get; set; }
         public DbSet<ConversationUser> ConversationUsers { get; set; }
+        public DbSet<ChatSeenStatus> ChatSeenStatuses { get; set; }
 
         // vn geo
         public DbSet<Province> Provinces { get; set; }

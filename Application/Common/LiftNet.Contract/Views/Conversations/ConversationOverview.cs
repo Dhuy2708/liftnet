@@ -38,5 +38,10 @@ namespace LiftNet.Contract.Views.Conversations
         {
             get; set;
         }
+
+        public int NotiCount
+        {
+            get; set;
+        }
     }
 }
