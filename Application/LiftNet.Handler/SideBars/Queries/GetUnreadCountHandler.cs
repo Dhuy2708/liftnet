@@ -42,14 +42,17 @@ namespace LiftNet.Handler.SideBars.Queries
                 };
 
                 unreadCounts["finder"] = await _finderSeenRepo.GetQueryable()
-                                                       .Where(x => x.UserId == request.UserId)
-                                                       .SumAsync(x => x.NotiCount);
+                                                       .Where(x => x.UserId == request.UserId &&
+                                                                   x.NotiCount > 0)
+                                                       .CountAsync();
                 unreadCounts["appointment"] = await _appointmentSeenRepo.GetQueryable()
-                                                       .Where(x => x.UserId == request.UserId)
-                                                       .SumAsync(x => x.NotiCount);
-                unreadCounts["appointment"] = await _chatSeenRepo.GetQueryable()
-                                                       .Where(x => x.UserId == request.UserId)
-                                                       .SumAsync(x => x.NotiCount);
+                                                       .Where(x => x.UserId == request.UserId &&
+                                                                   x.NotiCount > 0)
+                                                       .CountAsync();
+                unreadCounts["chat"] = await _chatSeenRepo.GetQueryable()
+                                                       .Where(x => x.UserId == request.UserId &&
+                                                                   x.NotiCount > 0)
+                                                       .CountAsync();
                 return LiftNetRes<Dictionary<string, int>>.SuccessResponse(unreadCounts);
             }
             catch (Exception ex)
