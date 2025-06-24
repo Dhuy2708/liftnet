@@ -40,6 +40,7 @@ namespace LiftNet.Handler.Plannings.Queries
                 }
 
                 var exercises = await query
+                                       .OrderBy(x => x.SelfId)
                                        .Skip((request.PageNumber - 1) * request.PageSize)
                                        .Take(request.PageSize)
                                        .ToListAsync();
