@@ -37,6 +37,7 @@ namespace LiftNet.Contract.Interfaces.IRepos
         ITrainingPlanRepo TrainingPlanRepo { get; }
         IExerciseRepo ExerciseRepo { get; }
         ICoachExtensionRepo CoachExtensionRepo { get; }
+        ICoachRecommendationRepo CoachRecommendationRepo { get; }
         Task BeginTransactionAsync();
         Task<int> CommitAsync();
         Task RollbackAsync();

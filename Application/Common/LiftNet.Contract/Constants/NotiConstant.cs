@@ -20,6 +20,8 @@ namespace LiftNet.Contract.Constants
 
         public const string Follow = "{0} has started following you.";
 
+        public const string RecommendSeekerToPT = "You have a new seeker recommendation: {0}.";
+
         public const string Default = "You have a new notification.";
 
         public static Dictionary<NotiEventType, string> NotiBodyMapping = new Dictionary<NotiEventType, string>
@@ -31,7 +33,8 @@ namespace LiftNet.Contract.Constants
             { NotiEventType.ApplyFinder, ApplyFinder },
             { NotiEventType.AcceptFinder, AcceptFinder },
             { NotiEventType.RejectFinder, RejectFinder },
-            { NotiEventType.Follow, Follow }
+            { NotiEventType.Follow, Follow },
+            { NotiEventType.RecommendSeekerToPt, RecommendSeekerToPT }
         };
 
         public static Dictionary<NotiEventType, NotiRefernceLocationType> NotiLocationMapping = new Dictionary<NotiEventType, NotiRefernceLocationType>
@@ -42,7 +45,8 @@ namespace LiftNet.Contract.Constants
             { NotiEventType.ApplyFinder, NotiRefernceLocationType.Finder },
             { NotiEventType.AcceptFinder, NotiRefernceLocationType.Finder },
             { NotiEventType.RejectFinder, NotiRefernceLocationType.Finder },
-            { NotiEventType.Follow, NotiRefernceLocationType.Profile } 
+            { NotiEventType.Follow, NotiRefernceLocationType.Profile },
+            { NotiEventType.RecommendSeekerToPt, NotiRefernceLocationType.SeekerRecommendation } 
         };
 
         public static string GetBody(NotiEventType eventType, params object[] args)
@@ -68,6 +72,9 @@ namespace LiftNet.Contract.Constants
 
         public const string Follow = "New Follower";
 
+        public const string RecommendSeekerToPT = "New seeker recommendation";
+
+
         public const string Default = "Notification";
 
         public static Dictionary<NotiEventType, string> NotiTitleMapping = new Dictionary<NotiEventType, string>
@@ -79,7 +86,8 @@ namespace LiftNet.Contract.Constants
             { NotiEventType.ApplyFinder, ApplyFinder },
             { NotiEventType.AcceptFinder, AcceptFinder },
             { NotiEventType.RejectFinder, RejectFinder },
-            { NotiEventType.Follow, Follow }
+            { NotiEventType.Follow, Follow },
+            { NotiEventType.RecommendSeekerToPt, RecommendSeekerToPT },
         };
 
         public static string GetTitle(NotiEventType eventType)

@@ -335,6 +335,17 @@ namespace LiftNet.Repositories.Core
                 return _coachExtensionRepo;
             }
         }
+
+        private ICoachRecommendationRepo? _coachRecommendationRepo = null;
+        public ICoachRecommendationRepo CoachRecommendationRepo
+        {
+            get
+            {
+                _coachRecommendationRepo ??= _serviceProvider.GetRequiredService<ICoachRecommendationRepo>();
+                _coachRecommendationRepo.AutoSave = false;
+                return _coachRecommendationRepo;
+            }
+        }
         #endregion
 
         public async Task BeginTransactionAsync()
