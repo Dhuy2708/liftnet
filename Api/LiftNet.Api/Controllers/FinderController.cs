@@ -238,5 +238,45 @@ namespace LiftNet.Api.Controllers
             }
             return StatusCode(500, result);
         }
+
+        [HttpPost("recommendSeekerToPt")]
+        public async Task<IActionResult> RecommendSeekerToPt(RecommendSeekerToPtReq postId)
+        {
+            var request = new RecommendSeekerToPtCommand
+            {
+                SeekerId = postId.SeekerId,
+                PTIds = postId.PTIds,
+                Description = postId.Description
+            };
+            var result = await _mediator.Send(request);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
+
+        [HttpGet("seekerRecommendations")]
+        [Authorize(Policy = LiftNetPolicies.Coach)]
+        [ProducesResponseType(typeof(LiftNetRes<List<SeekerRecommendationView>>), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetSeekerRecommendations()
+        {
+            if (string.IsNullOrEmpty(UserId))
+            {
+                return Unauthorized();
+            }
+
+            var request = new GetSeekerRecommendationsQuery
+            {
+                CoachId = UserId
+            };
+
+            var result = await _mediator.Send(request);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return StatusCode(500, result);
+        }
     }
 }

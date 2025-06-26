@@ -29,6 +29,7 @@ namespace LiftNet.Contract.Enums
         ApplyFinder = 10,
         AcceptFinder = 11,
         RejectFinder = 12,
+        RecommendSeekerToPt = 13,
 
         // social
         Follow = 20,
@@ -40,5 +41,6 @@ namespace LiftNet.Contract.Enums
         Appointment = 1,
         Finder = 2,
         Profile = 3,
+        SeekerRecommendation = 4,
     }
 }
