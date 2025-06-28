@@ -43,7 +43,7 @@ namespace LiftNet.Handler.Profiles.Queries
 
                 if (address == null)
                 {
-                    return LiftNetRes<AddressView>.ErrorResponse(null);
+                    return LiftNetRes<AddressView>.SuccessResponse([]);
                 }
 
                 var addressView = new AddressView

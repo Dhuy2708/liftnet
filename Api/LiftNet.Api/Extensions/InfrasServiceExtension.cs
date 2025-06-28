@@ -258,7 +258,10 @@ namespace LiftNet.Api.Extensions
                 );
             });
 
-          services.AddQuartz(q =>
+         
+#endif
+
+            services.AddQuartz(q =>
             {
                 q.AddJob<ExerciseDiscService>(opts => opts.WithIdentity("ExerciseDiscJob", "DiscJobs"));
 
@@ -272,18 +275,15 @@ namespace LiftNet.Api.Extensions
                     )
                 );
             });
-#endif
 
-
-
-#if !DEBUG
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
+#if !DEBUG
             services.AddTransient<TrainFFMModelService>();
             services.AddTransient<ProvinceDiscService>();
             services.AddTransient<SocialScoreService>();
             services.AddTransient<UpdateConfirmationRequestsService>();
-            services.AddTransient<ExerciseDiscService>();
 #endif
+            services.AddTransient<ExerciseDiscService>();
 
             return services;
         }
